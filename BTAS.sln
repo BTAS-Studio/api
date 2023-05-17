@@ -1,0 +1,64 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33424.131
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BTAS.API", "BTAS.API\BTAS.API.csproj", "{55C56FCF-2142-489A-9AE5-C56C7AEC0B22}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BTAS.Data", "BTAS.Data\BTAS.Data.csproj", "{6F6821BD-4A3B-4C9D-9997-DB0B61A13ECE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenAPIDoc.Main", "OpenAPIDoc.Main\OpenAPIDoc.Main.csproj", "{13E9F604-C3F3-4B49-9130-0A9B684CD2B1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{55C56FCF-2142-489A-9AE5-C56C7AEC0B22} = {55C56FCF-2142-489A-9AE5-C56C7AEC0B22}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BTAS.BlazorApp", "BTAS.BlazorApp\BTAS.BlazorApp.csproj", "{EEC79601-3E27-4102-84D8-12D0B4A54BE0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{55C56FCF-2142-489A-9AE5-C56C7AEC0B22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55C56FCF-2142-489A-9AE5-C56C7AEC0B22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55C56FCF-2142-489A-9AE5-C56C7AEC0B22}.Debug|x86.ActiveCfg = Debug|x86
+		{55C56FCF-2142-489A-9AE5-C56C7AEC0B22}.Debug|x86.Build.0 = Debug|x86
+		{55C56FCF-2142-489A-9AE5-C56C7AEC0B22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55C56FCF-2142-489A-9AE5-C56C7AEC0B22}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55C56FCF-2142-489A-9AE5-C56C7AEC0B22}.Release|x86.ActiveCfg = Release|x86
+		{55C56FCF-2142-489A-9AE5-C56C7AEC0B22}.Release|x86.Build.0 = Release|x86
+		{6F6821BD-4A3B-4C9D-9997-DB0B61A13ECE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F6821BD-4A3B-4C9D-9997-DB0B61A13ECE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F6821BD-4A3B-4C9D-9997-DB0B61A13ECE}.Debug|x86.ActiveCfg = Debug|x86
+		{6F6821BD-4A3B-4C9D-9997-DB0B61A13ECE}.Debug|x86.Build.0 = Debug|x86
+		{6F6821BD-4A3B-4C9D-9997-DB0B61A13ECE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F6821BD-4A3B-4C9D-9997-DB0B61A13ECE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F6821BD-4A3B-4C9D-9997-DB0B61A13ECE}.Release|x86.ActiveCfg = Release|x86
+		{6F6821BD-4A3B-4C9D-9997-DB0B61A13ECE}.Release|x86.Build.0 = Release|x86
+		{13E9F604-C3F3-4B49-9130-0A9B684CD2B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13E9F604-C3F3-4B49-9130-0A9B684CD2B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13E9F604-C3F3-4B49-9130-0A9B684CD2B1}.Debug|x86.ActiveCfg = Debug|x86
+		{13E9F604-C3F3-4B49-9130-0A9B684CD2B1}.Debug|x86.Build.0 = Debug|x86
+		{13E9F604-C3F3-4B49-9130-0A9B684CD2B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13E9F604-C3F3-4B49-9130-0A9B684CD2B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13E9F604-C3F3-4B49-9130-0A9B684CD2B1}.Release|x86.ActiveCfg = Release|x86
+		{13E9F604-C3F3-4B49-9130-0A9B684CD2B1}.Release|x86.Build.0 = Release|x86
+		{EEC79601-3E27-4102-84D8-12D0B4A54BE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEC79601-3E27-4102-84D8-12D0B4A54BE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEC79601-3E27-4102-84D8-12D0B4A54BE0}.Debug|x86.ActiveCfg = Debug|x86
+		{EEC79601-3E27-4102-84D8-12D0B4A54BE0}.Debug|x86.Build.0 = Debug|x86
+		{EEC79601-3E27-4102-84D8-12D0B4A54BE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEC79601-3E27-4102-84D8-12D0B4A54BE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEC79601-3E27-4102-84D8-12D0B4A54BE0}.Release|x86.ActiveCfg = Release|x86
+		{EEC79601-3E27-4102-84D8-12D0B4A54BE0}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EE03610F-2020-44B5-B7E1-E5C264474015}
+	EndGlobalSection
+EndGlobal

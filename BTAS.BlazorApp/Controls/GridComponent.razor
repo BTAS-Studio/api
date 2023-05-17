@@ -1,0 +1,246 @@
+﻿@using BlazorTable
+@using System
+@using System.Linq.Expressions
+@using System.Reflection
+@using Newtonsoft.Json.Serialization
+@using System.ComponentModel
+@using System.ComponentModel.DataAnnotations
+@using Models.Dto
+
+@inject NavigationManager nav
+@inject ApplicationState appState
+@implements IDisposable
+@typeparam TValue
+
+<div></div>
+<div class="card-header">
+
+    <h3 class="card-title">@title</h3>
+
+    <ul class="card-tools">
+        <li class="list-item">
+            <button type="button" class="refresh" data-card-widget="card-refresh" data-source="@List" data-source-selector="card-body" data-load-on-init="true">
+                <i class="fas fa-sync-alt"></i>
+            </button>
+        </li>
+        <li class="list-item">
+            <button type="button" class="download" data-card-widget="maximize">
+                <i class="fa-solid fa-download"></i>
+            </button>
+        </li>
+        <li class="list-item dropdown">
+            <button type="button" class="filter" data-toggle="dropdown">
+                <i class="fa-solid fa-arrow-down-wide-short"></i>
+            </button>
+            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                <span class="dropdown-item dropdown-header dropdown-hover">Click to show/hide columns</span>
+                <div class="dropdown-divider"></div>
+                <div class="dropdown-item">
+                    <div class="custom-control custom-checkbox dropdown-hover">
+                        <input type="checkbox" name="terms" class="custom-control-input" id="label1">
+                        <label class="custom-control-label" for="label1">label 1</label>
+                    </div>
+                </div>
+
+                <div class="dropdown-item">
+                    <div class="custom-control custom-checkbox dropdown-hover">
+                        <input type="checkbox" name="terms" class="custom-control-input" id="label2">
+                        <label class="custom-control-label" for="label2">label 2</label>
+                    </div>
+                </div>
+                <div class="dropdown-item">
+                    <div class="custom-control custom-checkbox dropdown-hover">
+                        <input type="checkbox" name="terms" class="custom-control-input" id="label3">
+                        <label class="custom-control-label" for="label3">label 3</label>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li class="list-item">
+            <button type="button" class="preset" data-card-widget="remove" onclick="">
+                <i class="fa-solid fa-sliders"></i>
+            </button>
+        </li>
+    </ul>
+</div>
+<div class="card-body">
+
+    <BlazorTable.Table TableItem="TValue" Items="@List" PageSize="30" ShowSearchBar="false">
+        @if (@model == "mawb")
+        {
+            foreach (var prop in GenerateProperties<TValue>().Where(x => x.inGrid == true))
+            {
+                if (prop.fieldName == "tbl_mawb_masterBillNumber")
+                {
+                    <Column TableItem="TValue" Title="@prop.jsonName" Field="GetPropertySelector<TValue>(prop.fieldName)" Sortable="true" Filterable="true">
+                        <Template>
+                            <a href="#" @onclick="@(() => OpenInTab(GetPropValue(context, prop.fieldName).ToString(), "consol"))">@GetPropValue(context, prop.fieldName)</a>
+                        </Template>
+                    </Column>
+                }
+                else
+                {
+                    <Column TableItem="TValue" Title="@prop.jsonName" Field="GetPropertySelector<TValue>(prop.fieldName)" Sortable="true" Filterable="true" />
+                }
+            }
+        }
+        else
+        {
+            foreach (var prop in GenerateProperties<TValue>())
+            {
+                <Column TableItem="TValue" Title="@prop.jsonName" Field="GetPropertySelector<TValue>(prop.fieldName)" Sortable="true" Filterable="true">
+                    <Template>
+                        <a href="#" @onclick="@(() => OpenInTab(GetPropValue(context, prop.fieldName).ToString(), "hawb"))">@GetPropValue(context, prop.fieldName)</a>
+                    </Template>
+                </Column>
+            }
+        }
+        @*<Column TableItem="tbl_mawbDto" Title="Master #" Field="@(x => x.tbl_mawb_masterBillNumber)" Sortable="true" Filterable="true" />
+        <Column TableItem="tbl_mawbDto" Title="Booking #" Field="@(x => x.tbl_mawb_bookingNumber)" Sortable="true" Filterable="true" />
+        <Column TableItem="tbl_mawbDto" Title="Bill #" Field="@(x => x.tbl_mawb_billNumber)" Sortable="true" Filterable="true" />
+        <Column TableItem="tbl_mawbDto" Title="Voyage #" Field="@(x => x.voyageNumber)" Sortable="true" Filterable="true" />
+        <Column TableItem="tbl_mawbDto" Title="Status" Field="@(x => x.tbl_mawb_status)" Sortable="true" Filterable="true" />
+        <Column TableItem="tbl_mawbDto" Title="Type" Field="@(x => x.tbl_mawb_type)" Sortable="true" Filterable="true" />
+        <Column TableItem="tbl_mawbDto" Title="Transport" Field="@(x => x.tbl_mawb_transportType)" Sortable="true" Filterable="true" />
+        <Column TableItem="tbl_mawbDto" Title="Container Mode" Field="@(x => x.tbl_mawb_containerMode)" Sortable="true" Filterable="true" />
+        <Column TableItem="tbl_mawbDto" Title="Origin" Field="@(x => x.originAgent.tbl_client_header_name)" Sortable="true" Filterable="true" />
+        <Column TableItem="tbl_mawbDto" Title="Destination" Field="@(x => x.destinationAgent.tbl_client_header_name)" Sortable="true" Filterable="true" />*@
+
+        <Pager ShowPageNumber="true" ShowTotalCount="true" />
+    </BlazorTable.Table>
+</div>
+
+@code {
+    [Parameter]
+    public List<TValue> List { get; set; }
+
+    [Parameter]
+    public string tableItem { get; set; }
+
+    [Parameter]
+    public string items { get; set; }
+
+    [Parameter]
+    public int pageSize { get; set; }
+
+    [Parameter]
+    public bool searchBar { get; set; }
+
+    [Parameter]
+    public RenderFragment? Columns { get; set; }
+
+    [Parameter]
+    public string model { get; set; }
+
+    [Parameter]
+    public string title { get; set; }
+
+    [Parameter]
+    public string module { get; set; }
+
+
+    public static Expression<Func<T, object>> GetPropertySelector<T>(string propertyName)
+    {
+        var arg = Expression.Parameter(typeof(T), "x");
+        var property = Expression.Property(arg, propertyName);
+        //return the property as object
+        var conv = Expression.Convert(property, typeof(object));
+        var exp = Expression.Lambda<Func<T, object>>(conv, new ParameterExpression[] { arg });
+        return exp;
+    }
+
+    private List<JsonPropertyFields> GenerateProperties<T>()
+    {
+        IContractResolver resolver = new DefaultContractResolver();
+
+        List<JsonPropertyFields> dto = new();
+        var props = typeof(T).GetProperties();
+
+        foreach (var propertyInfo in props.Where(p => !p.IsMarkedWith<DoNotIncludeAttribute>()))
+        {
+            var att = propertyInfo.GetCustomAttributes(typeof(DescriptionAttribute), true);
+            var reg = typeof(T).GetProperty(propertyInfo.Name)
+                .GetCustomAttribute<RegularExpressionAttribute>()?.Pattern; //propertyInfo.GetCustomAttributes<RegularExpressionAttribute>();
+            var contract = resolver.ResolveContract(typeof(T)) as JsonObjectContract;
+            var dType = propertyInfo.PropertyType.GenericTypeArguments;
+            bool isOptional = propertyInfo.IsMarkedWith<OptionalAttribute>();
+            bool isRequired = propertyInfo.IsMarkedWith<RequiredAttribute>();
+            bool inGrid = propertyInfo.IsMarkedWith<InGridAttribute>();
+            if (att.Length > 0)
+            {
+                var attrib = att[0] as DescriptionAttribute;
+
+                dto.Add(new JsonPropertyFields
+                {
+                    jsonName = contract.Properties.Where(p => !p.Ignored && p.UnderlyingName == propertyInfo.Name).Select(x => x.PropertyName).FirstOrDefault(), //propertyInfo.Name,
+                    fieldName = contract.Properties.Where(p => !p.Ignored && p.UnderlyingName == propertyInfo.Name).Select(x => x.UnderlyingName).FirstOrDefault(),
+                    type = dType.Length > 0 ? dType.First().Name : propertyInfo.PropertyType.Name,
+                    description = attrib.Description,
+                    values = reg != null ? reg.Split("|").ToList() : null,
+                    inGrid = (inGrid ? true : false),
+                    isOptional = (isRequired ? false : true)
+                });
+            }
+            else
+            {
+                dto.Add(new JsonPropertyFields
+                {
+                    jsonName = contract.Properties.Where(p => !p.Ignored && p.UnderlyingName == propertyInfo.Name).Select(x => x.PropertyName).FirstOrDefault(), //propertyInfo.Name,
+                    fieldName = contract.Properties.Where(p => !p.Ignored && p.UnderlyingName == propertyInfo.Name).Select(x => x.UnderlyingName).FirstOrDefault(),
+                    type = dType.Length > 0 ? dType.First().Name : propertyInfo.PropertyType.Name,
+                    description = "No desc",
+                    values = reg != null ? reg.Split("|").ToList() : null,
+                    inGrid = (inGrid ? true : false),
+                    isOptional = (isRequired ? false : true)
+                });
+            }
+
+        }
+        return dto;
+    }
+
+    //private void Onclick()
+    //{
+    //    GenerateProperties< List<JsonPropertyFields>>();
+    //}
+
+
+
+    //private void Refresh()
+    //{
+    //    List.Clear();
+
+
+    //    //GenerateFoo(Localizer);
+    //    StateHasChanged();
+    //    //string items = GenerateProperties<T>();
+    //}
+
+    private void OpenInTab(string reference, string module)
+    {
+        if (appState.tabs.Where(x => x.Name == reference).Count() <= 0)
+        {
+            appState.AddTab(new TabModel
+            {
+                Name = reference,
+                TabUrl = module + "/view/" + reference
+            });
+
+            appState.OnChange += StateHasChanged;
+            nav.NavigateTo("/" + module + "/view/" + reference);
+        }
+        else
+        {
+            nav.NavigateTo("#" + reference);
+        }
+    }
+
+    public void Dispose()
+    {
+        appState.OnChange -= StateHasChanged;
+    }
+    public static object GetPropValue(object src, string propName)
+    {
+        return src.GetType().GetProperty(propName).GetValue(src, null);
+    }
+}

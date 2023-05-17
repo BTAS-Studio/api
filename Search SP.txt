@@ -1,0 +1,39 @@
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SearchShipment`(
+IN dateFrom varchar(50),
+IN dateTo varchar(50),
+IN shipper varchar(50),
+IN tracking varchar(50),
+IN shipperName varchar(50),
+IN carrierName varchar(50),
+IN deliveryName varchar(50)
+)
+BEGIN
+SELECT 
+sp.tbl_shippers_name shipper,
+sp.tbl_shippers_prefix shipperPrefix,
+pi.tbl_parcel_info_shipperId shipperId,
+cast(tr.idshippers_tracking_ref as char) jobNumber,
+api.tbl_carrier_api_trackingRef trackingNumber, 
+pi.tbl_parcel_info_referenceNo jobReference, 
+ser.tbl_services_name serviceName, 
+pi.tbl_parcel_info_deliveryName deliveryName, 
+pi.tbl_parcel_info_deliveryPhone deliveryPhone, 
+pi.tbl_parcel_info_deliveryEmail deliveryEmail,
+pi.tbl_parcel_info_deliveryCompany deliveryCompany,
+cast(api.tbl_carrier_api_manifestId as char) manifestId,
+concat('M',pi.tbl_parcel_info_shipperId,LPAD(api.tbl_carrier_api_manifestId, 10, '0')) manifestNumber
+FROM tbl_parcel_info pi
+RIGHT JOIN tbl_shippers_tracking_ref tr on tr.tbl_shippers_tracking_shipmentId = pi.idtbl_parcel_info
+LEFT JOIN tbl_services ser ON pi.tbl_parcel_info_serviceCode = ser.tbl_services_code
+LEFT JOIN tbl_carrier_api_response api ON api.tbl_carrier_api_response_parcelId = pi.idtbl_parcel_info
+LEFT JOIN tbl_shippers sp ON sp.tbl_shippers_code = pi.tbl_parcel_info_shipperId
+LEFT JOIN tbl_manifest m on api.tbl_carrier_api_manifestId = m.idtbl_manifest
+WHERE (dateFrom is null OR pi.tbl_parcel_info_timestamp >= dateFrom)
+AND (dateTo is null OR pi.tbl_parcel_info_timestamp <= dateTo)
+AND (shipper is null OR pi.tbl_parcel_info_shipperName = shipper)
+AND (tracking is null OR api.tbl_carrier_api_trackingRef = tracking)
+AND (shipperName is null OR sp.tbl_shippers_name = shipperName)
+AND (carrierName is null OR ser.tbl_services_name = carrierName)
+AND (deliveryName is null OR pi.tbl_parcel_info_deliveryName = deliveryName)
+;
+END

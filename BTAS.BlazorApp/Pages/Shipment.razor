@@ -1,0 +1,223 @@
+﻿@page "/shipment"
+
+
+
+<div class="card" style="padding: 40px 27px 36px 27px !important;">
+    <div class="card-body" style="border: 1px solid #DBDBDB !important;">
+
+
+
+        <div class="row" style="border-bottom:1px solid  #EBEEF1;">
+            <div class="col-md-6" style="border-right:1px solid  #EBEEF1;">
+                <h3>Shipper Details</h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row form-group">
+                            <div class="col-md-6 text-right">
+                                <label class="blazor-label">Business Name</label>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-md-6 text-right">
+                                <label class="blazor-label">Email</label>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-md-6 text-right">
+                                <label class="blazor-label">Address</label>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" />
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row form-group">
+                            <div class="col-md-6 text-right">
+                                <label class="blazor-label">Shipper Name</label>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-md-6 text-right">
+                                <label class="blazor-label">Telephone</label>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-md-3">
+                <h3>Receiver Details</h3>
+                <div class="row form-group">
+                    <div class="col-md-5 text-right">
+                        <label class="blazor-label">Business Name</label>
+                    </div>
+                    <div class="col-md-7">
+                        <input type="text" class="form-control" />
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-5 text-right">
+                        <label class="blazor-label">Email</label>
+                    </div>
+                    <div class="col-md-7">
+                        <input type="text" class="form-control" />
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-5 text-right">
+                        <label class="blazor-label">Address</label>
+                    </div>
+                    <div class="col-md-7">
+                        <input type="text" class="form-control" />
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-5 text-right">
+                        <label class="blazor-label">Receiver Name</label>
+                    </div>
+                    <div class="col-md-7">
+                        <input type="text" class="form-control" />
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-5 text-right">
+                        <label class="blazor-label">Telephone</label>
+                    </div>
+                    <div class="col-md-7">
+                        <input type="text" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3" style="background-color: #EBEEF1;">
+                <div class="row">
+                    <div class="col-md-6 text-right">
+                        <label class="blazor-label">Cargo Status</label>
+                    </div>
+                    <div class="col-md-6 text-left">
+                        <label class="blazor-label">SOME CLEAR</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 text-right">
+                        <label class="blazor-label">Cargo Notes</label>
+                    </div>
+                    <div class="col-md-6 text-left">
+                        <label class="blazor-label">SOME TEXT</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 text-right">
+                        <label class="blazor-label">Milestone</label>
+                    </div>
+                    <div class="col-md-6 text-left">
+                        <label class="blazor-label">SOME TEXT</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 text-right">
+                        <label class="blazor-label">Underbond Sent</label>
+                    </div>
+                    <div class="col-md-6 text-left">
+                        <label class="blazor-label">No</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 text-right">
+                        <label class="blazor-label">Underbond Status</label>
+                    </div>
+                    <div class="col-md-6 text-left">
+                        <label class="blazor-label">UNDERBOND APPROVAL</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="col-md-6" style="padding: 20px">
+
+                <div class="row" style="border:1px solid #EBEEF1;">
+                    <span style="color: #0065B0;">Carrier Name</span>
+                    <span>Border Express Parcel</span>
+                </div>
+                <div class="row" style="border:1px solid  #EBEEF1; ">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <span style="color: #0065B0;">Carrier Service</span>
+                            <span>Border Express Parcel NSW</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <button type="button" class="btn btn-dark">POD</button>
+                        <button type="button" class="btn btn-dark">Reprint Label</button>
+                    </div>
+
+                </div>
+                <div class="row" style="border:1px solid  #EBEEF1;">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <span style="color: #0065B0;">Tracking Number</span>
+                            <span>AUEX 263554933</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <button type="button" class="btn btn-dark">Track</button>
+                    </div>
+                </div>
+                <div class="row" style="border:1px solid  #EBEEF1;">
+                    <span style="color: #0065B0;">Shipper Reference</span>
+                    <span>48106</span>
+                </div>
+                <div class="row" style="border:1px solid  #EBEEF1;">
+                    <span style="color: #0065B0;">Special Instructions</span>
+                    <span>No</span>
+                </div>
+
+            </div>
+            <div class="col-md-6" style="padding: 20px">
+
+                <div class="row" style="border:1px solid #EBEEF1;">
+                    <span style="color: #0065B0;">Collection/Delivery Dates</span>
+                    <span>Collection Date: 1970-01-01 00:00:00 Delivery Date:</span>
+                </div>
+                <div class="row" style="border:1px solid  #EBEEF1;">
+                    <span style="color: #0065B0;">Tail Lift Origin/Destination</span>
+                    <span>Tail Lift Origin: No Tail Lift Destination: No</span>
+                </div>
+                <div class="row" style="border:1px solid  #EBEEF1;">
+                    <span style="color: #0065B0;">Dangerous Goods</span>
+                    <span>No</span>
+                </div>
+                <div class="row" style="border:1px solid  #EBEEF1;">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <span style="color: #0065B0;">Shipment Value</span>
+                            <span>330</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <button type="button" class="btn btn-dark">Commercial Invoice</button>
+                    </div>
+                </div>
+                <div class="row" style="border:1px solid  #EBEEF1;">
+                    <span style="color: #0065B0;">Goods Description</span>
+                    <span>48106</span>
+                </div>
+            </div>
+        </div>
+        <div class="row"><h4>Item Details</h4></div>
+    </div>
+</div>

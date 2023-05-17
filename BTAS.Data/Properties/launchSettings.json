@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "BTAS.Data": {
+      "commandName": "Executable"
+    }
+  }
+}

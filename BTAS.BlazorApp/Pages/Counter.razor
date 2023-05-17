@@ -1,0 +1,775 @@
+﻿@page "/counter"
+@*<h3>bordered</h3>
+<div class="card-body">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th style="width: 10px">#</th>
+                <th>Task</th>
+                <th>Progress</th>
+                <th style="width: 40px">Label</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1.</td>
+                <td>Update software</td>
+                <td>
+                    <div class="progress progress-xs">
+                        <div class="progress-bar progress-bar-danger" style="width: 55%"></div>
+                    </div>
+                </td>
+                <td><span class="badge bg-danger">55%</span></td>
+            </tr>
+            <tr>
+                <td>2.</td>
+                <td>Clean database</td>
+                <td>
+                    <div class="progress progress-xs">
+                        <div class="progress-bar bg-warning" style="width: 70%"></div>
+                    </div>
+                </td>
+                <td><span class="badge bg-warning">70%</span></td>
+            </tr>
+            <tr>
+                <td>3.</td>
+                <td>Cron job running</td>
+                <td>
+                    <div class="progress progress-xs progress-striped active">
+                        <div class="progress-bar bg-primary" style="width: 30%"></div>
+                    </div>
+                </td>
+                <td><span class="badge bg-primary">30%</span></td>
+            </tr>
+            <tr>
+                <td>4.</td>
+                <td>Fix and squish bugs</td>
+                <td>
+                    <div class="progress progress-xs progress-striped active">
+                        <div class="progress-bar bg-success" style="width: 90%"></div>
+                    </div>
+                </td>
+                <td><span class="badge bg-success">90%</span></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="card-header">
+    <h3 class="card-title">Striped Full Width Table</h3>
+</div>
+*@<!-- /.card-header -->
+
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-body">
+        <div class="col-md-12">
+        <div class="row">
+        <div class="col-md-8 consol-left">
+            <div class="row consol-row">
+                <div class="title">Consol Information</div>
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-5 form-group">
+                            <div class="col-md-5 form-label">
+                                <label class="blazor-label">Master Bill</label>
+                            </div>
+                            <div class="col-md-7 form-input">
+                                <input type="text" class="form-control" placeholder="Enter Master Bill #">
+                            </div>
+                        </div>
+                        <div class="col-md-3 form-group">
+                            <div class="col-md-4 form-label">
+                                <label class="blazor-label">Dept</label>
+                            </div>
+                            <div class="col-md-8 form-input">
+                                <input type="text" class="form-control" placeholder="Enter dept.">
+                            </div>
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <div class="col-md-4 form-label">
+                                <label class="blazor-label">Date Reg</label>
+                            </div>
+                            <div class="col-md-8 form-input">
+                                <input type="date" class="form-control" placeholder="Date Reg">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-md-5 form-group-input-1">
+                                <div class="col-md-5 form-label">
+                                    <label class="blazor-label label1">OS Agent</label>
+                                </div>
+                                <div class="col-md-7 form-input">
+                                    <input type="text" class="form-control input1" placeholder="Enter agent Code">
+                                </div>
+                            </div>
+                            <div class="col-md-7 form-group-input-2">
+                                <input type="text" class="form-control" placeholder="Enter agent Name">
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-md-5 form-group-input-1">
+                                <div class="col-md-5 form-label">
+                                    <label class="blazor-label">Master Loader</label>
+                                </div>
+                                <div class="col-md-7 form-input">
+                                    <input type="text" class="form-control" placeholder="Enter master loader">
+                                </div>
+                            </div>
+                            <div class="col-md-7 form-group-input-2">
+                                <input type="text" class="form-control" placeholder="Enter master loader name">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8 form-group" style="margin-left: 3px !important;">
+                            <div class="col-md-3 form-label">
+                                <label class="blazor-label">Sub Master</label>
+                            </div>
+                            <div class="col-md-9 form-input">
+                                <input type="text" class="form-control" placeholder="Enter sub master">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-md-5 form-group-input-1">
+                                <div class="col-md-5 form-label">
+                                    <label class="blazor-label">Consolidator</label>
+                                </div>
+                                <div class="col-md-7 form-input">
+                                    <input type="text" class="form-control" placeholder="Enter consolidator code">
+                                </div>
+                            </div>
+                            <div class="col-md-7 form-group-input-2">
+                                <input type="text" class="form-control" placeholder="Enter consolidator name">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 consolinfo-right">
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="blazor-label">Consol No.</label>
+                            <input type="text" class="form-control" style="width: 50%;" placeholder="Enter consol #">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="blazor-label">Extn Code</label>
+                            <input type="text" class="form-control" style="width: 70%;" placeholder="Enter extn code">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="blazor-label">Agent Ref.</label>
+                            <input type="text" class="form-control" style="width: 70%;" placeholder="Enter agent ref">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="blazor-label">Job Class</label>
+                            <input type="text" class="form-control" style="width: 50%;" placeholder="Enter job class">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="blazor-label">Shipment Type</label>
+                            <select class="form-control dropdown-field" style="width: 40%;">
+                                <option selected="selected">Prepaid</option>
+                            </select>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row transport-row">
+                <div class="title">Transport Information</div>
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-5 form-group">
+                            <div class="col-md-5 form-label">
+                                <label class="blazor-label">Flight No.</label>
+                            </div>
+                            <div class="col-md-7 form-input">
+                                <input type="text" class="form-control" placeholder="Enter flight no.">
+                            </div>
+                        </div>
+                        <div class="col-md-7 form-group">
+                            <div class="col-md-5 form-label">
+                                <label class="blazor-label">Airline Folio</label>
+                            </div>
+                            <div class="col-md-5 form-input">
+                                <input type="text" class="form-control" placeholder="Enter airline folio">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-md-5 form-group-input-1">
+                                <div class="col-md-5 form-label">
+                                    <label class="blazor-label label1">Load Port</label>
+                                </div>
+                                <div class="col-md-7 form-input">
+                                    <input type="text" class="form-control input1" placeholder="Enter load port">
+                                </div>
+                            </div>
+                            <div class="col-md-7 form-group-input-2">
+                                <input type="text" class="form-control" placeholder="Enter load port name">
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-md-5 form-group-input-1">
+                                <div class="col-md-5 form-label">
+                                    <label class="blazor-label label1">Discharge Port</label>
+                                </div>
+                                <div class="col-md-7 form-input">
+                                    <input type="text" class="form-control input1" placeholder="Enter discharge port">
+                                </div>
+                            </div>
+                            <div class="col-md-7 form-group-input-2">
+                                <input type="text" class="form-control" placeholder="Enter discharge port name">
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-md-5 form-group-input-1">
+                                <div class="col-md-5 form-label">
+                                    <label class="blazor-label label1">Destination Port</label>
+                                </div>
+                                <div class="col-md-7 form-input">
+                                    <input type="text" class="form-control input1" placeholder="Enter destination port">
+                                </div>
+                            </div>
+                            <div class="col-md-7 form-group-input-2">
+                                <input type="text" class="form-control" placeholder="Enter destination port name">
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-md-5 form-group-input-1">
+                                <div class="col-md-5 form-label">
+                                    <label class="blazor-label label1">Bonded Warehouse</label>
+                                </div>
+                                <div class="col-md-7 form-input">
+                                    <input type="text" class="form-control input1" placeholder="Enter bonded warehouse">
+                                </div>
+                            </div>
+                            <div class="col-md-7 form-group-input-2">
+                                <input type="text" class="form-control" placeholder="Enter bonded warehouse name">
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="col-md-4"></div>
+            </div>
+
+            <div class="row lower-row">
+
+                <div class="col-md-3">
+                    <div class="row">
+                        <div class="title">Package Information</div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-md-6 form-label">
+                                <label class="blazor-label">No. Pkgs</label>
+                            </div>
+                            <div class="col-md-6 form-input">
+                                <input type="number" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="row">
+                        <div class="title">Weight Information</div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-md-6 form-label">
+                                <label class="blazor-label">Actual Weight</label>
+                            </div>
+                            <div class="col-md-3 form-input">
+                                <input type="number" class="form-control">
+                            </div>
+                            <div class="col-md-3 form-group-input-2">
+                                <select class="form-control dropdown-field">
+                                    <option selected="selected">Kg</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-md-6 form-label">
+                                <label class="blazor-label">Charge Weight</label>
+                            </div>
+                            <div class="col-md-3 form-input">
+                                <input type="number" class="form-control">
+                            </div>
+                            <div class="col-md-3 form-group-input-2">
+                                <select class="form-control dropdown-field">
+                                    <option selected="selected">Kg</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="row">
+                        <div class="title">Valuation/Terms</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="col-md-5 form-label">
+                                    <label class="blazor-label">Currency</label>
+                                </div>
+                                <div class="col-md-7 form-input">
+                                    <input type="text" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="col-md-5 form-label">
+                                    <label class="blazor-label">Bank Rate</label>
+                                </div>
+                                <div class="col-md-7 form-input">
+                                    <input type="text" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="col-md-5 form-label">
+                                    <label class="blazor-label">Frt P/C</label>
+                                </div>
+                                <div class="col-md-7 form-input">
+                                    <select class="form-control dropdown-field">
+                                        <option selected="selected">PREPAID</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 consol-right">
+            <div class="up">
+                <div class="row">
+                    <div class="col-md-6 text-right">
+                        <label class="col-form-label">Cargo Status</label>
+                    </div>
+                    <div class="col-md-6 text-left">
+                        <label class="col-form-label">SOME CLEAR</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 text-right">
+                        <label class="col-form-label">Cargo Notes</label>
+                    </div>
+                    <div class="col-md-6 text-left">
+                        <label class="col-form-label">SOME TEXT</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 text-right">
+                        <label class="col-form-label">Milestone</label>
+                    </div>
+                    <div class="col-md-6 text-left">
+                        <label class="col-form-label">SOME TEXT</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 text-right">
+                        <label class="col-form-label">Underbond Sent</label>
+                    </div>
+                    <div class="col-md-6 text-left">
+                        <label class="col-form-label">No</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 text-right">
+                        <label class="col-form-label">Underbond Status</label>
+                    </div>
+                    <div class="col-md-6 text-left">
+                        <label class="col-form-label">UNDERBOND APPROVAL</label>
+                    </div>
+                </div>
+            </div>
+            <div class="down">
+                <div class="row">
+                    <div class="title">Date Information</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 text-right">
+                        <label class="col-form-label">MAWB Cut</label>
+                    </div>
+                    <div class="col-md-5">
+                        <input type="date" class="form-control" />
+                        @*<div class="input-group date" id="reservationdate" data-target-input="nearest">
+                        <input type="text" class="form-control datetimepicker-input" data-target="#reservationdate" />
+                        <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
+                        <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
+                        </div>
+                        </div>*@
+                    </div>
+                    <div class="col-md-3">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 text-right">
+                        <label class="col-form-label">ETD</label>
+                    </div>
+                    <div class="col-md-5">
+                        <input type="date" class="form-control" />
+                    </div>
+                    <div class="col-md-3">
+                        <input type="time" class="form-control" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 text-right">
+                        <label class="col-form-label">Available</label>
+                    </div>
+                    <div class="col-md-5">
+                        <input type="date" class="form-control" />
+                    </div>
+                    <div class="col-md-3">
+                        <input type="time" class="form-control" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 text-right">
+                        <label class="col-form-label">Orig Document</label>
+                    </div>
+                    <div class="col-md-5">
+                        <input type="date" class="form-control" />
+                    </div>
+                    <div class="col-md-3">
+                        <input type="time" class="form-control" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 text-right">
+                        <label class="col-form-label">EDI Receive</label>
+                    </div>
+                    <div class="col-md-5">
+                        <input type="date" class="form-control" />
+                    </div>
+                    <div class="col-md-3">
+                        <input type="time" class="form-control" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 text-right">
+                        <label class="col-form-label">ETA Discharge</label>
+                    </div>
+                    <div class="col-md-5">
+                        <input type="date" class="form-control" />
+                    </div>
+                    <div class="col-md-3">
+                        <input type="time" class="form-control" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 text-right">
+                        <label class="col-form-label">ETA Destination</label>
+                    </div>
+                    <div class="col-md-5">
+                        <input type="date" class="form-control" />
+                    </div>
+                    <div class="col-md-3">
+                        <input type="time" class="form-control" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 text-right">
+                        <label class="col-form-label">ATA Destination</label>
+                    </div>
+                    <div class="col-md-5">
+                        <input type="date" class="form-control" />
+                    </div>
+                    <div class="col-md-3">
+                        <input type="time" class="form-control" />
+                    </div>
+                </div>
+                <div class="row"><br /></div>
+                <div class="row">
+                    <div class="col-md-4 text-right">
+                        <label class="col-form-label">Bond Arrival</label>
+                    </div>
+                    <div class="col-md-5">
+                        <input type="date" class="form-control" />
+                    </div>
+                    <div class="col-md-3">
+                        <input type="time" class="form-control" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 text-right">
+                        <label class="col-form-label">Excpt. Report Sent</label>
+                    </div>
+                    <div class="col-md-5">
+                        <input type="date" class="form-control" />
+                    </div>
+                    <div class="col-md-3">
+                        <input type="time" class="form-control" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 text-right">
+                        <label class="col-form-label">Last Mile Carrier</label>
+                    </div>
+                    <div class="col-md-5">
+                        <input type="date" class="form-control" />
+                    </div>
+                    <div class="col-md-3">
+                        <input type="time" class="form-control" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        </div>
+        </div>
+    </div>
+</div>
+@*<div class="card-body p-0">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th style="width: 10px">#</th>
+                <th>Task</th>
+                <th>Progress</th>
+                <th style="width: 40px">Label</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1.</td>
+                <td>Update software</td>
+                <td>
+                    <div class="progress progress-xs">
+                        <div class="progress-bar progress-bar-danger" style="width: 55%"></div>
+                    </div>
+                </td>
+                <td><span class="badge bg-danger">55%</span></td>
+            </tr>
+            <tr>
+                <td>2.</td>
+                <td>Clean database</td>
+                <td>
+                    <div class="progress progress-xs">
+                        <div class="progress-bar bg-warning" style="width: 70%"></div>
+                    </div>
+                </td>
+                <td><span class="badge bg-warning">70%</span></td>
+            </tr>
+            <tr>
+                <td>3.</td>
+                <td>Cron job running</td>
+                <td>
+                    <div class="progress progress-xs progress-striped active">
+                        <div class="progress-bar bg-primary" style="width: 30%"></div>
+                    </div>
+                </td>
+                <td><span class="badge bg-primary">30%</span></td>
+            </tr>
+            <tr>
+                <td>4.</td>
+                <td>Fix and squish bugs</td>
+                <td>
+                    <div class="progress progress-xs progress-striped active">
+                        <div class="progress-bar bg-success" style="width: 90%"></div>
+                    </div>
+                </td>
+                <td><span class="badge bg-success">90%</span></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Responsive Hover Table</h3>
+
+        <div class="card-tools">
+            <div class="input-group input-group-sm" style="width: 150px;">
+                <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-default">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body table-responsive p-0">
+        <table class="table table-hover text-nowrap">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>User</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Reason</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>183</td>
+                    <td>John Doe</td>
+                    <td>11-7-2014</td>
+                    <td><span class="tag tag-success">Approved</span></td>
+                    <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
+                </tr>
+                <tr>
+                    <td>219</td>
+                    <td>Alexander Pierce</td>
+                    <td>11-7-2014</td>
+                    <td><span class="tag tag-warning">Pending</span></td>
+                    <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
+                </tr>
+                <tr>
+                    <td>657</td>
+                    <td>Bob Doe</td>
+                    <td>11-7-2014</td>
+                    <td><span class="tag tag-primary">Approved</span></td>
+                    <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
+                </tr>
+                <tr>
+                    <td>175</td>
+                    <td>Mike Doe</td>
+                    <td>11-7-2014</td>
+                    <td><span class="tag tag-danger">Denied</span></td>
+                    <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card-header">
+    <h3 class="card-title">Fixed Header Table</h3>
+
+    <div class="card-tools">
+        <div class="input-group input-group-sm" style="width: 150px;">
+            <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+
+            <div class="input-group-append">
+                <button type="submit" class="btn btn-default">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card-body table-responsive p-0" style="height: 300px;">
+    <table class="table table-head-fixed text-nowrap table-bordered table-striped text-nowrap">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>User</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Reason</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>183</td>
+                <td>John Doe</td>
+                <td>11-7-2014</td>
+                <td><span class="tag tag-success">Approved</span></td>
+                <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
+            </tr>
+            <tr>
+                <td>219</td>
+                <td>Alexander Pierce</td>
+                <td>11-7-2014</td>
+                <td><span class="tag tag-warning">Pending</span></td>
+                <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
+            </tr>
+            <tr>
+                <td>657</td>
+                <td>Bob Doe</td>
+                <td>11-7-2014</td>
+                <td><span class="tag tag-primary">Approved</span></td>
+                <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
+            </tr>
+            <tr>
+                <td>175</td>
+                <td>Mike Doe</td>
+                <td>11-7-2014</td>
+                <td><span class="tag tag-danger">Denied</span></td>
+                <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
+            </tr>
+            <tr>
+                <td>134</td>
+                <td>Jim Doe</td>
+                <td>11-7-2014</td>
+                <td><span class="tag tag-success">Approved</span></td>
+                <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
+            </tr>
+            <tr>
+                <td>494</td>
+                <td>Victoria Doe</td>
+                <td>11-7-2014</td>
+                <td><span class="tag tag-warning">Pending</span></td>
+                <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
+            </tr>
+            <tr>
+                <td>832</td>
+                <td>Michael Doe</td>
+                <td>11-7-2014</td>
+                <td><span class="tag tag-primary">Approved</span></td>
+                <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
+            </tr>
+            <tr>
+                <td>982</td>
+                <td>Rocky Doe</td>
+                <td>11-7-2014</td>
+                <td><span class="tag tag-danger">Denied</span></td>
+                <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+*@
+@code {
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+}

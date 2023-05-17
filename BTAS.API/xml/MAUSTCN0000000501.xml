@@ -1,0 +1,717 @@
+﻿<Manifest>
+    <Consignment>
+        <ConsignmentNumber>AUEX004855</ConsignmentNumber>
+        <ConsignmentDate>2022-09-16</ConsignmentDate>
+        <SenderName>Austway AU</SenderName>
+        <SenderContact>Luna Cao</SenderContact>
+        <SenderPhone>+61 452 188 899</SenderPhone>
+        <SenderEmail>luna.cao@austwayexpress.com.au</SenderEmail>
+        <SenderStreetAddress>24-32 Raymond Ave</SenderStreetAddress>
+        <SenderStreetAddress1></SenderStreetAddress1>
+        <SenderSuburb>Matraville</SenderSuburb>
+        <SenderState>NSW</SenderState>
+        <SenderPostcode>4108</SenderPostcode>
+        <Pickup>YES</Pickup>
+        <Delivery>YES</Delivery>
+        <DangerousGoods>NO</DangerousGoods>
+        <ReceiverReference>SY181811063</ReceiverReference>
+        <ReceiverName>Adrian Rouse</ReceiverName>
+        <ReceiverContact>Adrian Rouse</ReceiverContact>
+        <ReceiverPhone>466063684</ReceiverPhone>
+        <ReceiverEmail>hello@mobiat.com.au</ReceiverEmail>
+        <ReceiverStreetAddress>20 Ringtail Ct</ReceiverStreetAddress>
+        <ReceiverStreetAddress1></ReceiverStreetAddress1>
+        <ReceiverSuburb>NARANGBA</ReceiverSuburb>
+        <ReceiverState>QLD </ReceiverState>
+        <ReceiverPostcode>4504</ReceiverPostcode>
+        <TotalWeight>39.44</TotalWeight>
+        <AccountCode>AUS209</AccountCode>
+        <CarrierService>BEP</CarrierService>
+        <Comments>ATL</Comments>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Parcel</LogisticUnit>
+            <Weight>12.32</Weight>
+            <Length>0.28</Length>
+            <Width>0.26</Width>
+            <Height>0.44</Height>
+            <Cubic>0.03</Cubic>
+            <Barcode>AUEXBX00000004855001</Barcode>
+        </LoadDetails>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Parcel</LogisticUnit>
+            <Weight>10.80</Weight>
+            <Length>0.23</Length>
+            <Width>0.15</Width>
+            <Height>0.85</Height>
+            <Cubic>0.03</Cubic>
+            <Barcode>AUEXBX00000004855002</Barcode>
+        </LoadDetails>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Parcel</LogisticUnit>
+            <Weight>10.88</Weight>
+            <Length>0.85</Length>
+            <Width>0.24</Width>
+            <Height>0.15</Height>
+            <Cubic>0.03</Cubic>
+            <Barcode>AUEXBX00000004855003</Barcode>
+        </LoadDetails>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Parcel</LogisticUnit>
+            <Weight>5.44</Weight>
+            <Length>0.24</Length>
+            <Width>0.24</Width>
+            <Height>0.25</Height>
+            <Cubic>0.01</Cubic>
+            <Barcode>AUEXBX00000004855004</Barcode>
+        </LoadDetails>
+    </Consignment>
+    <Consignment>
+        <ConsignmentNumber>AUEX004857</ConsignmentNumber>
+        <ConsignmentDate>2022-09-16</ConsignmentDate>
+        <SenderName>Austway AU</SenderName>
+        <SenderContact>Luna Cao</SenderContact>
+        <SenderPhone>+61 452 188 899</SenderPhone>
+        <SenderEmail>luna.cao@austwayexpress.com.au</SenderEmail>
+        <SenderStreetAddress>24-32 Raymond Ave</SenderStreetAddress>
+        <SenderStreetAddress1></SenderStreetAddress1>
+        <SenderSuburb>Matraville</SenderSuburb>
+        <SenderState>NSW</SenderState>
+        <SenderPostcode>4108</SenderPostcode>
+        <Pickup>YES</Pickup>
+        <Delivery>YES</Delivery>
+        <DangerousGoods>NO</DangerousGoods>
+        <ReceiverReference>SC845199</ReceiverReference>
+        <ReceiverName>Ngawai Hepi</ReceiverName>
+        <ReceiverContact>Ngawai Hepi</ReceiverContact>
+        <ReceiverPhone>61-478354994</ReceiverPhone>
+        <ReceiverEmail>imports@austwayexpress.com.au</ReceiverEmail>
+        <ReceiverStreetAddress>3946 Pacific Highway</ReceiverStreetAddress>
+        <ReceiverStreetAddress1></ReceiverStreetAddress1>
+        <ReceiverSuburb>LOGANHOLME</ReceiverSuburb>
+        <ReceiverState>QLD</ReceiverState>
+        <ReceiverPostcode>4129</ReceiverPostcode>
+        <TotalWeight>21.92</TotalWeight>
+        <AccountCode>AUS209</AccountCode>
+        <CarrierService>BEP</CarrierService>
+        <Comments>ATL</Comments>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Parcel</LogisticUnit>
+            <Weight>9.36</Weight>
+            <Length>0.22</Length>
+            <Width>0.53</Width>
+            <Height>0.54</Height>
+            <Cubic>0.06</Cubic>
+            <Barcode>AUEXBX00000004857001</Barcode>
+        </LoadDetails>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Parcel</LogisticUnit>
+            <Weight>9.36</Weight>
+            <Length>0.22</Length>
+            <Width>0.53</Width>
+            <Height>0.54</Height>
+            <Cubic>0.06</Cubic>
+            <Barcode>AUEXBX00000004857002</Barcode>
+        </LoadDetails>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Parcel</LogisticUnit>
+            <Weight>3.20</Weight>
+            <Length>0.22</Length>
+            <Width>0.41</Width>
+            <Height>0.56</Height>
+            <Cubic>0.05</Cubic>
+            <Barcode>AUEXBX00000004857003</Barcode>
+        </LoadDetails>
+    </Consignment>
+    <Consignment>
+        <ConsignmentNumber>AUEX004858</ConsignmentNumber>
+        <ConsignmentDate>2022-09-16</ConsignmentDate>
+        <SenderName>Austway AU</SenderName>
+        <SenderContact>Luna Cao</SenderContact>
+        <SenderPhone>+61 452 188 899</SenderPhone>
+        <SenderEmail>luna.cao@austwayexpress.com.au</SenderEmail>
+        <SenderStreetAddress>24-32 Raymond Ave</SenderStreetAddress>
+        <SenderStreetAddress1></SenderStreetAddress1>
+        <SenderSuburb>Matraville</SenderSuburb>
+        <SenderState>NSW</SenderState>
+        <SenderPostcode>4108</SenderPostcode>
+        <Pickup>YES</Pickup>
+        <Delivery>YES</Delivery>
+        <DangerousGoods>NO</DangerousGoods>
+        <ReceiverReference>T202207317487047</ReceiverReference>
+        <ReceiverName>Drew madden</ReceiverName>
+        <ReceiverContact>Drew madden</ReceiverContact>
+        <ReceiverPhone>610421835770</ReceiverPhone>
+        <ReceiverEmail> maizeyu-1985@163.com</ReceiverEmail>
+        <ReceiverStreetAddress>1 atthow street</ReceiverStreetAddress>
+        <ReceiverStreetAddress1></ReceiverStreetAddress1>
+        <ReceiverSuburb>North Lakes</ReceiverSuburb>
+        <ReceiverState>Queensland</ReceiverState>
+        <ReceiverPostcode>4509</ReceiverPostcode>
+        <TotalWeight>2.64</TotalWeight>
+        <AccountCode>AUS209</AccountCode>
+        <CarrierService>BEP</CarrierService>
+        <Comments>ATL</Comments>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Parcel</LogisticUnit>
+            <Weight>2.64</Weight>
+            <Length>1.04</Length>
+            <Width>0.32</Width>
+            <Height>0.14</Height>
+            <Cubic>0.05</Cubic>
+            <Barcode>AUEXBX00000004858001</Barcode>
+        </LoadDetails>
+    </Consignment>
+    <Consignment>
+        <ConsignmentNumber>AUEX004859</ConsignmentNumber>
+        <ConsignmentDate>2022-09-16</ConsignmentDate>
+        <SenderName>Austway AU</SenderName>
+        <SenderContact>Luna Cao</SenderContact>
+        <SenderPhone>+61 452 188 899</SenderPhone>
+        <SenderEmail>luna.cao@austwayexpress.com.au</SenderEmail>
+        <SenderStreetAddress>24-32 Raymond Ave</SenderStreetAddress>
+        <SenderStreetAddress1></SenderStreetAddress1>
+        <SenderSuburb>Matraville</SenderSuburb>
+        <SenderState>NSW</SenderState>
+        <SenderPostcode>4108</SenderPostcode>
+        <Pickup>YES</Pickup>
+        <Delivery>YES</Delivery>
+        <DangerousGoods>NO</DangerousGoods>
+        <ReceiverReference>QC00027860</ReceiverReference>
+        <ReceiverName>PAULINE BURGESS</ReceiverName>
+        <ReceiverContact>PAULINE BURGESS</ReceiverContact>
+        <ReceiverPhone>0477311455</ReceiverPhone>
+        <ReceiverEmail>imports@austwayexpress.com.au</ReceiverEmail>
+        <ReceiverStreetAddress>99 CLEMENTS STREET</ReceiverStreetAddress>
+        <ReceiverStreetAddress1></ReceiverStreetAddress1>
+        <ReceiverSuburb>MORANBAH</ReceiverSuburb>
+        <ReceiverState> QUEENSLAND </ReceiverState>
+        <ReceiverPostcode>4744</ReceiverPostcode>
+        <TotalWeight>60.40</TotalWeight>
+        <AccountCode>AUS209</AccountCode>
+        <CarrierService>BEP</CarrierService>
+        <Comments>ATL</Comments>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Parcel</LogisticUnit>
+            <Weight>14.08</Weight>
+            <Length>0.31</Length>
+            <Width>0.40</Width>
+            <Height>0.61</Height>
+            <Cubic>0.08</Cubic>
+            <Barcode>AUEXBX00000004859001</Barcode>
+        </LoadDetails>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Parcel</LogisticUnit>
+            <Weight>15.12</Weight>
+            <Length>0.30</Length>
+            <Width>0.41</Width>
+            <Height>0.61</Height>
+            <Cubic>0.08</Cubic>
+            <Barcode>AUEXBX00000004859002</Barcode>
+        </LoadDetails>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Parcel</LogisticUnit>
+            <Weight>15.04</Weight>
+            <Length>0.31</Length>
+            <Width>0.41</Width>
+            <Height>0.61</Height>
+            <Cubic>0.08</Cubic>
+            <Barcode>AUEXBX00000004859003</Barcode>
+        </LoadDetails>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Parcel</LogisticUnit>
+            <Weight>16.16</Weight>
+            <Length>0.30</Length>
+            <Width>0.41</Width>
+            <Height>0.61</Height>
+            <Cubic>0.08</Cubic>
+            <Barcode>AUEXBX00000004859004</Barcode>
+        </LoadDetails>
+    </Consignment>
+    <Consignment>
+        <ConsignmentNumber>AUEX004860</ConsignmentNumber>
+        <ConsignmentDate>2022-09-16</ConsignmentDate>
+        <SenderName>Austway AU</SenderName>
+        <SenderContact>Luna Cao</SenderContact>
+        <SenderPhone>+61 452 188 899</SenderPhone>
+        <SenderEmail>luna.cao@austwayexpress.com.au</SenderEmail>
+        <SenderStreetAddress>24-32 Raymond Ave</SenderStreetAddress>
+        <SenderStreetAddress1></SenderStreetAddress1>
+        <SenderSuburb>Matraville</SenderSuburb>
+        <SenderState>NSW</SenderState>
+        <SenderPostcode>4108</SenderPostcode>
+        <Pickup>YES</Pickup>
+        <Delivery>YES</Delivery>
+        <DangerousGoods>NO</DangerousGoods>
+        <ReceiverReference>910761220800031</ReceiverReference>
+        <ReceiverName>JANE Dhnaram</ReceiverName>
+        <ReceiverContact>JANE Dhnaram</ReceiverContact>
+        <ReceiverPhone>61413566837</ReceiverPhone>
+        <ReceiverEmail>imports@austwayexpress.com.au</ReceiverEmail>
+        <ReceiverStreetAddress>UNIT 3/149 Bluestone Circuit</ReceiverStreetAddress>
+        <ReceiverStreetAddress1></ReceiverStreetAddress1>
+        <ReceiverSuburb>Seventeen Mile Rocks </ReceiverSuburb>
+        <ReceiverState> QLD</ReceiverState>
+        <ReceiverPostcode>4073</ReceiverPostcode>
+        <TotalWeight>81.36</TotalWeight>
+        <AccountCode>AUS209</AccountCode>
+        <CarrierService>BEP</CarrierService>
+        <Comments>ATL</Comments>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Parcel</LogisticUnit>
+            <Weight>8.16</Weight>
+            <Length>0.26</Length>
+            <Width>0.23</Width>
+            <Height>0.50</Height>
+            <Cubic>0.03</Cubic>
+            <Barcode>AUEXBX00000004860001</Barcode>
+        </LoadDetails>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Parcel</LogisticUnit>
+            <Weight>11.52</Weight>
+            <Length>0.30</Length>
+            <Width>0.26</Width>
+            <Height>0.49</Height>
+            <Cubic>0.04</Cubic>
+            <Barcode>AUEXBX00000004860002</Barcode>
+        </LoadDetails>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Parcel</LogisticUnit>
+            <Weight>9.12</Weight>
+            <Length>0.30</Length>
+            <Width>0.25</Width>
+            <Height>0.50</Height>
+            <Cubic>0.04</Cubic>
+            <Barcode>AUEXBX00000004860003</Barcode>
+        </LoadDetails>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Parcel</LogisticUnit>
+            <Weight>11.52</Weight>
+            <Length>0.25</Length>
+            <Width>0.30</Width>
+            <Height>0.49</Height>
+            <Cubic>0.04</Cubic>
+            <Barcode>AUEXBX00000004860004</Barcode>
+        </LoadDetails>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Parcel</LogisticUnit>
+            <Weight>11.52</Weight>
+            <Length>0.25</Length>
+            <Width>0.30</Width>
+            <Height>0.49</Height>
+            <Cubic>0.04</Cubic>
+            <Barcode>AUEXBX00000004860005</Barcode>
+        </LoadDetails>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Parcel</LogisticUnit>
+            <Weight>11.52</Weight>
+            <Length>0.25</Length>
+            <Width>0.30</Width>
+            <Height>0.50</Height>
+            <Cubic>0.04</Cubic>
+            <Barcode>AUEXBX00000004860006</Barcode>
+        </LoadDetails>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Parcel</LogisticUnit>
+            <Weight>11.52</Weight>
+            <Length>0.25</Length>
+            <Width>0.30</Width>
+            <Height>0.49</Height>
+            <Cubic>0.04</Cubic>
+            <Barcode>AUEXBX00000004860007</Barcode>
+        </LoadDetails>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Parcel</LogisticUnit>
+            <Weight>6.48</Weight>
+            <Length>0.25</Length>
+            <Width>0.31</Width>
+            <Height>0.29</Height>
+            <Cubic>0.02</Cubic>
+            <Barcode>AUEXBX00000004860008</Barcode>
+        </LoadDetails>
+    </Consignment>
+    <Consignment>
+        <ConsignmentNumber>AUEX004861</ConsignmentNumber>
+        <ConsignmentDate>2022-09-16</ConsignmentDate>
+        <SenderName>Austway AU</SenderName>
+        <SenderContact>Luna Cao</SenderContact>
+        <SenderPhone>+61 452 188 899</SenderPhone>
+        <SenderEmail>luna.cao@austwayexpress.com.au</SenderEmail>
+        <SenderStreetAddress>24-32 Raymond Ave</SenderStreetAddress>
+        <SenderStreetAddress1></SenderStreetAddress1>
+        <SenderSuburb>Matraville</SenderSuburb>
+        <SenderState>NSW</SenderState>
+        <SenderPostcode>4108</SenderPostcode>
+        <Pickup>YES</Pickup>
+        <Delivery>YES</Delivery>
+        <DangerousGoods>NO</DangerousGoods>
+        <ReceiverReference>2022080801</ReceiverReference>
+        <ReceiverName>Christian Sutton</ReceiverName>
+        <ReceiverContact>Christian Sutton</ReceiverContact>
+        <ReceiverPhone>0402300024</ReceiverPhone>
+        <ReceiverEmail>admin@conquer.net.au</ReceiverEmail>
+        <ReceiverStreetAddress>3 Stehbens Street</ReceiverStreetAddress>
+        <ReceiverStreetAddress1></ReceiverStreetAddress1>
+        <ReceiverSuburb>KINGAROY</ReceiverSuburb>
+        <ReceiverState>Queensland</ReceiverState>
+        <ReceiverPostcode>4610</ReceiverPostcode>
+        <TotalWeight>19.04</TotalWeight>
+        <AccountCode>AUS209</AccountCode>
+        <CarrierService>BEP</CarrierService>
+        <Comments>ATL</Comments>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Parcel</LogisticUnit>
+            <Weight>19.04</Weight>
+            <Length>0.42</Length>
+            <Width>0.54</Width>
+            <Height>0.64</Height>
+            <Cubic>0.15</Cubic>
+            <Barcode>AUEXBX00000004861001</Barcode>
+        </LoadDetails>
+    </Consignment>
+    <Consignment>
+        <ConsignmentNumber>AUEX004862</ConsignmentNumber>
+        <ConsignmentDate>2022-09-16</ConsignmentDate>
+        <SenderName>Austway AU</SenderName>
+        <SenderContact>Luna Cao</SenderContact>
+        <SenderPhone>+61 452 188 899</SenderPhone>
+        <SenderEmail>luna.cao@austwayexpress.com.au</SenderEmail>
+        <SenderStreetAddress>24-32 Raymond Ave</SenderStreetAddress>
+        <SenderStreetAddress1></SenderStreetAddress1>
+        <SenderSuburb>Matraville</SenderSuburb>
+        <SenderState>NSW</SenderState>
+        <SenderPostcode>4108</SenderPostcode>
+        <Pickup>YES</Pickup>
+        <Delivery>YES</Delivery>
+        <DangerousGoods>NO</DangerousGoods>
+        <ReceiverReference>5913762470</ReceiverReference>
+        <ReceiverName>Charlie Lally  </ReceiverName>
+        <ReceiverContact>Charlie Lally  </ReceiverContact>
+        <ReceiverPhone>0408658005</ReceiverPhone>
+        <ReceiverEmail>cmlally@bigpond.com</ReceiverEmail>
+        <ReceiverStreetAddress>2 Bolton Abbey Close </ReceiverStreetAddress>
+        <ReceiverStreetAddress1></ReceiverStreetAddress1>
+        <ReceiverSuburb>Arundel</ReceiverSuburb>
+        <ReceiverState>Queensland</ReceiverState>
+        <ReceiverPostcode>4214</ReceiverPostcode>
+        <TotalWeight>72.40</TotalWeight>
+        <AccountCode>AUS209</AccountCode>
+        <CarrierService>BEP</CarrierService>
+        <Comments>ATL</Comments>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Parcel</LogisticUnit>
+            <Weight>17.20</Weight>
+            <Length>0.40</Length>
+            <Width>0.40</Width>
+            <Height>0.40</Height>
+            <Cubic>0.06</Cubic>
+            <Barcode>AUEXBX00000004862001</Barcode>
+        </LoadDetails>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Parcel</LogisticUnit>
+            <Weight>10.00</Weight>
+            <Length>0.40</Length>
+            <Width>0.40</Width>
+            <Height>0.39</Height>
+            <Cubic>0.06</Cubic>
+            <Barcode>AUEXBX00000004862002</Barcode>
+        </LoadDetails>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Parcel</LogisticUnit>
+            <Weight>11.36</Weight>
+            <Length>0.40</Length>
+            <Width>0.40</Width>
+            <Height>0.39</Height>
+            <Cubic>0.06</Cubic>
+            <Barcode>AUEXBX00000004862003</Barcode>
+        </LoadDetails>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Parcel</LogisticUnit>
+            <Weight>17.04</Weight>
+            <Length>0.40</Length>
+            <Width>0.40</Width>
+            <Height>0.40</Height>
+            <Cubic>0.06</Cubic>
+            <Barcode>AUEXBX00000004862004</Barcode>
+        </LoadDetails>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Parcel</LogisticUnit>
+            <Weight>16.80</Weight>
+            <Length>0.40</Length>
+            <Width>0.40</Width>
+            <Height>0.41</Height>
+            <Cubic>0.07</Cubic>
+            <Barcode>AUEXBX00000004862005</Barcode>
+        </LoadDetails>
+    </Consignment>
+    <Consignment>
+        <ConsignmentNumber>AUEX004863</ConsignmentNumber>
+        <ConsignmentDate>2022-09-16</ConsignmentDate>
+        <SenderName>Austway AU</SenderName>
+        <SenderContact>Luna Cao</SenderContact>
+        <SenderPhone>+61 452 188 899</SenderPhone>
+        <SenderEmail>luna.cao@austwayexpress.com.au</SenderEmail>
+        <SenderStreetAddress>24-32 Raymond Ave</SenderStreetAddress>
+        <SenderStreetAddress1></SenderStreetAddress1>
+        <SenderSuburb>Matraville</SenderSuburb>
+        <SenderState>NSW</SenderState>
+        <SenderPostcode>4108</SenderPostcode>
+        <Pickup>YES</Pickup>
+        <Delivery>YES</Delivery>
+        <DangerousGoods>NO</DangerousGoods>
+        <ReceiverReference>ZC2022340018</ReceiverReference>
+        <ReceiverName>FANG CHEN</ReceiverName>
+        <ReceiverContact>FANG CHEN</ReceiverContact>
+        <ReceiverPhone>61430826788</ReceiverPhone>
+        <ReceiverEmail>maggiefangchen@gmail.com</ReceiverEmail>
+        <ReceiverStreetAddress>10/8 Russell Street</ReceiverStreetAddress>
+        <ReceiverStreetAddress1></ReceiverStreetAddress1>
+        <ReceiverSuburb> Everton Park</ReceiverSuburb>
+        <ReceiverState>QLD</ReceiverState>
+        <ReceiverPostcode>4053</ReceiverPostcode>
+        <TotalWeight>43.60</TotalWeight>
+        <AccountCode>AUS209</AccountCode>
+        <CarrierService>BEP</CarrierService>
+        <Comments>ATL</Comments>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Parcel</LogisticUnit>
+            <Weight>6.60</Weight>
+            <Length>0.45</Length>
+            <Width>0.51</Width>
+            <Height>0.46</Height>
+            <Cubic>0.11</Cubic>
+            <Barcode>AUEXBX00000004863001</Barcode>
+        </LoadDetails>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Parcel</LogisticUnit>
+            <Weight>6.60</Weight>
+            <Length>0.45</Length>
+            <Width>0.51</Width>
+            <Height>0.46</Height>
+            <Cubic>0.11</Cubic>
+            <Barcode>AUEXBX00000004863002</Barcode>
+        </LoadDetails>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Parcel</LogisticUnit>
+            <Weight>6.60</Weight>
+            <Length>0.45</Length>
+            <Width>0.51</Width>
+            <Height>0.46</Height>
+            <Cubic>0.11</Cubic>
+            <Barcode>AUEXBX00000004863003</Barcode>
+        </LoadDetails>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Parcel</LogisticUnit>
+            <Weight>6.60</Weight>
+            <Length>0.46</Length>
+            <Width>0.52</Width>
+            <Height>0.47</Height>
+            <Cubic>0.11</Cubic>
+            <Barcode>AUEXBX00000004863004</Barcode>
+        </LoadDetails>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Parcel</LogisticUnit>
+            <Weight>17.20</Weight>
+            <Length>0.58</Length>
+            <Width>0.39</Width>
+            <Height>0.49</Height>
+            <Cubic>0.11</Cubic>
+            <Barcode>AUEXBX00000004863005</Barcode>
+        </LoadDetails>
+    </Consignment>
+    <Consignment>
+        <ConsignmentNumber>AUEX004864</ConsignmentNumber>
+        <ConsignmentDate>2022-09-16</ConsignmentDate>
+        <SenderName>Austway AU</SenderName>
+        <SenderContact>Luna Cao</SenderContact>
+        <SenderPhone>+61 452 188 899</SenderPhone>
+        <SenderEmail>luna.cao@austwayexpress.com.au</SenderEmail>
+        <SenderStreetAddress>24-32 Raymond Ave</SenderStreetAddress>
+        <SenderStreetAddress1></SenderStreetAddress1>
+        <SenderSuburb>Matraville</SenderSuburb>
+        <SenderState>NSW</SenderState>
+        <SenderPostcode>4108</SenderPostcode>
+        <Pickup>YES</Pickup>
+        <Delivery>YES</Delivery>
+        <DangerousGoods>NO</DangerousGoods>
+        <ReceiverReference>9926054806</ReceiverReference>
+        <ReceiverName>Stephen Hamilton</ReceiverName>
+        <ReceiverContact>Stephen Hamilton</ReceiverContact>
+        <ReceiverPhone>61-61414401715</ReceiverPhone>
+        <ReceiverEmail>imports@austwayexpress.com.au</ReceiverEmail>
+        <ReceiverStreetAddress>83 Green Tce</ReceiverStreetAddress>
+        <ReceiverStreetAddress1></ReceiverStreetAddress1>
+        <ReceiverSuburb>Windsor</ReceiverSuburb>
+        <ReceiverState>QLD</ReceiverState>
+        <ReceiverPostcode>4030</ReceiverPostcode>
+        <TotalWeight>28.56</TotalWeight>
+        <AccountCode>AUS209</AccountCode>
+        <CarrierService>BEP</CarrierService>
+        <Comments>ATL</Comments>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Parcel</LogisticUnit>
+            <Weight>14.08</Weight>
+            <Length>0.46</Length>
+            <Width>0.53</Width>
+            <Height>0.55</Height>
+            <Cubic>0.13</Cubic>
+            <Barcode>AUEXBX00000004864001</Barcode>
+        </LoadDetails>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Parcel</LogisticUnit>
+            <Weight>14.48</Weight>
+            <Length>0.43</Length>
+            <Width>0.55</Width>
+            <Height>0.54</Height>
+            <Cubic>0.13</Cubic>
+            <Barcode>AUEXBX00000004864002</Barcode>
+        </LoadDetails>
+    </Consignment>
+    <Consignment>
+        <ConsignmentNumber>AUEX004916</ConsignmentNumber>
+        <ConsignmentDate>2022-09-16</ConsignmentDate>
+        <SenderName>Austway AU</SenderName>
+        <SenderContact>Luna Cao</SenderContact>
+        <SenderPhone>+61 452 188 899</SenderPhone>
+        <SenderEmail>luna.cao@austwayexpress.com.au</SenderEmail>
+        <SenderStreetAddress>24-32 Raymond Ave</SenderStreetAddress>
+        <SenderStreetAddress1></SenderStreetAddress1>
+        <SenderSuburb>Matraville</SenderSuburb>
+        <SenderState>NSW</SenderState>
+        <SenderPostcode>4009</SenderPostcode>
+        <Pickup>YES</Pickup>
+        <Delivery>YES</Delivery>
+        <DangerousGoods>NO</DangerousGoods>
+        <ReceiverReference>88808123</ReceiverReference>
+        <ReceiverName>David Short</ReceiverName>
+        <ReceiverContact>David Short</ReceiverContact>
+        <ReceiverPhone>610423673390</ReceiverPhone>
+        <ReceiverEmail>david@igasenergy.com</ReceiverEmail>
+        <ReceiverStreetAddress>2 Prospect Place</ReceiverStreetAddress>
+        <ReceiverStreetAddress1></ReceiverStreetAddress1>
+        <ReceiverSuburb>BERRINBA</ReceiverSuburb>
+        <ReceiverState>QLD</ReceiverState>
+        <ReceiverPostcode>4117</ReceiverPostcode>
+        <TotalWeight>13.36</TotalWeight>
+        <AccountCode>AUS209</AccountCode>
+        <CarrierService>BEP</CarrierService>
+        <Comments>ATL</Comments>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Parcel</LogisticUnit>
+            <Weight>13.36</Weight>
+            <Length>0.23</Length>
+            <Width>0.43</Width>
+            <Height>0.43</Height>
+            <Cubic>0.04</Cubic>
+            <Barcode>AUEXBX00000004916001</Barcode>
+        </LoadDetails>
+    </Consignment>
+    <Consignment>
+        <ConsignmentNumber>AUEX004917</ConsignmentNumber>
+        <ConsignmentDate>2022-09-16</ConsignmentDate>
+        <SenderName>Austway AU</SenderName>
+        <SenderContact>Luna Cao</SenderContact>
+        <SenderPhone>+61 452 188 899</SenderPhone>
+        <SenderEmail>luna.cao@austwayexpress.com.au</SenderEmail>
+        <SenderStreetAddress>24-32 Raymond Ave</SenderStreetAddress>
+        <SenderStreetAddress1></SenderStreetAddress1>
+        <SenderSuburb>Matraville</SenderSuburb>
+        <SenderState>NSW</SenderState>
+        <SenderPostcode>4009</SenderPostcode>
+        <Pickup>YES</Pickup>
+        <Delivery>YES</Delivery>
+        <DangerousGoods>NO</DangerousGoods>
+        <ReceiverReference>8006121595</ReceiverReference>
+        <ReceiverName>THIAGO PEREIRA</ReceiverName>
+        <ReceiverContact>THIAGO PEREIRA</ReceiverContact>
+        <ReceiverPhone>0432416025</ReceiverPhone>
+        <ReceiverEmail>elin.jarnestrom@gmail.co</ReceiverEmail>
+        <ReceiverStreetAddress>Gringo Loco Cantina, 101 / 4 esplanade</ReceiverStreetAddress>
+        <ReceiverStreetAddress1></ReceiverStreetAddress1>
+        <ReceiverSuburb>Surfers Paradise</ReceiverSuburb>
+        <ReceiverState>QLD</ReceiverState>
+        <ReceiverPostcode>4217</ReceiverPostcode>
+        <TotalWeight>16.00</TotalWeight>
+        <AccountCode>AUS209</AccountCode>
+        <CarrierService>BEP</CarrierService>
+        <Comments>ATL</Comments>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Parcel</LogisticUnit>
+            <Weight>16.00</Weight>
+            <Length>0.57</Length>
+            <Width>0.27</Width>
+            <Height>0.52</Height>
+            <Cubic>0.08</Cubic>
+            <Barcode>AUEXBX00000004917001</Barcode>
+        </LoadDetails>
+    </Consignment>
+</Manifest>

@@ -1,0 +1,101 @@
+﻿@page "/consol/view"
+@page "/consol/view/{referenceNo}"
+@*@attribute [Authorize]*@
+@inject ApplicationState appState
+@using BTAS.BlazorApp.Services.Interface
+@using BTAS.BlazorApp.Models.Dto
+@using Newtonsoft.Json
+@using BlazorTable
+@using MudBlazor
+@using Controls
+
+@inject IHawbService _service
+@inject NavigationManager _nav
+@inject IJSRuntime jsRuntime
+@implements IDisposable
+
+@code {
+    [Parameter] public string referenceNo { get; set; }
+    private bool HideElement { get; set; } = false;
+    List<DynamicSearchFilters> dynamicFilters = new();
+    private ResponseDto responseDto = new();
+    private MudTable<tbl_mawbDto> _table;
+    private List<tbl_hawbDto> hawbs = new();
+
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+{
+        new BreadcrumbItem("Home", icon: Icons.Material.Filled.Home, href: "/"),
+        new BreadcrumbItem("Forwarding", icon: Icons.Material.Filled.Storage, href: null),
+        new BreadcrumbItem("Consolidation", href: "/consol"),
+         new BreadcrumbItem("View", href: null)
+    };
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await jsRuntime.InvokeVoidAsync("renderjQueryComponents");
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await _service.GetByMawbReferenceAsync<ResponseDto>(referenceNo);
+        var jsonSerializerSettings = new JsonSerializerSettings();
+        jsonSerializerSettings.MissingMemberHandling = MissingMemberHandling.Ignore;
+        var jsonString = JsonConvert.SerializeObject(result.Result, jsonSerializerSettings);
+
+        if (result != null && result.IsSuccess)
+            hawbs = JsonConvert.DeserializeObject<List<tbl_hawbDto>>(jsonString, jsonSerializerSettings);
+
+        if (result.IsSuccess)
+            HideElement = !HideElement;
+
+        appState.OnChange += StateHasChanged;
+    }
+
+    //private void AddTab()
+    //{
+
+    //    appState.AddTab(new TabModel
+    //        {
+    //            Name = appState.tabs.Count.ToString()
+    //        });
+    //}
+
+    public void Dispose()
+    {
+        appState.OnChange -= StateHasChanged;
+    }
+}
+
+<section class="content">
+    <div class="card-header">
+
+        <BTAS.BlazorApp.Controls.DynamicTabComponent reference="@referenceNo" module="consol" />
+    </div>
+    <div class="card">
+        <div class="card-body">
+            @foreach (var item in appState.tabs)
+            {
+                if (item.Name == referenceNo)
+                {
+                    <BTAS.BlazorApp.Controls.ConsolViewComponent masterBillNumber="@item.Name" isActive="true" />
+                }
+                else
+                {
+                    <BTAS.BlazorApp.Controls.ConsolViewComponent masterBillNumber="@item.Name" isActive="false" />
+                }
+            }
+
+
+
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="overlay-wrapper">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

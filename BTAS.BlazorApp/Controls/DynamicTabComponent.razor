@@ -1,0 +1,71 @@
+﻿@inject NavigationManager navigationManager
+@inject ApplicationState appState
+@implements IDisposable
+
+<div class="card card-body card-tabs">
+    <div class="card-header">
+        <div class="col-md-12">
+            <ul class="nav nav-tabs" role="tablist" id="myTab">
+                @{
+                    if (appState.tabs != null)
+                    {
+                        foreach (var item in appState.tabs)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link @(item.IsActive ? "active" : "") @(item.IsTitle ? "title" : "") @module"
+                                   aria-selected="@item.IsActive"
+                                   role="tab"
+                                   data-toggle="pill"
+                                   aria-controls="@item.Name"
+                                   @onclick="@(() => ActiveTab(reference))"
+                                   href="#@item.Name">
+                                    @(item.IsTitle ? "Search Consolidation" : item.Name)
+                                </a>
+                            </li>
+                        }
+                    }
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+
+@code
+{
+    [Parameter] public string reference { get; set; }
+    [Parameter] public bool isActive { get; set; } = false;
+    [Parameter] public string module { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        appState.OnChange += StateHasChanged;
+    }
+
+    private void ActiveTab(string reference)
+    {
+        foreach(var tab in appState.tabs)
+        {
+            if (tab.Name == reference) {
+                tab.IsActive = true;
+            }
+            else
+            {
+                tab.IsActive = false;
+            }
+        }
+        appState.OnChange += StateHasChanged;
+
+        InvokeAsync(() =>
+        {
+
+            StateHasChanged();
+        });
+    }
+
+    public void Dispose()
+    {
+        //appState.OnChange -= StateHasChanged;
+        appState.OnChange -= StateHasChanged;
+    }
+}

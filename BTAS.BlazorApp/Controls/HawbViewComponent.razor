@@ -1,0 +1,417 @@
+﻿@using BTAS.BlazorApp.Services.Interface
+@using Newtonsoft.Json
+@using Models.Dto
+@using Controls
+
+@inject IHawbService _hservice
+@inject IHawbService _hservice
+@inject ApplicationState appState
+@implements IDisposable
+
+<EditForm Model="@hawbDto">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-8 consol-left">
+                <div class="row">
+                    <div class="row">
+                        <div class="title">Job referenceNo</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 form-group">
+                            <div class="col-md-4 text-right">
+                                <label class="blazor-label">Job Type</label>
+                            </div>
+                            <div class="col-md-4 form-input">
+                                <input type="text" class="form-control" placeholder="Enter job type">
+                            </div>
+                            <div class="col-md-4 form-input">
+                                <input type="text" class="form-control" placeholder="Enter freight type">
+                            </div>
+                        </div>
+
+                        <div class="col-md-2 form-group">
+                            <div class="col-md-4 text-right">
+                                <label class="blazor-label">Dept</label>
+                            </div>
+                            <div class="col-md-8 form-input">
+                                <input type="text" class="form-control" placeholder="Enter dept">
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 form-group">
+                            <div class="col-md-4 text-right">
+                                <label class="blazor-label">Date Reg</label>
+                            </div>
+                            <div class="col-md-8 form-input">
+                                <input type="text" class="form-control" placeholder="Enter date reg">
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 form-group">
+                            <div class="col-md-5 text-right">
+                                <label class="blazor-label">Job No.</label>
+                            </div>
+                            <div class="col-md-7 form-input">
+                                <input type="text" class="form-control" placeholder="Enter job no.">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 form-group">
+                            <div class="col-md-4 text-right">
+                                <label class="blazor-label">House Bill</label>
+                            </div>
+                            <div class="col-md-8 form-input">
+                                <input type="text" class="form-control" placeholder="Enter house bill">
+                            </div>
+                        </div>
+                        <div class="col-md-5"></div>
+                        <div class="col-md-3 form-group">
+                            <div class="col-md-5 text-right">
+                                <label class="blazor-label">Consol No.</label>
+                            </div>
+                            <div class="col-md-7 form-input">
+                                <input type="text" class="form-control" placeholder="Enter consol no.">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 form-group">
+                            <div class="col-md-4 text-right">
+                                <label class="blazor-label">Master Bill</label>
+                            </div>
+                            <div class="col-md-8 form-input">
+                                <input type="text" class="form-control" placeholder="Enter master bill">
+                            </div>
+                        </div>
+                        <div class="col-md-5"></div>
+                        <div class="col-md-3 form-group">
+                            <div class="col-md-5 text-right">
+                                <label class="blazor-label">Sub Master</label>
+                            </div>
+                            <div class="col-md-7 form-input">
+                                <input type="text" class="form-control" placeholder="Enter sub master">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-8 form-group">
+                            <div class="col-md-2 text-right">
+                                <label class="blazor-label">Cust Code</label>
+                            </div>
+                            <div class="col-md-3 form-input">
+                                <input type="text" class="form-control" placeholder="Enter cust code">
+                            </div>
+                            <div class="col-md-5 form-input">
+                                <input type="text" class="form-control" placeholder="Enter cust name">
+                            </div>
+                            <div class="col-md-2"></div>
+                        </div>
+
+                        <div class="col-md-4 form-group">
+                            <div class="col-md-5 text-right">
+                                <label class="blazor-label">Extn.Code</label>
+                            </div>
+                            <div class="col-md-7 form-input">
+                                <input type="text" class="form-control" placeholder="Enter extn.code">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8 form-group">
+                            <div class="col-md-2 text-right">
+                                <label class="blazor-label">Supplier</label>
+                            </div>
+                            <div class="col-md-3 form-input">
+                                <input type="text" class="form-control" placeholder="Enter supplier">
+                            </div>
+                            <div class="col-md-5 form-input">
+                                <input type="text" class="form-control" placeholder="Enter supplier name">
+                            </div>
+                            <div class="col-md-2"></div>
+                        </div>
+
+                        <div class="col-md-4 form-group">
+                            <div class="col-md-5 text-right">
+                                <label class="blazor-label">Cust Ref.</label>
+                            </div>
+                            <div class="col-md-7 form-input">
+                                <input type="text" class="form-control" placeholder="Enter cust ref.">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="row">
+                        <div class="title">Transport Information</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8" style="padding:0">
+                            <div class="row form-group">
+                                <div class="col-md-2 text-right">
+                                    <label class="blazor-label">Airline</label>
+                                </div>
+                                <div class="col-md-4 form-input">
+                                    <input type="text" class="form-control" placeholder="Enter airline code">
+                                </div>
+
+                                <div class="col-md-5 form-input">
+                                    <input type="text" class="form-control" placeholder="Enter airline name">
+                                </div>
+                                <div class="col-md-1"></div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-2 text-right">
+                                    <label class="blazor-label">Flight No.</label>
+                                </div>
+                                <div class="col-md-4 form-input">
+                                    <input type="text" class="form-control" placeholder="Enter flight no.">
+                                </div>
+
+                                <div class="col-md-6">
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-2 text-right">
+                                    <label class="blazor-label">Place of Receipt</label>
+                                </div>
+                                <div class="col-md-4 form-input">
+                                    <input type="text" class="form-control" placeholder="Enter place of receipt">
+                                </div>
+                                <div class="col-md-6">
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-2 text-right">
+                                    <label class="blazor-label">Load Port</label>
+                                </div>
+                                <div class="col-md-4 form-input">
+                                    <input type="text" class="form-control" placeholder="Enter load port">
+                                </div>
+                                <div class="col-md-5 form-input">
+                                    <input type="text" class="form-control" placeholder="Enter load port city">
+                                </div>
+                                <div class="col-md-1"></div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-2 text-right">
+                                    <label class="blazor-label">First Port</label>
+                                </div>
+                                <div class="col-md-4 form-input">
+                                    <input type="text" class="form-control" placeholder="Enter first port">
+                                </div>
+                                <div class="col-md-5 form-input">
+                                    <input type="text" class="form-control" placeholder="Enter first port city">
+                                </div>
+                                <div class="col-md-1"></div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-2 text-right">
+                                    <label class="blazor-label">Discharge Port</label>
+                                </div>
+                                <div class="col-md-4 form-input">
+                                    <input type="text" class="form-control" placeholder="Enter discharge port">
+                                </div>
+                                <div class="col-md-5 form-input">
+                                    <input type="text" class="form-control" placeholder="Enter discharge port city">
+                                </div>
+                                <div class="col-md-1"></div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-2 text-right">
+                                    <label class="blazor-label">Destination Port</label>
+                                </div>
+                                <div class="col-md-4 form-input">
+                                    <input type="text" class="form-control" placeholder="Enter destination port">
+                                </div>
+                                <div class="col-md-5 form-input">
+                                    <input type="text" class="form-control" placeholder="Enter destination port city">
+                                </div>
+                                <div class="col-md-1"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 " style="padding:0">
+                            <div class="row form-group">
+                                <div class="col-md-4 text-right">
+                                    <label class="blazor-label">ETD Receipt</label>
+                                </div>
+                                <div class="col-md-5 form-input">
+                                    <input type="date" class="form-control" />
+                                    @*<div class="input-group date" id="reservationdate" data-target-input="nearest">
+                                        <input type="text" class="form-control datetimepicker-input" data-target="#reservationdate" />
+                                        <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
+                                        </div>
+                                        </div>*@
+                                </div>
+                                <div class="col-md-3 form-input">
+                                    <input type="time" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-4 text-right">
+                                    <label class="blazor-label">ETD Load</label>
+                                </div>
+                                <div class="col-md-5 form-input">
+                                    <input type="date" class="form-control" />
+                                </div>
+                                <div class="col-md-3 form-input">
+                                    <input type="time" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-4 text-right">
+                                    <label class="blazor-label">First Arrival</label>
+                                </div>
+                                <div class="col-md-5 form-input">
+                                    <input type="date" class="form-control" />
+                                </div>
+                                <div class="col-md-3 form-input">
+                                    <input type="time" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-4 text-right">
+                                    <label class="blazor-label">ETA Discharge</label>
+                                </div>
+                                <div class="col-md-5 form-input">
+                                    <input type="date" class="form-control" />
+                                </div>
+                                <div class="col-md-3 form-input">
+                                    <input type="time" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-4 text-right">
+                                    <label class="blazor-label">ETA Destination</label>
+                                </div>
+                                <div class="col-md-5 form-input">
+                                    <input type="date" class="form-control" />
+                                </div>
+                                <div class="col-md-3 form-input">
+                                    <input type="time" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-4 text-right">
+                                    <label class="blazor-label">ATA Destination</label>
+                                </div>
+                                <div class="col-md-5 form-input">
+                                    <input type="date" class="form-control" />
+                                </div>
+                                <div class="col-md-3 form-input">
+                                    <input type="time" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-4 text-right">
+                                    <label class="blazor-label">Delivery Date</label>
+                                </div>
+                                <div class="col-md-5 form-input">
+                                    <input type="date" class="form-control" />
+                                </div>
+                                <div class="col-md-3 form-input">
+                                    <input type="time" class="form-control" />
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-3 consol-right">
+                <div class="up">
+                    <div class="row">
+                        <div class="col-md-6 text-right">
+                            <label class="blazor-label">Cargo Status</label>
+                        </div>
+                        <div class="col-md-6 text-left">
+                            <label class="blazor-label">SOME CLEAR</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 text-right">
+                            <label class="blazor-label">Cargo Notes</label>
+                        </div>
+                        <div class="col-md-6 text-left">
+                            <label class="blazor-label">SOME TEXT</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 text-right">
+                            <label class="blazor-label">Milestone</label>
+                        </div>
+                        <div class="col-md-6 text-left">
+                            <label class="blazor-label">SOME TEXT</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 text-right">
+                            <label class="blazor-label">Underbond Sent</label>
+                        </div>
+                        <div class="col-md-6 text-left">
+                            <label class="blazor-label">No</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 text-right">
+                            <label class="blazor-label">Underbond Status</label>
+                        </div>
+                        <div class="col-md-6 text-left">
+                            <label class="blazor-label">UNDERBOND APPROVAL</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                @*<BTAS.BlazorApp.Controls.GridComponent TValue="tbl_receptacleDto" List="receptacles" model="hawb" title="Hawbs" module="hawb"></BTAS.BlazorApp.Controls.GridComponent>*@
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter] public string hawbReference { get; set; }
+    [Parameter] public bool isActive { get; set; } = false;
+
+    private tbl_hawbDto hawbDto = new();
+    private List<tbl_hawbDto>
+    hawbs = new();
+    private ResponseDto responseDto = null;
+    private bool HideElement { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await _hservice.GetByReferenceAsync<ResponseDto>
+            (hawbReference);
+        var jsonSerializerSettings = new JsonSerializerSettings();
+        jsonSerializerSettings.MissingMemberHandling = MissingMemberHandling.Ignore;
+        var jsonString = JsonConvert.SerializeObject(result.Result, jsonSerializerSettings);
+
+        if (result != null && result.IsSuccess)
+            hawbDto = JsonConvert.DeserializeObject<tbl_hawbDto>
+                (jsonString, jsonSerializerSettings);
+
+        appState.OnChange += StateHasChanged;
+    }
+
+    //protected override void OnInitialized()
+    //{
+    //    appState.OnChange += StateHasChanged;
+    //}
+
+    public void Dispose()
+    {
+        appState.OnChange -= StateHasChanged;
+    }
+
+}

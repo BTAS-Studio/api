@@ -1,0 +1,16 @@
+﻿body {
+    height: 542px;
+    width: 395px;
+    margin-left: 2px;
+    margin-right: 2px;
+    font: Arial 14px;
+}
+
+@media print {
+    body {
+        width: 10.2cm !important;
+        height: 15.7cm !important;
+        margin: 2px 2px 2px 2px;
+        font: Arial 14px;
+    }
+}

@@ -1,0 +1,170 @@
+my own web hosting: http://10.214.176.6/api/manifest
+
+User can access the manifest thru the app or directly.
+Once token was received, they can proceed with the manifest.
+
+Request will pass the APIKEY and APITOKEN in Header for verification
+
+Request format:
+{
+  "shipperId": "AUSTSYD",
+  "carrier": "BORDEDI",
+  "consignmentId": [
+    "123",
+    "323",
+    "323"
+  ]
+}
+
+ShipperID and Carrier will be used to validate that the requests matches records in the database.
+-- The shipperId needs to be used to check that those consignmentId belongs to that shipper
+-- Then the carrier we need to check that the shipments belong to that carry and that is who we are going to send the manifest too 
+
+If everything is valid, create the Manifest XML and save to Manifest table.
+ManifestId will be updated to the tbl_carrier_api_response table tbl_carrier_api_manifestId
+
+Tables To Look For:
+1A. tbl_barcodes.tbl_barcodes_shipment_id = tbl_shippers_tracking_ref.tbl_shippers_tracking_shipmentId = tbl_parcel_info.idtbl_parcel_info = 
+tbl_parcel_items.tbl_parcel_items_info_id = tbl_carrier_api_response.tbl_carrier_api_response_parcelId
+
+1B. tbl_barcodes.tbl_barcodes_parcel_id = tbl_parcel_items.idtbl_parcel_items
+
+2. tbl_services.tbl_services_code = tbl_parcel_info.tbl_parcel_info_serviceCode
+
+
+Manifest XML Format 
+(filename format: M = manifest AUSTSYD = shipper Id 0000000001 = sequence)
+<Manifest>
+<Consignment>
+    <ConsignmentNumber>AUEX000001</ConsignmentNumber> //tbl_carrier_api_trackingRef
+    <ConsignmentDate>2022-01-05</ConsignmentDate>
+    <SenderName>Austway</SenderName>
+    <SenderContact></SenderContact>
+    <SenderPhone>0478543535</SenderPhone>
+    <SenderEmail>ben@ben.com</SenderEmail>
+    <SenderStreetAddress>24-32 Raymond Avenue.</SenderStreetAddress>
+    <SenderStreetAddress1></SenderStreetAddress1>
+    <SenderSuburb>Matraville</SenderSuburb>
+    <SenderState>NSW</SenderState>
+    <SenderPostcode>2036</SenderPostcode>
+    <Pickup>Yes</Pickup>
+    <Delivery>Yes</Delivery>
+    <DangerousGoods>NO</DangerousGoods>
+    <ReceiverReference>98317</ReceiverReference>
+    <ReceiverName>B Test</ReceiverName>
+    <ReceiverContact></ReceiverContact>
+    <ReceiverPhone>0478770727</ReceiverPhone>
+    <ReceiverEmail>ben@ben.com</ReceiverEmail>
+    <ReceiverStreetAddress>22 Chapman Parade</ReceiverStreetAddress>
+    <ReceiverStreetAddress1></ReceiverStreetAddress1>
+    <ReceiverSuburb>Faulconbridge</ReceiverSuburb>
+    <ReceiverState>NSW</ReceiverState>
+    <ReceiverPostcode>2776</ReceiverPostcode>
+    <TotalWeight>20</TotalWeight>
+    <AccountCode>AUS206</AccountCode> ///tbl_services
+    <CarrierService>BEP</CarrierService> ///tbl_services
+    <Comments>Test label</Comments> ///tbl_parcel_info_deliveryInstructions
+    <LoadDetails>
+        <ItemReference>ABC123</ItemReference> ///tbl_parcel_items
+        <NumberOfUnits>1</NumberOfUnits> ///tbl_parcel_items
+        <LogisticUnit>Parcel</LogisticUnit> ///tbl_carrier_info
+        <Weight>10</Weight> ///tbl_parcel_items
+        <Length>0.1</Length> ///tbl_parcel_items
+        <Width>0.1</Width> ///tbl_parcel_items
+        <Height>0.1</Height> ///tbl_parcel_items
+        <Cubic>0.001</Cubic> /// UNABLE TO IDENTIFY
+        <Barcode>AUEXBX00000000001001</Barcode> ///tbl_barcodes
+    </LoadDetails>
+    <LoadDetails>
+        <ItemReference>ABC123</ItemReference>
+        <NumberOfUnits>1</NumberOfUnits>
+        <LogisticUnit>Parcel</LogisticUnit>
+        <Weight>10</Weight>
+        <Length>0.1</Length>
+        <Width>0.1</Width>
+        <Height>0.1</Height>
+        <Cubic>0.001</Cubic>
+        <Barcode>AUEXBX00000000001002</Barcode>
+    </LoadDetails>
+</Consignment>
+<Consignment>
+    <ConsignmentNumber>AUEX000002</ConsignmentNumber>
+    <ConsignmentDate>2022-01-05</ConsignmentDate>
+    <SenderName>Austway</SenderName>
+    <SenderContact></SenderContact>
+    <SenderPhone>0478543535</SenderPhone>
+    <SenderEmail>ben@ben.com</SenderEmail>
+    <SenderStreetAddress>24-32 Raymond Avenue.</SenderStreetAddress>
+    <SenderStreetAddress1></SenderStreetAddress1>
+    <SenderSuburb>Matraville</SenderSuburb>
+    <SenderState>NSW</SenderState>
+    <SenderPostcode>2036</SenderPostcode>
+    <Pickup>Yes</Pickup>
+    <Delivery>Yes</Delivery>
+    <DangerousGoods>NO</DangerousGoods>
+    <ReceiverReference>98318</ReceiverReference>
+    <ReceiverName>B Test</ReceiverName>
+    <ReceiverContact></ReceiverContact>
+    <ReceiverPhone>0478770727</ReceiverPhone>
+    <ReceiverEmail>ben@ben.com</ReceiverEmail>
+    <ReceiverStreetAddress>22 Chapman Parade</ReceiverStreetAddress>
+    <ReceiverStreetAddress1></ReceiverStreetAddress1>
+    <ReceiverSuburb>Faulconbridge</ReceiverSuburb>
+    <ReceiverState>NSW</ReceiverState>
+    <ReceiverPostcode>2776</ReceiverPostcode>
+    <TotalWeight>20</TotalWeight>
+    <AccountCode>AUS206</AccountCode>
+    <CarrierService>BEP</CarrierService>
+    <Comments>Test label</Comments>
+    <LoadDetails>
+        <ItemReference>ABC456</ItemReference>
+        <NumberOfUnits>1</NumberOfUnits>
+        <LogisticUnit>Parcel</LogisticUnit>
+        <Weight>10</Weight>
+        <Length>0.1</Length>
+        <Width>0.1</Width>
+        <Height>0.1</Height>
+        <Cubic>0.001</Cubic>
+        <Barcode>AUEXBX00000000002001</Barcode>
+    </LoadDetails>
+    <LoadDetails>
+        <ItemReference>ABC456</ItemReference>
+        <NumberOfUnits>1</NumberOfUnits>
+        <LogisticUnit>Parcel</LogisticUnit>
+        <Weight>10</Weight>
+        <Length>0.1</Length>
+        <Width>0.1</Width>
+        <Height>0.1</Height>
+        <Cubic>0.001</Cubic>
+        <Barcode>AUEXBX00000000002002</Barcode>
+    </LoadDetails>
+</Consignment>
+</Manifest>
+
+Manifest XML will then be forwarded to SFTP:
+Host: sftp.borderexpress.com.au
+User: austwayexpress
+Password: 4ITo1#%wfvptSbY$xHf@teS
+
+Response will be returned as:
+{
+  "success": true,
+  "response": "200",
+  "responseDescription": "Success",
+  "dataArray": {
+    "message": [
+      {
+        "success": true,
+        "manifest_ref": "MAUSTSYD0000000001",
+        "manifested_count": 20,
+        "manifested_failed_count": 3,
+        "failed_consignments": [
+          "123",
+          "323",
+          "323"
+        ],
+        "response": "Created with some failed consignments"
+      }
+    ]
+  }
+}

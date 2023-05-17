@@ -1,0 +1,79 @@
+﻿@inject NavigationManager navigationManager
+@inject ApplicationState appState
+@implements IDisposable
+
+@*<ul class="nav nav-tabs" role="tablist" id="myTab">
+    <li class="pt-2 px-3">
+        <h3 class="card-title">Search Consolidation</h3>
+    </li>
+    @{
+        if (appState.tabs != null)
+        {
+            foreach (var item in appState.tabs)
+            {
+                if (reference == item.Name)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-selected="true" role="tab" data-toggle="pill" aria-controls="@item.Name" href="consol/view/@item.Name">@item.Name</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" aria-selected="false" role="tab" data-toggle="pill" aria-controls="@item.Name" href="consol/view/@item.Name">@item.Name</a>
+                    </li>
+                }
+
+            }
+        }
+
+    }
+</ul>*@
+
+
+@*<div class="card-header p-0 border-bottom-0">*@
+<ul class="nav nav-tabs" role="tablist" id="myTab">
+    <li class="pt-2 px-3">
+        <a class="card-title" href="consol">Search Consolidation</a>
+    </li>
+    @{
+        if (appState.tabs != null)
+        {
+            foreach (var item in appState.tabs)
+            {
+                if (reference == item.Name)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-selected="true" role="tab" data-toggle="pill" aria-controls="@item.Name" href="consol/view/@item.Name">@item.Name</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" aria-selected="false" role="tab" data-toggle="pill" aria-controls="@item.Name" href="consol/view/@item.Name">@item.Name</a>
+                    </li>
+                }
+
+            }
+        }
+
+    }
+</ul>
+@*</div>*@
+
+@code
+{
+    [Parameter] public string reference { get; set; }
+    [Parameter] public bool isActive { get; set; } = false;
+
+    protected override void OnInitialized()
+    {
+        appState.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        //appState.OnChange -= StateHasChanged;
+        appState.OnChange -= StateHasChanged;
+    }
+}

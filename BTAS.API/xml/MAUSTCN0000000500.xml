@@ -1,0 +1,98 @@
+﻿<Manifest>
+    <Consignment>
+        <ConsignmentNumber>AUEX004854</ConsignmentNumber>
+        <ConsignmentDate>2022-09-16</ConsignmentDate>
+        <SenderName>Austway AU</SenderName>
+        <SenderContact>Luna Cao</SenderContact>
+        <SenderPhone>+61 452 188 899</SenderPhone>
+        <SenderEmail>luna.cao@austwayexpress.com.au</SenderEmail>
+        <SenderStreetAddress>24-32 Raymond Ave</SenderStreetAddress>
+        <SenderStreetAddress1></SenderStreetAddress1>
+        <SenderSuburb>Matraville</SenderSuburb>
+        <SenderState>NSW</SenderState>
+        <SenderPostcode>4108</SenderPostcode>
+        <Pickup>YES</Pickup>
+        <Delivery>YES</Delivery>
+        <DangerousGoods>NO</DangerousGoods>
+        <ReceiverReference>XR220711</ReceiverReference>
+        <ReceiverName>Pardeep Singh Khurmi</ReceiverName>
+        <ReceiverContact>Pardeep Singh Khurmi</ReceiverContact>
+        <ReceiverPhone>0061434566125</ReceiverPhone>
+        <ReceiverEmail>pkhurmi21@gmail.com</ReceiverEmail>
+        <ReceiverStreetAddress>Unit 2, 41 miamax place</ReceiverStreetAddress>
+        <ReceiverStreetAddress1></ReceiverStreetAddress1>
+        <ReceiverSuburb>Logan reserve </ReceiverSuburb>
+        <ReceiverState>QLD</ReceiverState>
+        <ReceiverPostcode>4133</ReceiverPostcode>
+        <TotalWeight>86.32</TotalWeight>
+        <AccountCode>AUS209</AccountCode>
+        <CarrierService>BEB</CarrierService>
+        <Comments>ATL</Comments>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Bulk</LogisticUnit>
+            <Weight>40.80</Weight>
+            <Length>0.28</Length>
+            <Width>0.61</Width>
+            <Height>1.92</Height>
+            <Cubic>0.33</Cubic>
+            <Barcode>AUEXBX00000004854001</Barcode>
+        </LoadDetails>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Bulk</LogisticUnit>
+            <Weight>19.60</Weight>
+            <Length>0.22</Length>
+            <Width>1.85</Width>
+            <Height>0.32</Height>
+            <Cubic>0.13</Cubic>
+            <Barcode>AUEXBX00000004854002</Barcode>
+        </LoadDetails>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Bulk</LogisticUnit>
+            <Weight>1.44</Weight>
+            <Length>0.14</Length>
+            <Width>0.09</Width>
+            <Height>0.33</Height>
+            <Cubic>0.00</Cubic>
+            <Barcode>AUEXBX00000004854003</Barcode>
+        </LoadDetails>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Bulk</LogisticUnit>
+            <Weight>11.36</Weight>
+            <Length>0.23</Length>
+            <Width>0.50</Width>
+            <Height>0.97</Height>
+            <Cubic>0.11</Cubic>
+            <Barcode>AUEXBX00000004854004</Barcode>
+        </LoadDetails>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Bulk</LogisticUnit>
+            <Weight>2.88</Weight>
+            <Length>0.46</Length>
+            <Width>0.12</Width>
+            <Height>1.23</Height>
+            <Cubic>0.07</Cubic>
+            <Barcode>AUEXBX00000004854005</Barcode>
+        </LoadDetails>
+        <LoadDetails>
+            <ItemReference />
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Bulk</LogisticUnit>
+            <Weight>10.24</Weight>
+            <Length>0.29</Length>
+            <Width>0.45</Width>
+            <Height>0.65</Height>
+            <Cubic>0.08</Cubic>
+            <Barcode>AUEXBX00000004854006</Barcode>
+        </LoadDetails>
+    </Consignment>
+</Manifest>

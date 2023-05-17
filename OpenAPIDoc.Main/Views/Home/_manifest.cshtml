@@ -1,0 +1,124 @@
+﻿@using System.ComponentModel
+
+<div id="manifest" class="col-md-12 app-inner-layout__content">
+    <div class="col-md-8 pb-5 pl-5 pr-5 pt-3 card">
+        <h4>Manifest</h4>
+        <div class="p-3">
+            Create manifest method
+        </div>
+        <div>
+            <table class="responsive table table-light table-striped small">
+                <thead>
+                    <tr>
+                        <th class=" col-md-3">Request Body Schema</th>
+                        <th class=" col-md-3">Data Type</th>
+                        <th class=" col-md-6">Descriptions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var p in ViewBag.manifest)
+                    {
+                        <tr class="line-height-1">
+                            <td class="align-top">
+                                @p.name
+                            </td>
+                            <td class="align-top">
+                                @if (p.type.IndexOf("Dto") > -1)
+                                {
+                                    <p class="m-1">Json array of @p.name request parameters</p>
+                                }
+                                else
+                                {
+                                    <p class="m-1">@p.type</p>
+                                }
+                            </td>
+                            <td class="align-top">
+                                @if (p.isOptional)
+                                {
+                                    <div class="m-1"><b><i>(Optional)</i></b></div>
+                                }
+                                <div class="m-1">@p.description</div>
+                                @if (p.values != null)
+                                {
+                                    <div class="m-1 font-italic bg-dark-gray">
+                                        Enum:
+                                        @foreach (var v in p.values)
+                                        {
+                                            <span class="badge badge-dark">"@v"</span>
+                                        }
+                                    </div>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-md-4 p-2 text-light">
+        <div id="manifestcreate" class="bg-dark p-3 method">
+            <h6>Create Manifest</h6>
+            <div><button class="badge badge-light">PAYLOAD</button></div>
+            <div class="dropdown-divider"></div>
+            <div>
+                <button class="badge badge-pill badge-info">POST</button><span class="float-right font-weight-bold">/api/manifest</span>
+            </div>
+            <div>
+                <span>Content Type: </span><span class="float-right font-weight-bold">application/json</span>
+            </div>
+            <div class="m-3"></div>
+            <div>
+                <button type="button" aria-expanded="true" aria-controls="exampleAccordion1" data-toggle="collapse" href="#manifestCreateReq" class="btn btn-primary">
+                    Sample Request
+                </button>
+                <div class="collapse" id="manifestCreateReq">
+                    <div class="card card-body bg-dark">
+                        <pre class="text-light font-italic">
+{
+    "shipperId": "AUSTSYD",
+    "carrier": "BORDEXPPAR",
+    "consignmentId": [
+        "AUEX00000001"
+    ]
+}
+                </pre>
+                    </div>
+                </div>
+            </div>
+            <div class="m-3"></div>
+            <div>
+                <b>Success Response</b> - <span>200 <i>(indicates that the request was processed successfully.)</i></span>
+            </div>
+            <div class="m-3"></div>
+            <div>
+                <button type="button" aria-expanded="true" aria-controls="exampleAccordion1" data-toggle="collapse" href="#manifestCreateRes" class="btn btn-secondary">
+                    Sample Response
+                </button>
+                <div class="collapse" id="manifestCreateRes">
+                    <div class="card card-body bg-dark">
+                        <pre class="text-light font-italic">
+{
+  "dataArray": {
+    "message": [
+      {
+        "success": true,
+        "manifest_ref": "MAUSTSYD00000001",
+        "manifested_count": 1,
+        "manifested_failed_count": 0,
+        "failed_consignments": [],
+        "response": "Manifest successfully created"
+      }
+    ]
+  },
+  "success": true,
+  "response": 0,
+  "referenceNumber": "MAUSTSYD00000001",
+  "responseDescription": "success"
+}
+                </pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

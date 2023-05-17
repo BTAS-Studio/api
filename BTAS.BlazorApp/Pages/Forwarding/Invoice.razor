@@ -1,0 +1,191 @@
+﻿@page "/invoice"
+<h3>Invoice</h3>
+
+<div class="card" style="padding: 40px 27px 36px 27px !important;">
+    <div class="card-body" style="border: 1px solid #DBDBDB !important;">
+        <div class="row">
+            <div class="col-md-3 form-group" style="display:flex">
+                <div class="col-md-5 text-right">
+                    <label class="blazor-label">Local Client</label>
+                </div>
+                <div class="col-md-7">
+                    <input type="text" class="form-control">
+                </div>
+            </div>
+            <div class="col-md-2" style="display:flex">
+                <i class="fa fa-address-book" aria-hidden="true"></i>
+                <div>Contact</div>
+            </div>
+            <div class="col-md-2" style="display:flex">
+                <i class="fa fa-home" aria-hidden="true"></i>
+                <div>Addr.</div>
+            </div>
+
+            <div class="col-md-5"></div>
+        </div>
+        <div class="row" style="border:1px solid #EBEEF1">
+            <div class="col-md-4" style="border-right:1px solid #EBEEF1">
+                <h4>Address</h4>
+                <div class="row">
+                    <div class="col-md-9">
+                        <input type="text" class="form-control" />
+                        <div>GOZNEY GROUP LTD</div>
+                        <div>UNIT 18&19 CHRISTCHURCH BUSINESS</div>
+                        <div>PARK-RADAR WAY</div>
+                        <div>BTI REF:002</div>
+                        <div>CHRISRCHURCH</div>
+                    </div>
+                    <div class="col-md-3"></div>
+                </div>
+            </div>
+            <div class="col-md-4" style="border-right:1px solid #EBEEF1"> <h4>Contact</h4></div>
+            <div class="col-md-4"> <h4>Invoice Contact</h4></div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="row form-group">
+                    <div class="col-md-4 text-right">
+                        <label class="blazor-label">Job Desc.</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-4 text-right">
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" class="form-control" />
+                    </div>
+
+                    <div class="col-md-5">
+                        <label class="blazor-label">Override Desc.</label>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-4 text-right">
+                        <label class="blazor-label">Open Date</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="date" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-4 text-right">
+                        <label class="blazor-label">Margin %</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" class="form-control" />
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-4 text-right">
+                        <label class="blazor-label">Branch</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" class="form-control" />
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-4 text-right">
+                        <label class="blazor-label">Dept</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-4 text-right">
+                        <label class="blazor-label">Job Status</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" class="form-control" />
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-4 text-right">
+                        <label class="blazor-label">Quote Number</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="row form-group">
+                    <div class="col-md-4 text-right">
+                        <label class="blazor-label">Local Ref</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" class="form-control" />
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-4 text-right">
+                        <label class="blazor-label">Close Date</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" class="form-control" />
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-4 text-right">
+                        <label class="blazor-label">P/L Reasons</label>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-control select2">
+                            <option>value 1</option>
+                            <option>value 2</option>
+                            <option>value 3</option>
+                        </select>
+                    </div>
+                    <div class="col-md-5">
+                        <input type="text" class="form-control" />
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-4 text-right">
+                        <label class="blazor-label">Sales Rep</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" class="form-control" />
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-4 text-right">
+                        <label class="blazor-label">Op Rep</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" class="form-control" />
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-4 text-right">
+                        <label class="blazor-label">Hold Reason</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" class="form-control" />
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-4 text-right">
+                    </div>
+                    <div class="col-md-1">
+                        <input type="checkbox" />
+
+                    </div>
+                    <div class="col-md-7">
+                        <label class="blazor-label">Exclude from Periodic Auto-Rating</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4"></div>
+        </div>
+        <div class="row">
+            <h4>Charges</h4>
+        </div>
+    </div>
+</div>

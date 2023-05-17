@@ -1,0 +1,217 @@
+﻿@page "/address"
+
+@using BTAS.BlazorApp.Services.Interface
+@using BTAS.BlazorApp.Models.Dto
+@using Newtonsoft.Json
+@using BlazorTable
+@using MudBlazor
+@using Extensions
+
+@inject IClientHeaderService _service
+@inject NavigationManager _nav
+
+
+<div class="card" style="padding: 40px 27px 36px 27px !important;">
+    <div class="card-body" style="border: 1px solid #DBDBDB !important;">
+
+        @*<section class="content-header">
+        <div class="container-fluid">
+        <div class="row mb-2">
+        <div class="col-sm-6">
+        <h3>Address Book details</h3>
+
+        </div>
+        <div class="col-sm-6 float-sm-right small lnr-text-align-right">
+        <MudBreadcrumbs Items="_items"></MudBreadcrumbs>
+        </div>
+        </div>
+        </div>
+        </section>*@
+
+
+        <div class="col-md-8">
+            <div class="form-group">
+                <div class="row">
+                    <h3>Address Book details</h3>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <label class="blazor-label">Org Code</label>
+                        <input type="text" class="form-control" />
+                    </div>
+                    <div class="col-md-10">
+                        <label class="blazor-label">Org Name</label>
+                        <input type="text" class="form-control" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label class="blazor-label">Email</label>
+                        <input type="text" class="form-control" />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="blazor-label">Telephone</label>
+                        <input type="text" class="form-control" />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="blazor-label">Business Registration</label>
+                        <input type="text" class="form-control" />
+                    </div>
+                    <div class="col-md-3">
+                        <button type="button" class="btn btn-dark">Check</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="blazor-label">Address Search</label>
+                        <input type="text" class="form-control" />
+                    </div>
+                    <div class="col-md-6"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <label class="blazor-label">Unit</label>
+                        <input type="text" class="form-control" />
+                    </div>
+                    <div class="col-md-2">
+                        <label class="blazor-label">Number</label>
+                        <input type="text" class="form-control" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="blazor-label">Address 1</label>
+                        <input type="text" class="form-control" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="blazor-label">Address 2</label>
+                        <input type="text" class="form-control" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label class="blazor-label">City</label>
+                        <input type="text" class="form-control" />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="blazor-label">Poscode</label>
+                        <input type="text" class="form-control" />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="blazor-label">State</label>
+                        <input type="text" class="form-control" />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="blazor-label">Country</label>
+                        <input type="text" class="form-control" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-4">
+        </div>
+
+
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <button class="btn btn-primary" @onclick="@(()=>_nav.NavigateTo("/address/view"))">Add New</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="overlay-wrapper">
+                            <div hidden="@HideElement" class="overlay dark"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>
+                            @*<MudTable ServerData="@(new Func<TableState, Task<TableData<tbl_client_headerDto>>>(GetServerData))"
+                            Hover="true" Breakpoint="Breakpoint.Sm" RightAlignSmall="true"
+                            @ref="_table" RowsPerPage="4">
+                            <HeaderContent>
+                            <MudTh>Code</MudTh>
+                            <MudTh>Name</MudTh>
+                            <MudTh>Email</MudTh>
+                            <MudTh>Address</MudTh>
+                            <MudTh>Status</MudTh>
+                            </HeaderContent>
+                            <RowTemplate>
+                            <MudTd DataLabel="Id">@context.tbl_client_header_code</MudTd>
+                            <MudTd DataLabel="Item Name">@context.tbl_client_header_name</MudTd>
+                            <MudTd DataLabel="Is Completed">@context.tbl_client_header_main_email</MudTd>
+                            <MudTd DataLabel="Is Completed">@context.tbl_client_header_address1</MudTd>
+                            <MudTd DataLabel="Is Completed">@context.tbl_client_header_active</MudTd>
+                            </RowTemplate>
+                            <PagerContent>
+                            <MudTablePager PageSizeOptions="new int[] { 10, 20 }"></MudTablePager>
+                            </PagerContent>
+                            </MudTable>*@
+                            <Table TableItem="tbl_client_headerDto" Items="addresses" PageSize="30">
+                                <Column TableItem="tbl_client_headerDto" Title="Code" Field="@(x => x.tbl_client_header_code)" Sortable="true" Filterable="true" Width="10%" />
+                                <Column TableItem="tbl_client_headerDto" Title="Name" Field="@(x => x.tbl_client_header_name)" Sortable="true" Filterable="true" Width="30%" />
+                                <Column TableItem="tbl_client_headerDto" Title="Email" Field="@(x => x.tbl_client_header_main_email)" Sortable="true" Filterable="true" Width="20%">
+                                    <Template>
+                                        <a href="mailto:@context.tbl_client_header_main_email">@context.tbl_client_header_main_email</a>
+                                    </Template>
+                                </Column>
+                                <Column TableItem="tbl_client_headerDto" Title="Address" Field="@(x => x.tbl_client_header_address1)" Sortable="true" Filterable="true" Width="30%" />
+                                <Column TableItem="tbl_client_headerDto" Title="Status" Field="@(x => x.tbl_client_header_active)" Sortable="true" Filterable="true" Width="10%">
+                                    <Template>
+                                        @if (context.tbl_client_header_active == true)
+                                        {
+                                            <span>Active</span>
+                                        }
+                                        else
+                                        {
+                                            <span>Inactive</span>
+                                        }
+                                    </Template>
+                                </Column>
+                                @*<Column TableItem="PersonData" Title="First Name" Field="@(x => x.first_name)" Sortable="true" Filterable="true" Width="20%" />
+                                <Column TableItem="PersonData" Title="Last Name" Field="@(x => x.last_name)" Sortable="true" Filterable="true" Width="20%" />
+                                <Column TableItem="PersonData" Title="Email" Field="@(x => x.email)" Sortable="true" Filterable="true" Width="20%">
+                                <Template>
+                                <a href="mailto:@context.email">@context.email</a>
+                                </Template>
+                                </Column>
+                                <Column TableItem="PersonData" Title="Confirmed" Field="@(x => x.confirmed)" Sortable="true" Filterable="true" Width="10%" />
+                                <Column TableItem="PersonData" Title="Price" Field="@(x => x.price)" Sortable="true" Filterable="true" Width="10%" Format="C" Align="Align.Right" />
+                                <Column TableItem="PersonData" Title="Created Date" Field="@(x => x.created_date)" Sortable="true" Width="10%">
+                                <Template>
+                                @context.created_date.ToShortDateString()
+                                </Template>
+                                </Column>*@
+                                <Pager ShowPageNumber="true" ShowTotalCount="true" />
+                            </Table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+@code {
+    private bool HideElement { get; set; } = false;
+    private List<tbl_client_headerDto> addresses = new();
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+{
+        new BreadcrumbItem("Home", href: "/"),
+        new BreadcrumbItem("Address Book", href: "/address")
+    };
+    private MudTable<tbl_client_headerDto> _table;
+
+    protected override async Task OnInitializedAsync()
+    {
+        tbl_client_headerDto ch = new();
+        var testResult = await _service.CreateClientHeaderAsync<GeneralResponse>(ch);
+
+        var result = await _service.GetAllClientHeadersAsync<ResponseDto>();
+        var jsonSerializerSettings = new JsonSerializerSettings();
+        jsonSerializerSettings.MissingMemberHandling = MissingMemberHandling.Ignore;
+        var jsonString = JsonConvert.SerializeObject(result.Result, jsonSerializerSettings);
+
+        if (result != null && result.IsSuccess)
+            addresses = JsonConvert.DeserializeObject<List<tbl_client_headerDto>>(jsonString, jsonSerializerSettings);
+
+        if (result.IsSuccess)
+            HideElement = !HideElement;
+    }
+}

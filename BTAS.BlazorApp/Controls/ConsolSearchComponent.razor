@@ -1,0 +1,41 @@
+﻿@using BTAS.BlazorApp.Services.Interface
+@using BTAS.BlazorApp.Models.Dto
+@using Newtonsoft.Json
+@using BTAS.BlazorApp.Controls
+
+@inject IMawbService _service
+@inject NavigationManager _nav
+@inject IJSRuntime jsRuntime
+@inject ApplicationState appState
+@implements IDisposable
+
+
+
+@code {
+    [Parameter] public string referenceNo { get; set; }
+
+    private bool HideElement { get; set; } = false;
+    private ResponseDto responseDto = new();
+    private List<tbl_mawbDto> mawbs = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await _service.GetAllAsync<ResponseDto>();
+        var jsonSerializerSettings = new JsonSerializerSettings();
+        jsonSerializerSettings.MissingMemberHandling = MissingMemberHandling.Ignore;
+        var jsonString = JsonConvert.SerializeObject(result.Result, jsonSerializerSettings);
+
+        if (result != null && result.IsSuccess)
+            mawbs = JsonConvert.DeserializeObject<List<tbl_mawbDto>>(jsonString, jsonSerializerSettings);
+
+        if (result.IsSuccess)
+            HideElement = !HideElement;
+
+        appState.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        appState.OnChange -= StateHasChanged;
+    }
+}

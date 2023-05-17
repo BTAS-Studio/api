@@ -1,0 +1,94 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="app-inner-layout chat-layout">
+    <div class="app-inner-layout__header text-white bg-premium-dark">
+        <div class="app-page-title">
+            <div class="page-title-wrapper">
+                <div class="page-title-heading">
+                    <div class="page-title-icon bg-happy-fisher">
+                        <i class="pe-7s-umbrella text-white"></i>
+                    </div>
+                    <div>
+                        Austway WEB API
+                        <div class="page-title-subheading">V1.0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="app-inner-layout__wrapper row-fluid no-gutters">
+        <div class="app-inner-layout__content card pt-5">
+            <div class="table-responsive">
+                <div id="intro" class="col-md-12 app-inner-layout__content">
+                    <div class="col-md-8 pb-5 pl-5 pr-5 pt-3 card">
+                        <h4>Introductions</h4>
+                        <p>
+                            This API is documented in OpenAPI format and is based on Austway API provided by BTAS team.
+                        </p>
+                        <p><h4>Base Endpoint URL: https://btas-apps.australiacentral.cloudapp.azure.com</h4></p>
+                    </div>
+                    @*<div class="bg-dark col-md-4 text-light">
+                <div class=" p-3">
+
+                </div>
+            </div>*@
+                </div>
+                <div class="divider"></div>
+                <div id="cors" class="col-md-12 app-inner-layout__content">
+                    <div class="col-md-8 pb-5 pl-5 pr-5 pt-3 card">
+                        <h4>Cross-Origin Resource Sharing</h4>
+                        <div>
+                            This API features Cross-Origin Resource Sharing (CORS) implemented in compliance with W3C spec. And that allows cross-domain communication from the browser. All responses have a wildcard same-origin which makes them completely public and accessible to everyone, including any code on any site.
+                        </div>
+                    </div>
+                    @*<div class="bg-dark col-md-4 text-light">
+                <div class=" p-3">
+
+                </div>
+            </div>*@
+                </div>
+                <div class="divider"></div>
+                <div id="auth" class="col-md-12 app-inner-layout__content">
+                    <div class="col-md-8 pb-5 pl-5 pr-5 pt-3 card">
+                        <h4>Authentication</h4>
+                        <div>
+                            This API requires the following request headers for authentication:
+                            <ul>
+                                <li>API Key (apikey)</li>
+                                <li>Token (apiToken)</li>
+                                <li>Shipper Id (shipperId)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    @*<div class="bg-dark col-md-4 text-light">
+                <div class=" p-3">
+
+                </div>
+            </div>*@
+                </div>
+                @*<div class="divider"></div>
+        <partial name="_apg" />*@
+                <div class="divider"></div>
+                <partial name="_clientHeader" />
+                <div class="divider"></div>
+                <partial name="_contactDetails" />
+                <div class="divider"></div>
+                <partial name="_voyage" />
+                <div class="divider"></div>
+                <partial name="_container" />
+                <div class="divider"></div>
+                <partial name="_mawb" />
+                <div class="divider"></div>
+                <partial name="_parcelInfo" />
+                <div class="divider"></div>
+                <partial name="_receptacle" />
+                <div class="divider"></div>
+                <partial name="_hawb" />
+                <div class="divider"></div>
+                <partial name="_manifest" />
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,27 @@
+﻿.nav {
+    border-bottom: none;
+    display: flex;
+    flex-wrap:nowrap;
+}
+
+.nav-item {
+    width: 190px;
+    min-width: 10px;
+    max-width: 190px;
+    white-space: nowrap;
+}
+
+.nav-link {
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.nav-item.active, .nav-item:hover {
+    min-width: 190px;
+    max-width: 190px;
+}
+
+.title {
+    font-size: 16px !important;
+    font-weight: 700 !important;
+}

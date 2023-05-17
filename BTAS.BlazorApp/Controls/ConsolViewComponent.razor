@@ -1,0 +1,557 @@
+﻿@using BTAS.BlazorApp.Services.Interface
+@using Newtonsoft.Json
+@using Models.Dto
+
+@inject IMawbService _service
+@inject IHawbService _hservice
+@inject ApplicationState appState
+@implements IDisposable
+
+
+<EditForm Model="mawbDto">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-8 consol-left">
+                <div class="row consol-row">
+                    <div class="title">Consol Information</div>
+                    <div class="col-md-8">
+
+                        <div class="row">
+                            <div class="col-md-5 form-group">
+                                <div class="col-md-6 text-right">
+                                    <label class="blazor-label">Master Bill</label>
+                                </div>
+                                <div class="col-md-6 form-input">
+                                    <input type="text" class="form-control" placeholder="Enter Master Bill" @bind-value="@mawbDto.tbl_mawb_masterBillNumber">
+                                </div>
+                            </div>
+                            <div class="col-md-3 form-group">
+                                <div class="col-md-4 text-right">
+                                    <label class="blazor-label">Dept</label>
+                                </div>
+                                <div class="col-md-8 form-input">
+                                    <input type="text" class="form-control" placeholder="Enter dept.">
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <div class="col-md-5 text-right">
+                                    <label class="blazor-label">Date Reg</label>
+                                </div>
+                                <div class="col-md-7 form-input">
+                                    <input type="date" class="form-control" placeholder="Date Reg">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-md-5 form-group-input-1">
+                                    <div class="col-md-6 text-right">
+                                        <label class="blazor-label label1">OS Agent</label>
+                                    </div>
+                                    <div class="col-md-6 form-input">
+                                        <input type="text" class="form-control input1" placeholder="Enter agent Code" @bind-value="@mawbDto.originAgentCode">
+                                    </div>
+                                </div>
+                                <div class="col-md-7 form-group-input-2">
+                                    <input type="text" class="form-control" placeholder="Enter agent Name" @bind-value="@mawbDto.originAgent.tbl_client_header_name">
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-md-5 form-group-input-1">
+                                    <div class="col-md-6 text-right">
+                                        <label class="blazor-label">Master Loader</label>
+                                    </div>
+                                    <div class="col-md-6 form-input">
+                                        <input type="text" class="form-control" placeholder="Enter master loader">
+                                    </div>
+                                </div>
+                                <div class="col-md-7 form-group-input-2">
+                                    <input type="text" class="form-control" placeholder="Enter master loader name">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-8 form-group" style="margin-left: -8px !important;">
+                                <div class="col-md-4 text-right">
+                                    <label class="blazor-label">Sub Master</label>
+                                </div>
+                                <div class="col-md-8 form-input">
+                                    <input type="text" class="form-control" placeholder="Enter sub master">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-md-5 form-group-input-1">
+                                    <div class="col-md-6 text-right">
+                                        <label class="blazor-label">Consolidator</label>
+                                    </div>
+                                    <div class="col-md-6 form-input">
+                                        <input type="text" class="form-control" placeholder="Enter consolidator code">
+                                    </div>
+                                </div>
+                                <div class="col-md-7 form-group-input-2">
+                                    <input type="text" class="form-control" placeholder="Enter consolidator name">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 consolinfo-right">
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="blazor-label">Consol No.</label>
+                                <input type="text" class="form-control" style="width: 50%;" placeholder="Enter consol #" @bind-value="@mawbDto.tbl_mawb_billNumber">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="blazor-label">Extn Code</label>
+                                <input type="text" class="form-control" style="width: 70%;" placeholder="Enter extn code">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="blazor-label">Agent Ref.</label>
+                                <input type="text" class="form-control" style="width: 70%;" placeholder="Enter agent ref">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="blazor-label">Job Class</label>
+                                <input type="text" class="form-control" style="width: 50%;" placeholder="Enter job class">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="blazor-label">Shipment Type</label>
+                                <select class="form-control dropdown-field" style="width: 40%;">
+                                    <option selected="selected">Prepaid</option>
+                                </select>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row transport-row">
+                    <div class="title">Transport Information</div>
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-5 form-group">
+                                <div class="col-md-6 text-right">
+                                    <label class="blazor-label">Flight No.</label>
+                                </div>
+                                <div class="col-md-6 form-input">
+                                    <input type="text" class="form-control" placeholder="Enter flight no.">
+                                </div>
+                            </div>
+                            <div class="col-md-7 form-group">
+                                <div class="col-md-6 text-right">
+                                    <label class="blazor-label">Airline Folio</label>
+                                </div>
+                                <div class="col-md-6 form-input">
+                                    <input type="text" class="form-control" placeholder="Enter airline folio">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-md-5 form-group-input-1">
+                                    <div class="col-md-6 text-right">
+                                        <label class="blazor-label label1">Load Port</label>
+                                    </div>
+                                    <div class="col-md-6 form-input">
+                                        <input type="text" class="form-control input1" placeholder="Enter load port">
+                                    </div>
+                                </div>
+                                <div class="col-md-7 form-group-input-2">
+                                    <input type="text" class="form-control" placeholder="Enter load port name">
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-md-5 form-group-input-1">
+                                    <div class="col-md-6 text-right">
+                                        <label class="blazor-label label1">Discharge Port</label>
+                                    </div>
+                                    <div class="col-md-6 form-input">
+                                        <input type="text" class="form-control input1" placeholder="Enter discharge port">
+                                    </div>
+                                </div>
+                                <div class="col-md-7 form-group-input-2">
+                                    <input type="text" class="form-control" placeholder="Enter discharge port name">
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-md-5 form-group-input-1">
+                                    <div class="col-md-6 text-right">
+                                        <label class="blazor-label label1">Destination Port</label>
+                                    </div>
+                                    <div class="col-md-6 form-input">
+                                        <input type="text" class="form-control input1" placeholder="Enter destination port">
+                                    </div>
+                                </div>
+                                <div class="col-md-7 form-group-input-2">
+                                    <input type="text" class="form-control" placeholder="Enter destination port name">
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-md-5 form-group-input-1">
+                                    <div class="col-md-6 text-right">
+                                        <label class="blazor-label label1">Bonded Warehouse</label>
+                                    </div>
+                                    <div class="col-md-6 form-input">
+                                        <input type="text" class="form-control input1" placeholder="Enter bonded warehouse">
+                                    </div>
+                                </div>
+                                <div class="col-md-7 form-group-input-2">
+                                    <input type="text" class="form-control" placeholder="Enter bonded warehouse name">
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="col-md-4"></div>
+                </div>
+
+                <div class="row lower-row">
+
+                    <div class="col-md-3">
+                        <div class="row">
+                            <div class="title">Package Information</div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-md-6 text-right">
+                                    <label class="blazor-label">No. Pkgs</label>
+                                </div>
+                                <div class="col-md-6 form-input">
+                                    <input type="number" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="row">
+                            <div class="title">Weight Information</div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-md-6 text-right">
+                                    <label class="blazor-label">Actual Weight</label>
+                                </div>
+                                <div class="col-md-3 form-input">
+                                    <input type="number" class="form-control">
+                                </div>
+                                <div class="col-md-3 form-group-input-2">
+                                    <select class="form-control dropdown-field">
+                                        <option selected="selected">Kg</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-md-6 text-right">
+                                    <label class="blazor-label">Charge Weight</label>
+                                </div>
+                                <div class="col-md-3 form-input">
+                                    <input type="number" class="form-control">
+                                </div>
+                                <div class="col-md-3 form-group-input-2">
+                                    <select class="form-control dropdown-field">
+                                        <option selected="selected">Kg</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="title">Valuation/Terms</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="col-md-5 text-right">
+                                        <label class="blazor-label">Currency</label>
+                                    </div>
+                                    <div class="col-md-7 form-input">
+                                        <input type="text" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="col-md-5 text-right">
+                                        <label class="blazor-label">Bank Rate</label>
+                                    </div>
+                                    <div class="col-md-7 form-input">
+                                        <input type="text" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="col-md-5 text-right">
+                                        <label class="blazor-label">Frt P/C</label>
+                                    </div>
+                                    <div class="col-md-7 form-input">
+                                        <select class="form-control dropdown-field">
+                                            <option selected="selected">PREPAID</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 consol-right">
+                <div class="up">
+                    <div class="row">
+                        <div class="col-md-6 text-right">
+                            <label class="col-form-label">Cargo Status</label>
+                        </div>
+                        <div class="col-md-6 text-left">
+                            <label class="col-form-label">SOME CLEAR</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 text-right">
+                            <label class="col-form-label">Cargo Notes</label>
+                        </div>
+                        <div class="col-md-6 text-left">
+                            <label class="col-form-label">SOME TEXT</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 text-right">
+                            <label class="col-form-label">Milestone</label>
+                        </div>
+                        <div class="col-md-6 text-left">
+                            <label class="col-form-label">SOME TEXT</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 text-right">
+                            <label class="col-form-label">Underbond Sent</label>
+                        </div>
+                        <div class="col-md-6 text-left">
+                            <label class="col-form-label">No</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 text-right">
+                            <label class="col-form-label">Underbond Status</label>
+                        </div>
+                        <div class="col-md-6 text-left">
+                            <label class="col-form-label">UNDERBOND APPROVAL</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="down">
+                    <div class="row">
+                        <div class="title">Date Information</div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-4 text-right">
+                            <label class="col-form-label">MAWB Cut</label>
+                        </div>
+                        <div class="col-md-5">
+                            <input type="date" class="form-control" />
+
+                        </div>
+                        <div class="col-md-3">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-4 text-right">
+                            <label class="col-form-label">ETD</label>
+                        </div>
+                        <div class="col-md-5">
+                            <input type="date" class="form-control" />
+                        </div>
+                        <div class="col-md-3">
+                            <input type="time" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-4 text-right">
+                            <label class="col-form-label">Available</label>
+                        </div>
+                        <div class="col-md-5">
+                            <input type="date" class="form-control" />
+                        </div>
+                        <div class="col-md-3">
+                            <input type="time" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-4 text-right">
+                            <label class="col-form-label">Orig Document</label>
+                        </div>
+                        <div class="col-md-5">
+                            <input type="date" class="form-control" />
+                        </div>
+                        <div class="col-md-3">
+                            <input type="time" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-4 text-right">
+                            <label class="col-form-label">EDI Receive</label>
+                        </div>
+                        <div class="col-md-5">
+                            <input type="date" class="form-control" />
+                        </div>
+                        <div class="col-md-3">
+                            <input type="time" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-4 text-right">
+                            <label class="col-form-label">ETA Discharge</label>
+                        </div>
+                        <div class="col-md-5">
+                            <input type="date" class="form-control" />
+                        </div>
+                        <div class="col-md-3">
+                            <input type="time" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-4 text-right">
+                            <label class="col-form-label">ETA Destination</label>
+                        </div>
+                        <div class="col-md-5">
+                            <input type="date" class="form-control" />
+                        </div>
+                        <div class="col-md-3">
+                            <input type="time" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-4 text-right">
+                            <label class="col-form-label">ATA Destination</label>
+                        </div>
+                        <div class="col-md-5">
+                            <input type="date" class="form-control" />
+                        </div>
+                        <div class="col-md-3">
+                            <input type="time" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row "><br /></div>
+                    <div class="row form-group">
+                        <div class="col-md-4 text-right">
+                            <label class="col-form-label">Bond Arrival</label>
+                        </div>
+                        <div class="col-md-5">
+                            <input type="date" class="form-control" />
+                        </div>
+                        <div class="col-md-3">
+                            <input type="time" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-4 text-right">
+                            <label class="col-form-label">Excpt. Report Sent</label>
+                        </div>
+                        <div class="col-md-5">
+                            <input type="date" class="form-control" />
+                        </div>
+                        <div class="col-md-3">
+                            <input type="time" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-4 text-right">
+                            <label class="col-form-label">Last Mile Carrier</label>
+                        </div>
+                        <div class="col-md-5">
+                            <input type="date" class="form-control" />
+                        </div>
+                        <div class="col-md-3">
+                            <input type="time" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <GridComponent TValue="tbl_hawbDto" List="hawbs" model="hawb" title="Hawbs" module="hawb"></GridComponent>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+
+@code {
+    [Parameter] public tbl_mawbDto mawb { get; set; }
+    [Parameter] public string masterBillNumber { get; set; }
+
+    [Parameter] public bool isActive { get; set; } = false;
+
+    private tbl_mawbDto mawbDto = new();
+    private List<tbl_hawbDto> hawbs = new();
+    private ResponseDto responseDto = null;
+    private bool HideElement { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        mawbDto = mawb;
+        //var result = await _service.GetMawbByReferenceAsync<ResponseDto>(masterBillNumber);
+        //var jsonSerializerSettings = new JsonSerializerSettings();
+        //jsonSerializerSettings.MissingMemberHandling = MissingMemberHandling.Ignore;
+        //var jsonString = JsonConvert.SerializeObject(result.Result, jsonSerializerSettings);
+
+        //if (result != null && result.IsSuccess)
+        //    mawbDto = JsonConvert.DeserializeObject<tbl_mawbDto>(jsonString, jsonSerializerSettings);
+
+        var result = await _hservice.GetByMawbReferenceAsync<ResponseDto>(masterBillNumber);
+        var jsonSerializerSettings = new JsonSerializerSettings();
+        jsonSerializerSettings.MissingMemberHandling = MissingMemberHandling.Ignore;
+        var jsonString = JsonConvert.SerializeObject(result.Result, jsonSerializerSettings);
+        //jsonSerializerSettings = new JsonSerializerSettings();
+        //jsonSerializerSettings.MissingMemberHandling = MissingMemberHandling.Ignore;
+        //jsonString = JsonConvert.SerializeObject(result.Result, jsonSerializerSettings);
+
+        if (result != null && result.IsSuccess)
+            hawbs = JsonConvert.DeserializeObject<List<tbl_hawbDto>>(jsonString, jsonSerializerSettings);
+
+        appState.OnChange += StateHasChanged;
+    }
+
+    //protected override void OnInitialized()
+    //{
+    //    appState.OnChange += StateHasChanged;
+    //}
+
+    public void Dispose()
+    {
+        appState.OnChange -= StateHasChanged;
+    }
+}

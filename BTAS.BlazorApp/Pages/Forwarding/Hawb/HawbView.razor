@@ -1,0 +1,195 @@
+﻿@page "/hawb/view"
+@page "/hawb/view/{referenceNo}"
+@*@attribute [Authorize]*@
+@inject ApplicationState appState
+@using BTAS.BlazorApp.Services.Interface
+@using BTAS.BlazorApp.Models.Dto
+@using Newtonsoft.Json
+@using BlazorTable
+@using MudBlazor
+@using Controls
+
+@inject IHawbService _service
+@inject NavigationManager _nav
+@inject IJSRuntime jsRuntime
+@implements IDisposable
+
+@code {
+    [Parameter] public string referenceNo { get; set; }
+
+    private bool HideElement { get; set; } = false;
+    List<DynamicSearchFilters> dynamicFilters = new();
+    private ResponseDto responseDto = new();
+    private MudTable<tbl_mawbDto> _table;
+    private List<tbl_hawbDto> hawbs = new();
+
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+{
+        new BreadcrumbItem("Home", icon: Icons.Material.Filled.Home, href: "/"),
+        new BreadcrumbItem("Forwarding", icon: Icons.Material.Filled.Storage, href: null),
+        new BreadcrumbItem("House", href: "/hawb"),
+         new BreadcrumbItem("View", href: null)
+    };
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await jsRuntime.InvokeVoidAsync("renderjQueryComponents");
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await _service.GetByMawbReferenceAsync<ResponseDto>(referenceNo);
+        var jsonSerializerSettings = new JsonSerializerSettings();
+        jsonSerializerSettings.MissingMemberHandling = MissingMemberHandling.Ignore;
+        var jsonString = JsonConvert.SerializeObject(result.Result, jsonSerializerSettings);
+
+        if (result != null && result.IsSuccess)
+            hawbs = JsonConvert.DeserializeObject<List<tbl_hawbDto>>(jsonString, jsonSerializerSettings);
+
+        if (result.IsSuccess)
+            HideElement = !HideElement;
+
+        appState.OnChange += StateHasChanged;
+
+        //if (appState.tabs == null)
+        //{
+        //    appState.tabs = new();
+        //}
+        //else
+        //{
+        //    if (appState.tabs.Where(x => x.Name == "Consolidation").Count() <= 0)
+        //    {
+        //        appState.tabs.Add(new TabModel
+        //        {
+        //            Name = "Consolidation",
+        //            TabUrl = "/hawb"
+        //        });
+        //        StateHasChanged();
+        //    }
+        //}
+    }
+
+    private void AddTab()
+    {
+
+        appState.AddTab(new TabModel
+            {
+                Name = appState.tabs.Count.ToString()
+            });
+    }
+
+    public void Dispose()
+    {
+        appState.OnChange -= StateHasChanged;
+    }
+
+    //private string data;
+
+    //[Parameter] public string ChildData { get; set; }
+
+    //[Parameter]
+    //public EventCallback<string> ChildDataChanged { get; set; }
+
+    //private async Task HandleOnChange(ChangeEventArgs args)
+    //{
+    //    data = args.Value.ToString();
+
+    //    await ChildDataChanged.InvokeAsync(data);
+
+    //    filter.ReferenceList = new();
+
+    //    if (data.Contains("\n"))
+    //    {
+    //        foreach (var s in data.Split("\n"))
+    //        {
+    //            if (s != "")
+    //                filter.ReferenceList.Add(s);
+    //        }
+    //    }
+    //    else
+    //    {
+    //        if (data != "")
+    //            filter.ReferenceList.Add(data);
+    //    }
+    //}
+
+    //protected override void OnParametersSet()
+    //{
+    //    base.OnParametersSet();
+    //}
+}
+@*<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2 col col-sm-12">
+            <div class="col-sm-6">
+                <h1>Consolidation</h1>
+                <p></p>
+            </div>
+            <div class="col-sm-6">
+                <div class="d-flex justify-content-end"><MudBreadcrumbs Items="_items"></MudBreadcrumbs></div>
+
+            </div>
+        </div>
+    </div>
+</section>*@
+<section class="content">
+    @* <div class="col col-md-12">*@
+    <div class="card-header">
+
+        <BTAS.BlazorApp.Controls.DynamicTabComponent reference="@referenceNo" module="hawb" />
+    </div>
+    @*   </div>*@
+    @* <div class="container-fluid">
+    <div class="row">
+    <div class="col-md-12">*@
+    <div class="card">
+        @*       <div class="row">
+        <div class="col-md-12">*@
+        <div class="card-body">
+            <BTAS.BlazorApp.Controls.HawbViewComponent hawbReference="@referenceNo" isActive="true" />
+        </div>
+        @* </div>
+        </div>
+        </div>
+
+        </div>
+        </div>*@
+    </div>
+    <div class="container-fluid">
+        @*<div class="row">
+        <div class="col-md-12">
+        <button class="btn btn-primary" @onclick="@(()=>_nav.NavigateTo("/hawb/view"))">Add New</button>
+        </div>
+        </div>*@
+        <div class="row">
+            <div class="col-md-12">
+                <div class="overlay-wrapper">
+                    @* <div hidden="@HideElement" class="overlay dark"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>*@
+                    @*<MudTable ServerData="@(new Func<TableState, Task<TableData<tbl_client_headerDto>>>(GetServerData))"
+                    Hover="true" Breakpoint="Breakpoint.Sm" RightAlignSmall="true"
+                    @ref="_table" RowsPerPage="4">
+                    <HeaderContent>
+                    <MudTh>Code</MudTh>
+                    <MudTh>Name</MudTh>
+                    <MudTh>Email</MudTh>
+                    <MudTh>Address</MudTh>
+                    <MudTh>Status</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                    <MudTd DataLabel="Id">@context.tbl_client_header_code</MudTd>
+                    <MudTd DataLabel="Item Name">@context.tbl_client_header_name</MudTd>
+                    <MudTd DataLabel="Is Completed">@context.tbl_client_header_main_email</MudTd>
+                    <MudTd DataLabel="Is Completed">@context.tbl_client_header_address1</MudTd>
+                    <MudTd DataLabel="Is Completed">@context.tbl_client_header_active</MudTd>
+                    </RowTemplate>
+                    <PagerContent>
+                    <MudTablePager PageSizeOptions="new int[] { 10, 20 }"></MudTablePager>
+                    </PagerContent>
+                    </MudTable>*@
+                    @*<BTAS.BlazorApp.Controls.GridComponent TValue="tbl_hawbDto" List="hawbs"></BTAS.BlazorApp.Controls.GridComponent>*@
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

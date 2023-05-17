@@ -1,0 +1,104 @@
+﻿@page "/consol"
+@*@attribute [Authorize]*@
+@inject ApplicationState appState
+
+@using BTAS.BlazorApp.Services.Interface
+@using BTAS.BlazorApp.Models.Dto
+@using Newtonsoft.Json
+@using BlazorTable
+@using MudBlazor
+@using BTAS.BlazorApp.Controls
+
+@inject ApplicationState appState
+@inject IMawbService _service
+@inject NavigationManager _nav
+@inject IJSRuntime jsRuntime
+
+@implements IDisposable
+
+@code {
+    [Parameter] public string referenceNo { get; set; }
+
+    private bool HideElement { get; set; } = false;
+    SearchFilter filter = new();
+    List<DynamicSearchFilters> dynamicFilters = new();
+    private ResponseDto responseDto = new();
+    private MudTable<tbl_mawbDto> _table;
+    private List<tbl_mawbDto> mawbs = new();
+
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+{
+        new BreadcrumbItem("Home", icon: Icons.Material.Filled.Home, href: "/"),
+        new BreadcrumbItem("Forwarding", icon: Icons.Material.Filled.Storage, href: null),
+        new BreadcrumbItem("Consolidation", href: null)
+    };
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await jsRuntime.InvokeVoidAsync("renderjQueryComponents");
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await _service.GetAllAsync<ResponseDto>();
+        var jsonSerializerSettings = new JsonSerializerSettings();
+        jsonSerializerSettings.MissingMemberHandling = MissingMemberHandling.Ignore;
+        var jsonString = JsonConvert.SerializeObject(result.Result, jsonSerializerSettings);
+
+        if (result != null && result.IsSuccess)
+            mawbs = JsonConvert.DeserializeObject<List<tbl_mawbDto>>(jsonString, jsonSerializerSettings);
+
+        if (result.IsSuccess)
+            HideElement = !HideElement;
+
+        appState.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        appState.OnChange -= StateHasChanged;
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        HideElement = !HideElement;
+        responseDto = await _service.GetAllAsync<ResponseDto>(@filter);
+        if (responseDto.IsSuccess)
+        {
+            var jsonSerializerSettings = new JsonSerializerSettings();
+            jsonSerializerSettings.MissingMemberHandling = MissingMemberHandling.Ignore;
+            mawbs = JsonConvert.DeserializeObject<List<tbl_mawbDto>>(responseDto.Result.ToString(), jsonSerializerSettings);
+        }
+        HideElement = !HideElement;
+    }
+}
+
+<div class="card-header">
+
+    <BTAS.BlazorApp.Controls.DynamicTabComponent reference="@referenceNo" module="consol" />
+</div>
+<div class="card">
+    <div class="card-body">
+        @* <div class="card card-primary">*@
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <EditForm Model="@filter" OnValidSubmit="@HandleValidSubmit">
+                        <BTAS.BlazorApp.Controls.SearchFiltersComponent filter="@filter" dynamicFilters="@dynamicFilters" />
+                    </EditForm>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="overlay-wrapper">
+                        <div hidden="@HideElement" class="overlay dark"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>
+                        <div>
+                            <BTAS.BlazorApp.Controls.ConsolGridComponent TValue="tbl_mawbDto" List="mawbs" model="mawb" title="Consolidation" module="consol"></BTAS.BlazorApp.Controls.ConsolGridComponent>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

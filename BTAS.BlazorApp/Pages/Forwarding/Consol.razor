@@ -1,0 +1,69 @@
+﻿@page "/"
+
+@using BTAS.BlazorApp.Services.Interface
+@using BTAS.BlazorApp.Models.Dto
+@using Newtonsoft.Json
+@using BlazorTable
+@using MudBlazor
+
+
+@inject IMawbService _service
+@inject NavigationManager _nav
+@inject IJSRuntime jsRuntime
+@inject ApplicationState appState
+@implements IDisposable
+
+<section class="content-header">
+    <div class="container-fluid">
+        <HeaderComponent title="Consolidation"></HeaderComponent>
+    </div>
+</section>
+<section class="content">
+    <div class="container-fluid">
+        <div class="col-12 col-sm-12">
+            <BTAS.BlazorApp.Controls.DynamicTabComponent reference="" module="consol" />
+            <DynamicTabContentComponent reference="@referenceNo"></DynamicTabContentComponent>
+        </div>
+        
+    </div>
+</section>
+
+
+
+@code {
+    [Parameter] public string referenceNo { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (appState.tabs.Count == 0)
+        {
+            appState.tabs.Add(new TabModel
+            {
+                Name = "consol",
+                IsActive = true,
+                Module = "consol",
+                IsTitle = true
+            });
+        }
+        appState.OnChange += StateHasChanged;
+    }
+
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+{
+        new BreadcrumbItem("Home", icon: Icons.Material.Filled.Home, href: "/"),
+        new BreadcrumbItem("Forwarding", icon: Icons.Material.Filled.Storage, href: null),
+        new BreadcrumbItem("Consolidation", href: null)
+    };
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await jsRuntime.InvokeVoidAsync("renderjQueryComponents");
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    public void Dispose()
+    {
+        appState.OnChange -= StateHasChanged;
+    }
+
+}

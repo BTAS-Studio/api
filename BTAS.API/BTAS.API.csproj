@@ -1,0 +1,150 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+		<UserSecretsId>863d5590-e202-45a7-8871-16408ae90001</UserSecretsId>
+		<RootNamespace>BTAS.API</RootNamespace>
+		<AssemblyName>BTAS.API</AssemblyName>
+		<CopyRefAssembliesToPublishDirectory>true</CopyRefAssembliesToPublishDirectory>
+		<PreserveCompilationContext>true</PreserveCompilationContext>
+		<RazorCompileOnPublish>false</RazorCompileOnPublish>
+		<Platforms>AnyCPU;x86</Platforms>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<DocumentationFile></DocumentationFile>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<Optimize>false</Optimize>
+		<DebugType>full</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+		<PlatformTarget>AnyCPU</PlatformTarget>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <Compile Remove="Areas\Waybill\Controllers\HAWBController.cs" />
+	  <Compile Remove="Areas\Waybill\Controllers\HawbIncotermsController.cs" />
+	  <Compile Remove="Areas\Waybill\Controllers\HawbItemController.cs" />
+	  <Compile Remove="Areas\Waybill\Controllers\HouseIncotermsController.cs" />
+	  <Compile Remove="Areas\Waybill\Controllers\HouseItemController.cs" />
+	  <Compile Remove="Areas\Waybill\Controllers\MAWBController.cs" />
+	  <Compile Remove="Dto\tbl_hawbDto.cs" />
+	  <Compile Remove="Dto\tbl_hawb_incotermsDto.cs" />
+	  <Compile Remove="Dto\tbl_hawb_itemsDto.cs" />
+	  <Compile Remove="Dto\tbl_mawbDto.cs" />
+	  <Compile Remove="Dto\tbl_parcel_infoDto.cs" />
+	  <Compile Remove="Dto\tbl_parcel_itemsDto.cs" />
+	  <Compile Remove="Repository\DynamicFilterRepository.cs" />
+	  <Compile Remove="Repository\HawbIncotermsRepository.cs" />
+	  <Compile Remove="Repository\HawbItemRepository.cs" />
+	  <Compile Remove="Repository\HawbRepository.cs" />
+	  <Compile Remove="Repository\MawbRepository.cs" />
+	  <Compile Remove="Repository\ParcelInfoRepository.cs" />
+	  <Compile Remove="Repository\ParcelItemRepository.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Remove="C:\Users\EkisPinoy\.nuget\packages\select.htmltopdf.netcore\22.1.0\contentFiles\any\any\Select.Html.dep" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="11.0.1" />
+		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+		<PackageReference Include="DinkToPdf" Version="1.0.8" />
+		<PackageReference Include="IronPdf" Version="2022.7.6986" />
+		<PackageReference Include="LinqKit" Version="1.2.3" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.17" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.17" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.17">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.17" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.17">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.Identity.Web" Version="1.26.0" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
+		<PackageReference Include="NSwag.AspNetCore" Version="13.18.2" />
+		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="5.0.4" />
+		<PackageReference Include="RestSharp" Version="108.0.2-alpha.0.6" />
+		<PackageReference Include="Select.HtmlToPdf.NetCore" Version="22.1.0" />
+		<PackageReference Include="SoapCore" Version="1.1.0.30" />
+		<PackageReference Include="SSH.NET" Version="2020.0.1" />
+		<PackageReference Include="Stripe.net" Version="39.103.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.5.0" />
+		<PackageReference Include="System.Linq.Dynamic.Core" Version="1.3.1" />
+		<PackageReference Include="System.ServiceModel.Duplex" Version="4.8.*" />
+		<PackageReference Include="System.ServiceModel.Http" Version="4.8.*" />
+		<PackageReference Include="System.ServiceModel.NetTcp" Version="4.8.*" />
+		<PackageReference Include="System.ServiceModel.Security" Version="4.8.*" />
+		<PackageReference Include="Wkhtmltopdf.NetCore" Version="3.0.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\BTAS.Data\BTAS.Data.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="Areas\Carriers\Data\" />
+		<Folder Include="Areas\Carriers\Views\" />
+		<Folder Include="Areas\Maintenance\Data\" />
+		<Folder Include="Areas\Maintenance\Models\" />
+		<Folder Include="Areas\Maintenance\Views\" />
+		<Folder Include="Areas\Waybill\Data\" />
+		<Folder Include="Areas\Waybill\Models\" />
+		<Folder Include="Areas\Waybill\Views\" />
+		<Folder Include="Connected Services\" />
+		<Folder Include="Services\Interface\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ContentWithTargetPath Include="..\64 bit\libwkhtmltox.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<TargetPath>..\64 bit\libwkhtmltox.dll</TargetPath>
+		</ContentWithTargetPath>
+		<ContentWithTargetPath Include="..\64 bit\libwkhtmltox.dylib">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<TargetPath>..\64 bit\libwkhtmltox.dylib</TargetPath>
+		</ContentWithTargetPath>
+		<ContentWithTargetPath Include="..\64 bit\libwkhtmltox.so">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<TargetPath>..\64 bit\libwkhtmltox.so</TargetPath>
+		</ContentWithTargetPath>
+		<ContentWithTargetPath Include="..\32 bit\libwkhtmltox.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<TargetPath>..\32 bit\libwkhtmltox.dll</TargetPath>
+		</ContentWithTargetPath>
+		<ContentWithTargetPath Include="..\32 bit\libwkhtmltox.dylib">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<TargetPath>..\32 bit\libwkhtmltox.dylib</TargetPath>
+		</ContentWithTargetPath>
+		<ContentWithTargetPath Include="..\32 bit\libwkhtmltox.so">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<TargetPath>..\32 bit\libwkhtmltox.so</TargetPath>
+		</ContentWithTargetPath>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="libwkhtmltox.dll">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="libwkhtmltox.dylib">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="libwkhtmltox.so">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Rotativa\Windows\wkhtmltopdf.exe">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+</Project>

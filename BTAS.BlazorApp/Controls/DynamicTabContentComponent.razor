@@ -1,0 +1,122 @@
+﻿@using BTAS.BlazorApp.Services.Interface
+@using BTAS.BlazorApp.Models.Dto
+@using Newtonsoft.Json
+@using MudBlazor
+
+@inject NavigationManager navigationManager
+@inject ApplicationState appState
+@inject IMawbService _service
+@inject IJSRuntime jsRuntime
+@implements IDisposable
+
+<div class="tab-content">
+    @{
+        if (appState.tabs != null)
+        {
+            foreach (var item in appState.tabs)
+            {
+
+                @switch (item.Module)
+                {
+                    case "consol":
+                        {
+                            <div id="consol" role="tabpanel" class="tab-pane fade @(item.IsActive ? "show active" : "")">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <EditForm Model="@filter" OnValidSubmit="@HandleValidSubmit">
+                                            <BTAS.BlazorApp.Controls.SearchFiltersComponent filter="@filter" dynamicFilters="@dynamicFilters" />
+                                        </EditForm>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div hidden="@HideElement" class="overlay dark"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>
+                                    <div>
+                                        <BTAS.BlazorApp.Controls.ConsolGridComponent TValue="tbl_mawbDto" List="mawbs" model="mawb" title="Consolidation" module="consol"></BTAS.BlazorApp.Controls.ConsolGridComponent>
+                                    </div>
+                                </div>
+                            </div>
+
+                            break;
+                        }
+                    case "mawb":
+                        {
+                            <div id="@item.Name" role="tabpanel" class="tab-pane fade @(item.IsActive ? "show active" : "")">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <ConsolViewComponent mawb="@mawbs.Where(x=>x.tbl_mawb_masterBillNumber==item.Name).SingleOrDefault()" masterBillNumber="@item.Name" isActive="@item.IsActive" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            break;
+                        }
+                    case "hawb":
+                        {
+                            <div id="@item.Name" role="tabpanel" class="tab-pane fade @(item.IsActive ? "show active" : "")">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <HawbViewComponent hawbReference="@item.Name" isActive="@item.IsActive" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            break;
+                        }
+                }
+            }
+        }
+    }
+</div>
+
+@code {
+    [Parameter] public string reference { get; set; }
+    [Parameter] public bool isActive { get; set; } = false;
+    [Parameter] public string module { get; set; }
+
+    SearchFilter filter = new();
+    List<DynamicSearchFilters> dynamicFilters = new();
+    private ResponseDto responseDto = new();
+    private MudTable<tbl_mawbDto> _table;
+    private List<tbl_mawbDto> mawbs = new();
+    private bool HideElement { get; set; } = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await jsRuntime.InvokeVoidAsync("renderjQueryComponents");
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await _service.GetAllAsync<ResponseDto>();
+        var jsonSerializerSettings = new JsonSerializerSettings();
+        jsonSerializerSettings.MissingMemberHandling = MissingMemberHandling.Ignore;
+        var jsonString = JsonConvert.SerializeObject(result.Result, jsonSerializerSettings);
+
+        if (result != null && result.IsSuccess)
+            mawbs = JsonConvert.DeserializeObject<List<tbl_mawbDto>>(jsonString, jsonSerializerSettings);
+
+        if (result.IsSuccess)
+            HideElement = !HideElement;
+
+        appState.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        appState.OnChange -= StateHasChanged;
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        HideElement = !HideElement;
+        responseDto = await _service.GetAllAsync<ResponseDto>(@filter);
+        if (responseDto.IsSuccess)
+        {
+            var jsonSerializerSettings = new JsonSerializerSettings();
+            jsonSerializerSettings.MissingMemberHandling = MissingMemberHandling.Ignore;
+            mawbs = JsonConvert.DeserializeObject<List<tbl_mawbDto>>(responseDto.Result.ToString(), jsonSerializerSettings);
+        }
+        HideElement = !HideElement;
+    }
+}

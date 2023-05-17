@@ -1,0 +1,849 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:ns2="http://neptune.alliedexpress.com.au/ttws-ejb/types/arrays/au/com/alliedexpress/ai/webservice" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://neptune.alliedexpress.com.au/ttws-ejb" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns3="http://neptune.alliedexpress.com.au/ttws-ejb/types" name="TnTWebService" targetNamespace="http://neptune.alliedexpress.com.au/ttws-ejb" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <xsd:schema xmlns:ns2="http://neptune.alliedexpress.com.au/ttws-ejb/types" xmlns:soap11-enc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://neptune.alliedexpress.com.au/ttws-ejb/types/arrays/au/com/alliedexpress/ai/webservice" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://neptune.alliedexpress.com.au/ttws-ejb/types/arrays/au/com/alliedexpress/ai/webservice">
+      <xsd:import namespace="http://neptune.alliedexpress.com.au/ttws-ejb/types" />
+      <xsd:complexType name="JobArray">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="value" nillable="true" type="ns2:Job" />
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:schema>
+    <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:soap11-enc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://neptune.alliedexpress.com.au/ttws-ejb/types" targetNamespace="http://neptune.alliedexpress.com.au/ttws-ejb/types">
+      <xsd:import namespace="http://neptune.alliedexpress.com.au/ttws-ejb/types/arrays/au/com/alliedexpress/ai/webservice" />
+      <xsd:complexType name="Job">
+        <xsd:sequence>
+          <xsd:element name="account" nillable="true" type="tns:Account" />
+          <xsd:element name="bookedBy" nillable="true" type="xsd:string" />
+          <xsd:element name="bookedDate" nillable="true" type="xsd:dateTime" />
+          <xsd:element name="cancelledDate" nillable="true" type="xsd:dateTime" />
+          <xsd:element name="chargedDate" nillable="true" type="xsd:dateTime" />
+          <xsd:element name="closeTime" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="cubedItems" nillable="true" type="tns:CubedItem" />
+          <xsd:element name="cubicWeight" type="xsd:double" />
+          <xsd:element name="deliveryDate" nillable="true" type="xsd:dateTime" />
+          <xsd:element name="dispatchedDate" nillable="true" type="xsd:dateTime" />
+          <xsd:element name="docketNumber" nillable="true" type="xsd:string" />
+          <xsd:element name="instructions" nillable="true" type="xsd:string" />
+          <xsd:element name="itemCount" type="xsd:int" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="items" nillable="true" type="tns:Item" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="jobErrors" nillable="true" type="tns:JobError" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="jobNotes" nillable="true" type="tns:Note" />
+          <xsd:element name="jobNumber" type="xsd:int" />
+          <xsd:element name="jobStatus" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="jobStops" nillable="true" type="tns:JobStop" />
+          <xsd:element name="jobType" nillable="true" type="xsd:string" />
+          <xsd:element name="notes" nillable="true" type="xsd:string" />
+          <xsd:element name="pickupDate" nillable="true" type="xsd:dateTime" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="pods" nillable="true" type="tns:POD" />
+          <xsd:element name="price" nillable="true" type="tns:Price" />
+          <xsd:element name="readyDate" nillable="true" type="xsd:dateTime" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="referenceNumbers" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="scannings" nillable="true" type="tns:Scanning" />
+          <xsd:element name="scheduledDeliveryDate" nillable="true" type="xsd:dateTime" />
+          <xsd:element name="scheduledPickupDate" nillable="true" type="xsd:dateTime" />
+          <xsd:element name="serviceDescription" nillable="true" type="xsd:string" />
+          <xsd:element name="serviceLevel" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="signatures" nillable="true" type="tns:ElectronicSignature" />
+          <xsd:element name="validatedHash" nillable="true" type="xsd:string" />
+          <xsd:element name="vehicle" nillable="true" type="tns:Vehicle" />
+          <xsd:element name="volume" type="xsd:double" />
+          <xsd:element name="weight" type="xsd:double" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="Account">
+        <xsd:sequence>
+          <xsd:element name="accountCode" nillable="true" type="xsd:string" />
+          <xsd:element name="accountHash" nillable="true" type="xsd:string" />
+          <xsd:element name="accountKey" type="xsd:int" />
+          <xsd:element name="accountLedger" nillable="true" type="xsd:string" />
+          <xsd:element name="accountName" nillable="true" type="xsd:string" />
+          <xsd:element name="accountState" nillable="true" type="xsd:string" />
+          <xsd:element name="defaultAddress" nillable="true" type="xsd:string" />
+          <xsd:element name="defaultContact" nillable="true" type="xsd:string" />
+          <xsd:element name="defaultPhoneNo" nillable="true" type="xsd:string" />
+          <xsd:element name="defaultPostCode" nillable="true" type="xsd:string" />
+          <xsd:element name="defaultState" nillable="true" type="xsd:string" />
+          <xsd:element name="defaultSuburbName" nillable="true" type="xsd:string" />
+          <xsd:element name="discountLevel" type="xsd:int" />
+          <xsd:element name="priceSuppressed" type="xsd:boolean" />
+          <xsd:element name="shippingDivision" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="CubedItem">
+        <xsd:complexContent mixed="false">
+          <xsd:extension base="tns:Item">
+            <xsd:sequence>
+              <xsd:element name="barcode" nillable="true" type="xsd:string" />
+              <xsd:element name="consignment" nillable="true" type="xsd:string" />
+              <xsd:element name="cubedDate" nillable="true" type="xsd:dateTime" />
+              <xsd:element name="dimensionerName" nillable="true" type="xsd:string" />
+              <xsd:element name="processedDate" nillable="true" type="xsd:dateTime" />
+              <xsd:element name="status" nillable="true" type="xsd:string" />
+              <xsd:element name="statusDate" nillable="true" type="xsd:dateTime" />
+            </xsd:sequence>
+          </xsd:extension>
+        </xsd:complexContent>
+      </xsd:complexType>
+      <xsd:complexType name="Item">
+        <xsd:sequence>
+          <xsd:element name="dangerous" type="xsd:boolean" />
+          <xsd:element name="height" type="xsd:double" />
+          <xsd:element name="itemCount" type="xsd:int" />
+          <xsd:element name="length" type="xsd:double" />
+          <xsd:element name="volume" type="xsd:double" />
+          <xsd:element name="weight" type="xsd:double" />
+          <xsd:element name="width" type="xsd:double" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ItemLabel">
+        <xsd:complexContent mixed="false">
+          <xsd:extension base="tns:Item">
+            <xsd:sequence>
+              <xsd:element name="cartonId" nillable="true" type="xsd:string" />
+              <xsd:element name="description" nillable="true" type="xsd:string" />
+            </xsd:sequence>
+          </xsd:extension>
+        </xsd:complexContent>
+      </xsd:complexType>
+      <xsd:complexType name="JobError">
+        <xsd:sequence>
+          <xsd:element name="errorMsg" nillable="true" type="xsd:string" />
+          <xsd:element name="fieldData" nillable="true" type="xsd:string" />
+          <xsd:element name="fieldName" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="Note">
+        <xsd:sequence>
+          <xsd:element name="consignmentNote" nillable="true" type="xsd:string" />
+          <xsd:element name="emailAddress" nillable="true" type="xsd:string" />
+          <xsd:element name="entryDate" nillable="true" type="xsd:string" />
+          <xsd:element name="note" nillable="true" type="xsd:string" />
+          <xsd:element name="userName" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="JobStop">
+        <xsd:sequence>
+          <xsd:element name="companyName" nillable="true" type="xsd:string" />
+          <xsd:element name="contact" nillable="true" type="xsd:string" />
+          <xsd:element name="emailAddress" nillable="true" type="xsd:string" />
+          <xsd:element name="geographicAddress" nillable="true" type="tns:GeographicAddress" />
+          <xsd:element name="jobStopFlag" nillable="true" type="xsd:string" />
+          <xsd:element name="phoneNumber" nillable="true" type="xsd:string" />
+          <xsd:element name="stopNumber" type="xsd:int" />
+          <xsd:element name="stopType" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="GeographicAddress">
+        <xsd:sequence>
+          <xsd:element name="address1" nillable="true" type="xsd:string" />
+          <xsd:element name="address2" nillable="true" type="xsd:string" />
+          <xsd:element name="country" nillable="true" type="xsd:string" />
+          <xsd:element name="postCode" nillable="true" type="xsd:string" />
+          <xsd:element name="sortCode" nillable="true" type="xsd:string" />
+          <xsd:element name="state" nillable="true" type="xsd:string" />
+          <xsd:element name="suburb" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="POD">
+        <xsd:sequence>
+          <xsd:element name="consignmentNote" nillable="true" type="xsd:string" />
+          <xsd:element name="podData" nillable="true" type="xsd:base64Binary" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="Price">
+        <xsd:sequence>
+          <xsd:element name="chargeQuantity" type="xsd:int" />
+          <xsd:element name="cubicFactor" type="xsd:int" />
+          <xsd:element name="discountClass" nillable="true" type="xsd:string" />
+          <xsd:element name="discountRate" type="xsd:double" />
+          <xsd:element name="grossPrice" type="xsd:double" />
+          <xsd:element name="jobCode" nillable="true" type="xsd:string" />
+          <xsd:element name="netPrice" type="xsd:double" />
+          <xsd:element name="rateCode" nillable="true" type="xsd:string" />
+          <xsd:element name="reason" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="Scanning">
+        <xsd:sequence>
+          <xsd:element name="batchID" nillable="true" type="xsd:string" />
+          <xsd:element name="consignmentNote" nillable="true" type="xsd:string" />
+          <xsd:element name="consignmentPart" nillable="true" type="xsd:string" />
+          <xsd:element name="driverNum" nillable="true" type="xsd:string" />
+          <xsd:element name="location" nillable="true" type="xsd:string" />
+          <xsd:element name="scanDate" nillable="true" type="xsd:dateTime" />
+          <xsd:element name="userID" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ElectronicSignature">
+        <xsd:sequence>
+          <xsd:element name="docketNumber" nillable="true" type="xsd:string" />
+          <xsd:element name="recipientName" nillable="true" type="xsd:string" />
+          <xsd:element name="signatureImage" nillable="true" type="xsd:base64Binary" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="Vehicle">
+        <xsd:sequence>
+          <xsd:element name="location" nillable="true" type="tns:GeographicAddress" />
+          <xsd:element name="vehicleID" type="xsd:int" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="JobLabel">
+        <xsd:complexContent mixed="false">
+          <xsd:extension base="tns:Job">
+            <xsd:sequence>
+              <xsd:element minOccurs="0" maxOccurs="unbounded" name="itemsLabel" nillable="true" type="tns:ItemLabel" />
+              <xsd:element name="whatLabel" type="xsd:int" />
+            </xsd:sequence>
+          </xsd:extension>
+        </xsd:complexContent>
+      </xsd:complexType>
+      <xsd:complexType name="JobPrice">
+        <xsd:sequence>
+          <xsd:element name="errors" nillable="true" type="xsd:string" />
+          <xsd:element name="jobCharge" type="xsd:double" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="surcharges" nillable="true" type="tns:JobCharge" />
+          <xsd:element name="totalCharge" type="xsd:double" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="JobCharge">
+        <xsd:sequence>
+          <xsd:element name="chargeCode" nillable="true" type="xsd:string" />
+          <xsd:element name="description" nillable="true" type="xsd:string" />
+          <xsd:element name="netValue" type="xsd:double" />
+          <xsd:element name="quantity" type="xsd:int" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="JobIds">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="jobIds" type="xsd:int" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ShipmentStatus">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="statusBarcodesList" nillable="true" type="tns:ScanStatus" />
+          <xsd:element name="statusError" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ScanStatus">
+        <xsd:sequence>
+          <xsd:element name="consignmentNote" nillable="true" type="xsd:string" />
+          <xsd:element name="depotLocation" nillable="true" type="xsd:string" />
+          <xsd:element name="scannedBarcode" nillable="true" type="xsd:string" />
+          <xsd:element name="scannedStatus" nillable="true" type="xsd:string" />
+          <xsd:element name="scannnedTimestamp" nillable="true" type="xsd:dateTime" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="JobExt">
+        <xsd:sequence>
+          <xsd:element name="freightOversizedHomeDel" type="xsd:double" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="itemsExt" nillable="true" type="tns:ItemExt" />
+          <xsd:element name="job" nillable="true" type="tns:Job" />
+          <xsd:element name="onForwardChargeDelivery" type="xsd:double" />
+          <xsd:element name="onForwardChargePickup" type="xsd:double" />
+          <xsd:element name="quoteNumber" type="xsd:int" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ItemExt">
+        <xsd:sequence>
+          <xsd:element name="item" nillable="true" type="tns:Item" />
+          <xsd:element name="itemCode" nillable="true" type="xsd:string" />
+          <xsd:element name="itemDesciption" nillable="true" type="xsd:string" />
+          <xsd:element name="itemReference" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="Client">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="clientCodes" nillable="true" type="xsd:string" />
+          <xsd:element name="clientID" type="xsd:int" />
+          <xsd:element name="clientName" nillable="true" type="xsd:string" />
+          <xsd:element name="defaultShippingDivision" nillable="true" type="xsd:string" />
+          <xsd:element name="errorTemplate" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="ipAddresses" nillable="true" type="xsd:string" />
+          <xsd:element name="signature" nillable="true" type="xsd:string" />
+          <xsd:element name="siteTemplate" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:schema>
+  </types>
+  <message name="TTWS_getShipmentsStatus">
+    <part name="String_1" type="xsd:string" />
+    <part name="String_2" type="xsd:string" />
+  </message>
+  <message name="TTWS_cancelPendingJobResponse" />
+  <message name="TTWS_getLocalCourierJobDetails">
+    <part name="String_1" type="xsd:string" />
+    <part name="int_2" type="xsd:int" />
+    <part name="String_3" type="xsd:string" />
+    <part name="String_4" type="xsd:string" />
+    <part name="String_5" type="xsd:string" />
+  </message>
+  <message name="TTWS_getDispatchedJobs">
+    <part name="String_1" type="xsd:string" />
+    <part name="Account_2" type="ns3:Account" />
+  </message>
+  <message name="TTWS_validateClientResponse">
+    <part name="result" type="ns3:Client" />
+  </message>
+  <message name="TTWS_generateLabel">
+    <part name="String_1" type="xsd:string" />
+    <part name="Job_2" type="ns3:Job" />
+    <part name="int_3" type="xsd:int" />
+  </message>
+  <message name="TTWS_cancelJob">
+    <part name="String_1" type="xsd:string" />
+    <part name="int_2" type="xsd:int" />
+    <part name="String_3" type="xsd:string" />
+    <part name="String_4" type="xsd:string" />
+  </message>
+  <message name="TTWS_savePendingJob">
+    <part name="String_1" type="xsd:string" />
+    <part name="Job_2" type="ns3:Job" />
+  </message>
+  <message name="TTWS_deletePendingJobs">
+    <part name="String_1" type="xsd:string" />
+    <part name="JobIds_2" type="ns3:JobIds" />
+  </message>
+  <message name="TTWS_calculatePriceResponse">
+    <part name="result" type="ns3:JobPrice" />
+  </message>
+  <message name="TTWS_getDispatchedJobsResponse">
+    <part name="result" type="ns2:JobArray" />
+  </message>
+  <message name="TTWS_generateLabelResponse">
+    <part name="result" type="xsd:base64Binary" />
+  </message>
+  <message name="TTWS_chargeJobsResponse" />
+  <message name="TTWS_cancelJobResponse" />
+  <message name="TTWS_validateBookingExtResponse">
+    <part name="result" type="ns3:JobExt" />
+  </message>
+  <message name="TTWS_validateBookingResponse">
+    <part name="result" type="ns3:Job" />
+  </message>
+  <message name="TTWS_getChargedJobs">
+    <part name="String_1" type="xsd:string" />
+    <part name="Account_2" type="ns3:Account" />
+  </message>
+  <message name="TTWS_bookLocalCourierJob">
+    <part name="String_1" type="xsd:string" />
+    <part name="Job_2" type="ns3:Job" />
+  </message>
+  <message name="TTWS_getJobAsXML">
+    <part name="String_1" type="xsd:string" />
+    <part name="String_2" type="xsd:string" />
+    <part name="String_3" type="xsd:string" />
+    <part name="String_4" type="xsd:string" />
+  </message>
+  <message name="TTWS_getChargedJobsResponse">
+    <part name="result" type="ns2:JobArray" />
+  </message>
+  <message name="TTWS_getLabel">
+    <part name="String_1" type="xsd:string" />
+    <part name="String_2" type="xsd:string" />
+    <part name="String_3" type="xsd:string" />
+    <part name="String_4" type="xsd:string" />
+    <part name="String_5" type="xsd:string" />
+    <part name="int_6" type="xsd:int" />
+  </message>
+  <message name="TTWS_getIntranetJobs">
+    <part name="String_1" type="xsd:string" />
+    <part name="String_2" type="xsd:string" />
+    <part name="String_3" type="xsd:string" />
+    <part name="String_4" type="xsd:string" />
+    <part name="String_5" type="xsd:string" />
+  </message>
+  <message name="TTWS_getLabelResponse">
+    <part name="result" type="xsd:base64Binary" />
+  </message>
+  <message name="TTWS_setNote">
+    <part name="String_1" type="xsd:string" />
+    <part name="Note_2" type="ns3:Note" />
+  </message>
+  <message name="TTWS_dispatchPendingJobsResponse">
+    <part name="result" type="ns2:JobArray" />
+  </message>
+  <message name="TTWS_dispatchPendingJobs">
+    <part name="String_1" type="xsd:string" />
+    <part name="JobIds_2" type="ns3:JobIds" />
+  </message>
+  <message name="TTWS_hideJobs">
+    <part name="String_1" type="xsd:string" />
+    <part name="JobIds_2" type="ns3:JobIds" />
+  </message>
+  <message name="TTWS_validateBooking">
+    <part name="String_1" type="xsd:string" />
+    <part name="Job_2" type="ns3:Job" />
+  </message>
+  <message name="TTWS_getLocalCourierAccountDefaults">
+    <part name="String_1" type="xsd:string" />
+    <part name="String_2" type="xsd:string" />
+    <part name="String_3" type="xsd:string" />
+    <part name="String_4" type="xsd:string" />
+  </message>
+  <message name="TTWS_generateSpecificLabelResponse">
+    <part name="result" type="xsd:base64Binary" />
+  </message>
+  <message name="TTWS_deletePendingJobsResponse" />
+  <message name="TTWS_getAccountDefaults">
+    <part name="String_1" type="xsd:string" />
+    <part name="String_2" type="xsd:string" />
+    <part name="String_3" type="xsd:string" />
+    <part name="String_4" type="xsd:string" />
+  </message>
+  <message name="TTWS_chargeJobs">
+    <part name="String_1" type="xsd:string" />
+    <part name="JobIds_2" type="ns3:JobIds" />
+  </message>
+  <message name="TTWS_quoteLocalCourierJob">
+    <part name="String_1" type="xsd:string" />
+    <part name="Job_2" type="ns3:Job" />
+  </message>
+  <message name="TTWS_getJobDetailsResponse">
+    <part name="result" type="ns3:Job" />
+  </message>
+  <message name="TTWS_getJobDetails">
+    <part name="String_1" type="xsd:string" />
+    <part name="String_2" type="xsd:string" />
+    <part name="String_3" type="xsd:string" />
+    <part name="String_4" type="xsd:string" />
+    <part name="String_5" type="xsd:string" />
+  </message>
+  <message name="TTWS_getJobAsXMLResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+  <message name="TTWS_getPendingJobsResponse">
+    <part name="result" type="ns2:JobArray" />
+  </message>
+  <message name="TTWS_generateSpecificLabel">
+    <part name="String_1" type="xsd:string" />
+    <part name="JobLabel_2" type="ns3:JobLabel" />
+    <part name="int_3" type="xsd:int" />
+    <part name="int_4" type="xsd:int" />
+  </message>
+  <message name="TTWS_cancelDispatchJob">
+    <part name="String_1" type="xsd:string" />
+    <part name="String_2" type="xsd:string" />
+    <part name="String_3" type="xsd:string" />
+  </message>
+  <message name="TTWS_quoteLocalCourierJobResponse">
+    <part name="result" type="ns3:Job" />
+  </message>
+  <message name="TTWS_getIntranetJobsResponse">
+    <part name="result" type="ns2:JobArray" />
+  </message>
+  <message name="TTWS_cancelPendingJob">
+    <part name="String_1" type="xsd:string" />
+    <part name="int_2" type="xsd:int" />
+  </message>
+  <message name="TTWS_getLocalCourierJobDetailsResponse">
+    <part name="result" type="ns3:Job" />
+  </message>
+  <message name="TTWS_validateClient">
+    <part name="String_1" type="xsd:string" />
+  </message>
+  <message name="TTWS_bookLocalCourierJobResponse">
+    <part name="result" type="ns3:Job" />
+  </message>
+  <message name="TTWS_validateBookingExt">
+    <part name="String_1" type="xsd:string" />
+    <part name="JobExt_2" type="ns3:JobExt" />
+  </message>
+  <message name="TTWS_cancelDispatchJobResponse">
+    <part name="result" type="xsd:int" />
+  </message>
+  <message name="TTWS_savePendingJobResponse" />
+  <message name="TTWS_setNoteResponse" />
+  <message name="TTWS_calculatePrice">
+    <part name="String_1" type="xsd:string" />
+    <part name="Job_2" type="ns3:Job" />
+  </message>
+  <message name="TTWS_getLocalCourierAccountDefaultsResponse">
+    <part name="result" type="ns3:Account" />
+  </message>
+  <message name="TTWS_getShipmentsStatusResponse">
+    <part name="result" type="ns3:ShipmentStatus" />
+  </message>
+  <message name="TTWS_hideJobsResponse" />
+  <message name="TTWS_getAccountDefaultsResponse">
+    <part name="result" type="ns3:Account" />
+  </message>
+  <message name="TTWS_getPendingJobs">
+    <part name="String_1" type="xsd:string" />
+    <part name="Account_2" type="ns3:Account" />
+  </message>
+  <portType name="TTWS">
+    <operation name="bookLocalCourierJob" parameterOrder="String_1 Job_2">
+      <input message="tns:TTWS_bookLocalCourierJob" />
+      <output message="tns:TTWS_bookLocalCourierJobResponse" />
+    </operation>
+    <operation name="calculatePrice" parameterOrder="String_1 Job_2">
+      <input message="tns:TTWS_calculatePrice" />
+      <output message="tns:TTWS_calculatePriceResponse" />
+    </operation>
+    <operation name="cancelDispatchJob" parameterOrder="String_1 String_2 String_3">
+      <input message="tns:TTWS_cancelDispatchJob" />
+      <output message="tns:TTWS_cancelDispatchJobResponse" />
+    </operation>
+    <operation name="cancelJob" parameterOrder="String_1 int_2 String_3 String_4">
+      <input message="tns:TTWS_cancelJob" />
+      <output message="tns:TTWS_cancelJobResponse" />
+    </operation>
+    <operation name="cancelPendingJob" parameterOrder="String_1 int_2">
+      <input message="tns:TTWS_cancelPendingJob" />
+      <output message="tns:TTWS_cancelPendingJobResponse" />
+    </operation>
+    <operation name="chargeJobs" parameterOrder="String_1 JobIds_2">
+      <input message="tns:TTWS_chargeJobs" />
+      <output message="tns:TTWS_chargeJobsResponse" />
+    </operation>
+    <operation name="deletePendingJobs" parameterOrder="String_1 JobIds_2">
+      <input message="tns:TTWS_deletePendingJobs" />
+      <output message="tns:TTWS_deletePendingJobsResponse" />
+    </operation>
+    <operation name="dispatchPendingJobs" parameterOrder="String_1 JobIds_2">
+      <input message="tns:TTWS_dispatchPendingJobs" />
+      <output message="tns:TTWS_dispatchPendingJobsResponse" />
+    </operation>
+    <operation name="generateLabel" parameterOrder="String_1 Job_2 int_3">
+      <input message="tns:TTWS_generateLabel" />
+      <output message="tns:TTWS_generateLabelResponse" />
+    </operation>
+    <operation name="generateSpecificLabel" parameterOrder="String_1 JobLabel_2 int_3 int_4">
+      <input message="tns:TTWS_generateSpecificLabel" />
+      <output message="tns:TTWS_generateSpecificLabelResponse" />
+    </operation>
+    <operation name="getAccountDefaults" parameterOrder="String_1 String_2 String_3 String_4">
+      <input message="tns:TTWS_getAccountDefaults" />
+      <output message="tns:TTWS_getAccountDefaultsResponse" />
+    </operation>
+    <operation name="getChargedJobs" parameterOrder="String_1 Account_2">
+      <input message="tns:TTWS_getChargedJobs" />
+      <output message="tns:TTWS_getChargedJobsResponse" />
+    </operation>
+    <operation name="getDispatchedJobs" parameterOrder="String_1 Account_2">
+      <input message="tns:TTWS_getDispatchedJobs" />
+      <output message="tns:TTWS_getDispatchedJobsResponse" />
+    </operation>
+    <operation name="getIntranetJobs" parameterOrder="String_1 String_2 String_3 String_4 String_5">
+      <input message="tns:TTWS_getIntranetJobs" />
+      <output message="tns:TTWS_getIntranetJobsResponse" />
+    </operation>
+    <operation name="getJobAsXML" parameterOrder="String_1 String_2 String_3 String_4">
+      <input message="tns:TTWS_getJobAsXML" />
+      <output message="tns:TTWS_getJobAsXMLResponse" />
+    </operation>
+    <operation name="getJobDetails" parameterOrder="String_1 String_2 String_3 String_4 String_5">
+      <input message="tns:TTWS_getJobDetails" />
+      <output message="tns:TTWS_getJobDetailsResponse" />
+    </operation>
+    <operation name="getLabel" parameterOrder="String_1 String_2 String_3 String_4 String_5 int_6">
+      <input message="tns:TTWS_getLabel" />
+      <output message="tns:TTWS_getLabelResponse" />
+    </operation>
+    <operation name="getLocalCourierAccountDefaults" parameterOrder="String_1 String_2 String_3 String_4">
+      <input message="tns:TTWS_getLocalCourierAccountDefaults" />
+      <output message="tns:TTWS_getLocalCourierAccountDefaultsResponse" />
+    </operation>
+    <operation name="getLocalCourierJobDetails" parameterOrder="String_1 int_2 String_3 String_4 String_5">
+      <input message="tns:TTWS_getLocalCourierJobDetails" />
+      <output message="tns:TTWS_getLocalCourierJobDetailsResponse" />
+    </operation>
+    <operation name="getPendingJobs" parameterOrder="String_1 Account_2">
+      <input message="tns:TTWS_getPendingJobs" />
+      <output message="tns:TTWS_getPendingJobsResponse" />
+    </operation>
+    <operation name="getShipmentsStatus" parameterOrder="String_1 String_2">
+      <input message="tns:TTWS_getShipmentsStatus" />
+      <output message="tns:TTWS_getShipmentsStatusResponse" />
+    </operation>
+    <operation name="hideJobs" parameterOrder="String_1 JobIds_2">
+      <input message="tns:TTWS_hideJobs" />
+      <output message="tns:TTWS_hideJobsResponse" />
+    </operation>
+    <operation name="quoteLocalCourierJob" parameterOrder="String_1 Job_2">
+      <input message="tns:TTWS_quoteLocalCourierJob" />
+      <output message="tns:TTWS_quoteLocalCourierJobResponse" />
+    </operation>
+    <operation name="savePendingJob" parameterOrder="String_1 Job_2">
+      <input message="tns:TTWS_savePendingJob" />
+      <output message="tns:TTWS_savePendingJobResponse" />
+    </operation>
+    <operation name="setNote" parameterOrder="String_1 Note_2">
+      <input message="tns:TTWS_setNote" />
+      <output message="tns:TTWS_setNoteResponse" />
+    </operation>
+    <operation name="validateBooking" parameterOrder="String_1 Job_2">
+      <input message="tns:TTWS_validateBooking" />
+      <output message="tns:TTWS_validateBookingResponse" />
+    </operation>
+    <operation name="validateBookingExt" parameterOrder="String_1 JobExt_2">
+      <input message="tns:TTWS_validateBookingExt" />
+      <output message="tns:TTWS_validateBookingExtResponse" />
+    </operation>
+    <operation name="validateClient" parameterOrder="String_1">
+      <input message="tns:TTWS_validateClient" />
+      <output message="tns:TTWS_validateClientResponse" />
+    </operation>
+  </portType>
+  <binding name="TTWSBinding" type="tns:TTWS">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="rpc" />
+    <operation name="bookLocalCourierJob">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </output>
+    </operation>
+    <operation name="calculatePrice">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </output>
+    </operation>
+    <operation name="cancelDispatchJob">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </output>
+    </operation>
+    <operation name="cancelJob">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </output>
+    </operation>
+    <operation name="cancelPendingJob">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </output>
+    </operation>
+    <operation name="chargeJobs">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </output>
+    </operation>
+    <operation name="deletePendingJobs">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </output>
+    </operation>
+    <operation name="dispatchPendingJobs">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </output>
+    </operation>
+    <operation name="generateLabel">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </output>
+    </operation>
+    <operation name="generateSpecificLabel">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </output>
+    </operation>
+    <operation name="getAccountDefaults">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </output>
+    </operation>
+    <operation name="getChargedJobs">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </output>
+    </operation>
+    <operation name="getDispatchedJobs">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </output>
+    </operation>
+    <operation name="getIntranetJobs">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </output>
+    </operation>
+    <operation name="getJobAsXML">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </output>
+    </operation>
+    <operation name="getJobDetails">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </output>
+    </operation>
+    <operation name="getLabel">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </output>
+    </operation>
+    <operation name="getLocalCourierAccountDefaults">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </output>
+    </operation>
+    <operation name="getLocalCourierJobDetails">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </output>
+    </operation>
+    <operation name="getPendingJobs">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </output>
+    </operation>
+    <operation name="getShipmentsStatus">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </output>
+    </operation>
+    <operation name="hideJobs">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </output>
+    </operation>
+    <operation name="quoteLocalCourierJob">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </output>
+    </operation>
+    <operation name="savePendingJob">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </output>
+    </operation>
+    <operation name="setNote">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </output>
+    </operation>
+    <operation name="validateBooking">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </output>
+    </operation>
+    <operation name="validateBookingExt">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </output>
+    </operation>
+    <operation name="validateClient">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://neptune.alliedexpress.com.au/ttws-ejb" />
+      </output>
+    </operation>
+  </binding>
+  <service name="TnTWebService">
+    <port name="TTWSPort" binding="tns:TTWSBinding">
+      <soap:address location="http://neptune.alliedexpress.com.au:8080/ttws-ejb/TTWS" />
+    </port>
+  </service>
+</definitions>

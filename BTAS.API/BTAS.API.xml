@@ -1,0 +1,812 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>BTAS.API</name>
+    </assembly>
+    <members>
+        <member name="M:BTAS.API.Areas.Maintenance.Controllers.ShipmentController.GetShipmentSummary(BTAS.API.Models.ShipmentSearchRequest)">
+            <summary>
+            For shipment summary searching with user token validation
+            </summary>
+            <param name="request">
+            json request from body as:
+            {
+               "fromDate": "",
+               "toDate": "",
+               "shipID": [
+               ],
+               "tracking": "",
+               "shipperName": "",
+               "carrierName": "",
+               "deliveryName": "",
+               "isManifested":1
+            }
+            </param>
+            <returns>
+            tbl_shipment_searchDto class
+            </returns>
+        </member>
+        <member name="M:BTAS.API.Areas.Maintenance.Controllers.ShipmentController.GetShipmentDetails(BTAS.API.Models.ShipmentDetailsRequest)">
+            <summary>
+            Get shipment details based on given request
+            </summary>
+            <param name="request">
+            {
+            "tracking":"100004430",
+            "shipperId":"AUSTSYD"
+            }
+            </param>
+            <returns>
+            class ShipmentDetails
+            </returns>
+        </member>
+        <member name="M:BTAS.API.Areas.Waybill.Controllers.MASTERController.#ctor(BTAS.API.Repository.MasterRepository,BTAS.API.Repository.Interface.IAuthenticationRepository)">
+            <summary>
+            This is for the creation of MASTER
+            </summary>
+            <param name="repository"></param>
+            <param name="authRepo"></param>
+        </member>
+        <member name="M:BTAS.API.Areas.Waybill.Controllers.MASTERController.CreateAsync(BTAS.API.Dto.tbl_masterDto)">
+             <summary>
+             Create MASTER
+             </summary>
+             <param name="request">
+             </param>
+             <example>
+             {
+            "idtbl_master": 0,
+            "tbl_master_masterBillNumber": "11111",
+            "tbl_master_bookingNumber": "11111",
+            "tbl_master_type": "AGT",
+            "tbl_master_transportType": "AIR",
+            "tbl_master_containerMode": "",
+            "houses": [],
+            "containers": []
+              }
+             </example>
+             <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Controllers.ManifestController.Manifest(BTAS.API.Models.ManifestRequest)">
+             <summary>
+             Process method can be consumed to manifest list of consignment ids
+             </summary>
+             <param name="request">
+             {
+             "shipperId": "AUSTSYD",
+             "carrier": "BORDEDI",
+             "consignmentId": ["123", "323", "323"] --- 400 maximum for now
+             }
+             </param>
+             <param name="sendToFtp">
+             To specify if generated XML file will be send to the SFTP server. Default is "false".
+             </param>
+             <returns>
+             {
+              "success": true,
+              "response": "200",
+              "responseDescription": "Success",
+              "dataArray": {
+                "message": [
+                  {
+                    "success": true,
+                    "manifest_ref": "MAUSTSYD0000000001",
+                    "manifested_count": 20,
+                    "manifested_failed_count": 3,
+                    "failed_consignments": [
+                      "123",
+                      "323",
+                      "323"
+                    ],
+                    "response": "Created with some failed consignments"
+                  }
+                ]
+              }
+            }
+             </returns>
+        </member>
+        <member name="M:BTAS.API.Controllers.ManifestController.RequestTokenAsync(System.String)">
+            <summary>
+            Requests access token from PHP API (used only for testing purposes atm)
+            </summary>
+            <param name="apikey">Test API key</param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Controllers.ManifestController.CreateXML(System.String,System.Collections.Generic.List{BTAS.API.Models.Manifest})">
+            <summary>
+            CreateXML generates XML file based on provided parameters
+            </summary>
+            <param name="filename">file.xml</param>
+            <param name="template">Manifest class</param>
+            <returns>success or error</returns>
+        </member>
+        <member name="M:BTAS.API.Repository.AuthenticationRepository.ValidateTokenAsync(System.String,System.String,System.String)">
+            <summary>
+            Validates the submitted parameters
+            </summary>
+            <param name="apikey">Client's APIKEY</param>
+            <param name="token">Client's requested token from PHP API</param>
+            <param name="shipperId">Client's provided Shipper Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.CarrierInfoRepository.GetAllAsync">
+            <summary>
+            Retrieves all carrier info
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.CarrierInfoRepository.GetByIdAsync(System.Int32)">
+            <summary>
+            Retrieves a single carrier info based on id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.CarrierInfoRepository.CreateUpdateAsync(BTAS.API.Dto.tbl_carrier_infoDto)">
+            <summary>
+            Creates/updates a manifest record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.CarrierInfoRepository.DeleteAsync(System.Int32)">
+            <summary>
+            Deletes existing manifested record based on id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ClientHeaderRepository.GetAllAsync">
+            <summary>
+            Retrieves all client header
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ClientHeaderRepository.GetByIdAsync(System.Int32)">
+            <summary>
+            Retrieves a single client header based on id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ClientHeaderRepository.CreateUpdateAsync(BTAS.API.Dto.tbl_client_headerDto)">
+            <summary>
+            Creates/updates a client header record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ClientHeaderRepository.CreateAsync(BTAS.API.Dto.tbl_client_headerDto)">
+            <summary>
+            Creates a client header record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ClientHeaderRepository.UpdateAsync(BTAS.API.Dto.tbl_client_headerDto)">
+            <summary>
+            Updates a client header record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ClientHeaderRepository.DeleteAsync(System.Int32)">
+            <summary>
+            Deletes existing client header record based on id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ContactDetailsRepository.GetAllAsync">
+            <summary>
+            Retrieves all Contact Details
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ContactDetailsRepository.GetByIdAsync(System.Int32)">
+            <summary>
+            Retrieves a single Contact Details based on id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ContactDetailsRepository.CreateUpdateAsync(BTAS.API.Dto.tbl_client_contact_detailsDto)">
+            <summary>
+            Creates/updates a Contact Details record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ContactDetailsRepository.CreateAsync(BTAS.API.Dto.tbl_client_contact_detailsDto)">
+            <summary>
+            Creates a Contact Details record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ContactDetailsRepository.UpdateAsync(BTAS.API.Dto.tbl_client_contact_detailsDto)">
+            <summary>
+            Updates a Contact Details record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ContactDetailsRepository.DeleteAsync(System.Int32)">
+            <summary>
+            Deletes existing Contact Details record based on id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ContainerRepository.GetAllAsync">
+            <summary>
+            Retrieves all container
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ContainerRepository.GetByIdAsync(System.Int32)">
+            <summary>
+            Retrieves a single container based on id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ContainerRepository.CreateUpdateAsync(BTAS.API.Dto.tbl_containerDto)">
+            <summary>
+            Creates/updates a container record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ContainerRepository.CreateAsync(BTAS.API.Dto.tbl_containerDto)">
+            <summary>
+            Creates a container record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ContainerRepository.UpdateAsync(BTAS.API.Dto.tbl_containerDto)">
+            <summary>
+            Updates a container record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ContainerRepository.DeleteAsync(System.Int32)">
+            <summary>
+            Deletes existing container record based on id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.HouseIncotermsRepository.GetAllAsync">
+            <summary>
+            Retrieves all HOUSE incoterm
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.HouseIncotermsRepository.GetByIdAsync(System.Int32)">
+            <summary>
+            Retrieves a single HOUSE incoterm based on id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.HouseIncotermsRepository.CreateUpdateAsync(BTAS.API.Dto.tbl_house_incotermsDto)">
+            <summary>
+            Creates/updates a HOUSE incoterm record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.HouseIncotermsRepository.CreateAsync(BTAS.API.Dto.tbl_house_incotermsDto)">
+            <summary>
+            Creates a HOUSE incoterm record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.HouseIncotermsRepository.UpdateAsync(BTAS.API.Dto.tbl_house_incotermsDto)">
+            <summary>
+            Updates a HOUSE incoterm record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.HouseIncotermsRepository.DeleteAsync(System.Int32)">
+            <summary>
+            Deletes existing HOUSE incoterm record based on id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.HouseItemRepository.GetAllAsync">
+            <summary>
+            Retrieves all HOUSE Item
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.HouseItemRepository.GetByIdAsync(System.Int32)">
+            <summary>
+            Retrieves a single HOUSE Item based on id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.HouseItemRepository.CreateUpdateAsync(BTAS.API.Dto.tbl_house_itemDto)">
+            <summary>
+            Creates/updates a HOUSE Item record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.HouseItemRepository.CreateAsync(BTAS.API.Dto.tbl_house_itemDto)">
+            <summary>
+            Creates a HOUSE Item record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.HouseItemRepository.UpdateAsync(BTAS.API.Dto.tbl_house_itemDto)">
+            <summary>
+            Updates a HOUSE Item record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.HouseItemRepository.DeleteAsync(System.Int32)">
+            <summary>
+            Deletes existing HOUSE Item record based on id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.HouseRepository.GetAllAsync">
+            <summary>
+            Retrieves all house
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.HouseRepository.GetByIdAsync(System.Int32)">
+            <summary>
+            Retrieves a single house based on id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.HouseRepository.CreateUpdateAsync(BTAS.API.Dto.tbl_houseDto)">
+            <summary>
+            Creates/updates a house record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.HouseRepository.CreateAsync(BTAS.API.Dto.tbl_houseDto)">
+            <summary>
+            Creates a house record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.HouseRepository.UpdateAsync(BTAS.API.Dto.tbl_houseDto)">
+            <summary>
+            Updates a house record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.HouseRepository.DeleteAsync(System.Int32)">
+            <summary>
+            Deletes existing house record based on id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ItemSkuRepository.GetAllAsync">
+            <summary>
+            Retrieves all Item SKU
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ItemSkuRepository.GetByIdAsync(System.Int32)">
+            <summary>
+            Retrieves a single Item SKU based on id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ItemSkuRepository.CreateUpdateAsync(BTAS.API.Dto.tbl_item_skuDto)">
+            <summary>
+            Creates/updates a Item SKU record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ItemSkuRepository.CreateAsync(BTAS.API.Dto.tbl_item_skuDto)">
+            <summary>
+            Creates a Item SKU record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ItemSkuRepository.UpdateAsync(BTAS.API.Dto.tbl_item_skuDto)">
+            <summary>
+            Updates a Item SKU record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ItemSkuRepository.DeleteAsync(System.Int32)">
+            <summary>
+            Deletes existing Item SKU record based on id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ManifestRepository.GetAllAsync">
+            <summary>
+            Retrieves all manifested records
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ManifestRepository.GetByIdAsync(System.Int32)">
+            <summary>
+            Retrieves a single manifested record based on id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ManifestRepository.CreateUpdateAsync(BTAS.API.Dto.tbl_manifestDto)">
+            <summary>
+            Creates nee manifested record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ManifestRepository.DeleteAsync(System.Int32)">
+            <summary>
+            Deletes existing manifested record based on id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ManifestRepository.GetConsignmentDetailsAsync(System.String,System.String)">
+            <summary>
+            Retrieves consignment and load details to populate manifest template for XML generation
+            </summary>
+            <param name="reference">Tracking number</param>
+            <param name="carrierId">Parcel's carrier id</param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ManifestRepository.UpdateManifestAsync(System.Int32,System.String)">
+            <summary>
+            Updates tbl_carrier_api_manifestId from tbl_carrier_api_response with the created manifest record id
+            </summary>
+            <param name="manifestId">Generated manifest id</param>
+            <param name="reference">Tracking number</param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ManifestRepository.SendXmlToSftp(System.String,System.String,System.String,System.String)">
+            <summary>
+            Sends the generated XML thru SFTP
+            </summary>
+            <param name="filename">XML filename</param>
+            <param name="host">SFTP host address</param>
+            <param name="username">SFTP username</param>
+            <param name="password">SFTP password</param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ManifestRepository.IsFileExist(System.String)">
+            <summary>
+            Checks if parameter filename already exist
+            </summary>
+            <param name="path">File location to check</param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.MasterRepository.GetAllAsync">
+            <summary>
+            Retrieves all MASTER
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.MasterRepository.GetByIdAsync(System.Int32)">
+            <summary>
+            Retrieves a single MASTER based on id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.MasterRepository.CreateUpdateAsync(BTAS.API.Dto.tbl_masterDto)">
+            <summary>
+            Creates/updates a MASTER record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.MasterRepository.DeleteAsync(System.Int32)">
+            <summary>
+            Deletes existing MASTER record based on id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ParcelInfoRepository.GetAllAsync">
+            <summary>
+            Retrieves all parcel info
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ParcelInfoRepository.GetByIdAsync(System.Int32)">
+            <summary>
+            Retrieves a single parcel info based on id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ParcelInfoRepository.CreateUpdateAsync(BTAS.API.Dto.tbl_parcel_infoDto)">
+            <summary>
+            Creates/updates a parcel info record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ParcelInfoRepository.CreateAsync(BTAS.API.Dto.tbl_parcel_infoDto)">
+            <summary>
+            Creates a parcel info record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ParcelInfoRepository.UpdateAsync(BTAS.API.Dto.tbl_parcel_infoDto)">
+            <summary>
+            Updates a parcel info record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ParcelInfoRepository.DeleteAsync(System.Int32)">
+            <summary>
+            Deletes existing parcel info record based on id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ParcelItemRepository.GetAllAsync">
+            <summary>
+            Retrieves all Parcel Item
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ParcelItemRepository.GetByIdAsync(System.Int32)">
+            <summary>
+            Retrieves a single Parcel Item based on id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ParcelItemRepository.CreateUpdateAsync(BTAS.API.Dto.tbl_parcel_itemsDto)">
+            <summary>
+            Creates/updates a Parcel Item record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ParcelItemRepository.CreateAsync(BTAS.API.Dto.tbl_parcel_itemsDto)">
+            <summary>
+            Creates a Parcel Item record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ParcelItemRepository.UpdateAsync(BTAS.API.Dto.tbl_parcel_itemsDto)">
+            <summary>
+            Updates a Parcel Item record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ParcelItemRepository.DeleteAsync(System.Int32)">
+            <summary>
+            Deletes existing Parcel Item record based on id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ReceptacleRepository.GetAllAsync">
+            <summary>
+            Retrieves all Receptacle
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ReceptacleRepository.GetByIdAsync(System.Int32)">
+            <summary>
+            Retrieves a single Receptacle based on id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ReceptacleRepository.GetByRefAsync(System.String)">
+            <summary>
+            Retrieves a single Receptacle based on reference
+            </summary>
+            <param name="reference"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ReceptacleRepository.CreateUpdateAsync(BTAS.API.Dto.tbl_receptacleDto)">
+            <summary>
+            Creates/updates a Receptacle record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ReceptacleRepository.CreateAsync(BTAS.API.Dto.tbl_receptacleDto)">
+            <summary>
+            Creates a Receptacle record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ReceptacleRepository.UpdateAsync(BTAS.API.Dto.tbl_receptacleDto)">
+            <summary>
+            Updates a Receptacle record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ReceptacleRepository.DeleteAsync(System.Int32)">
+            <summary>
+            Deletes existing receptacle record based on id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ServiceRepository.GetAllAsync">
+            <summary>
+            Retrieves all services
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ServiceRepository.GetByIdAsync(System.Int32)">
+            <summary>
+            Retrieves a single service based on id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ServiceRepository.CreateUpdateAsync(BTAS.API.Dto.tbl_servicesDto)">
+            <summary>
+            Creates/updates a service record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ServiceRepository.DeleteAsync(System.Int32)">
+            <summary>
+            Deletes existing service record based on id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.SettingsRepository.GetAllAsync">
+            <summary>
+            Retrieves all default settings
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.SettingsRepository.GetByIdAsync(System.Int32)">
+            <summary>
+            Retrieves a single default settings based on id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.SettingsRepository.CreateUpdateAsync(BTAS.API.Dto.tbl_default_settingsDto)">
+            <summary>
+            Creates/updates a default settings record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.SettingsRepository.DeleteAsync(System.Int32)">
+            <summary>
+            Deletes existing default settings record based on id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ShipmentRepository.GetAllAsync">
+            <summary>
+            Retrieves all shippers
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ShipmentRepository.GetByIdAsync(System.Int32)">
+            <summary>
+            Retrieves a single shipper based on id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ShipmentRepository.CreateUpdateAsync(BTAS.API.Dto.tbl_shippersDto)">
+            <summary>
+            Creates/updates a shipper record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ShipmentRepository.DeleteAsync(System.Int32)">
+            <summary>
+            Deletes existing shipper record based on id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ShipmentRepository.SearchShipmentAsync(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Int32)">
+            <summary>
+            Repository to process shipment search request
+            </summary>
+            <param name="dateFrom"></param>
+            <param name="dateTo"></param>
+            <param name="shipper"></param>
+            <param name="tracking"></param>
+            <param name="shipperName"></param>
+            <param name="carrierName"></param>
+            <param name="deliveryName"></param>
+            <param name="isManifested"></param>
+            <returns>
+            tbl_shipment_searchDto class
+            </returns>
+        </member>
+        <member name="M:BTAS.API.Repository.ShipmentRepository.GetShipmentDetails(System.String,System.String)">
+            <summary>
+            Repository to process Shipment Details request
+            </summary>
+            <param name="jobNumber"></param>
+            <param name="shipperId"></param>
+            <returns>
+            ShipmentDetailsResponse class
+            </returns>
+        </member>
+        <member name="M:BTAS.API.Repository.VoyageRepository.GetAllAsync">
+            <summary>
+            Retrieves all voyage
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.VoyageRepository.GetByIdAsync(System.Int32)">
+            <summary>
+            Retrieves a single voyage based on id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.VoyageRepository.CreateUpdateAsync(BTAS.API.Dto.tbl_voyageDto)">
+            <summary>
+            Creates/updates a voyage record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.VoyageRepository.CreateAsync(BTAS.API.Dto.tbl_voyageDto)">
+            <summary>
+            Creates a voyage record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.VoyageRepository.UpdateAsync(BTAS.API.Dto.tbl_voyageDto)">
+            <summary>
+            Updates a voyage record
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BTAS.API.Repository.VoyageRepository.DeleteAsync(System.Int32)">
+            <summary>
+            Deletes existing voyage record based on id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

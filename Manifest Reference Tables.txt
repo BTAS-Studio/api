@@ -1,0 +1,10 @@
+SELECT * FROM tbl_barcodes where tbl_barcodes_shipment_id=5787;
+SELECT * FROM tbl_shippers_tracking_ref where tbl_shippers_tracking_shipmentId=5787;
+SELECT *,idtbl_parcel_info, tbl_parcel_info_serviceCode FROM tbl_parcel_info where idtbl_parcel_info=5787;
+SELECT * FROM tbl_parcel_items where tbl_parcel_items_info_id=5787;
+SELECT * FROM tbl_carrier_api_response where tbl_carrier_api_response_parcelId=5787;
+SELECT * FROM tbl_services where tbl_services_code='BOR.EDI.PARCEL.NSW';
+SELECT * FROM tbl_carrier_info where tbl_carrier_code='BORDEDI';
+
+
+update tbl_carrier_api_response set tbl_carrier_api_trackingRef = SUBSTRING_INDEX(SUBSTRING_INDEX(tbl_carrier_api_response_message, '"', 6), '"', -1);

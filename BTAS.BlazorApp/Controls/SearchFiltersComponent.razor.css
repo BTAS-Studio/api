@@ -1,0 +1,60 @@
+﻿.card {
+    margin: 0 -28px;
+    box-shadow: none;
+    border-style: none;
+}
+
+.card-header {
+    background-color: #FFFFFF;
+    display: block;
+    margin-top: -15px;
+}
+
+.fa-solid {
+    border-radius: 20px;
+    background-color: #041827;
+    height: 30px;
+    width: 30px;
+    color: #FFFFFF;
+    padding: 8px;
+}
+
+
+.fa-plus {
+    border-radius: 20px;
+    background-color: #6EEB34;
+    height: 30px;
+    width: 30px;
+    color: #041827;
+    margin-left: 10px;
+    padding: 7px;
+}
+
+.card-body {
+    border-color: #EBEEF1;
+    background-color: #EBEEF1;
+}
+
+.col-3 {
+    width: 320px;
+    margin-top: 10px;
+}
+.label {
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 22px;
+    color: #041827;
+    margin:0;
+}
+
+textarea::placeholder {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0065B0;
+}
+
+.form-control {
+    border-color: #9DBFD9;
+    margin: 15px 0;
+    padding: 3px 9px;
+}

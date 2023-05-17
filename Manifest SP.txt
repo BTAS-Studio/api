@@ -1,0 +1,52 @@
+CREATE DEFINER=`root`@`localhost` PROCEDURE `PrepareManifest`(
+reference nvarchar(50),
+carrierid nvarchar(50)
+)
+BEGIN
+	select 
+reference as ConsignmentNumber, 
+cast(pi.tbl_parcel_info_timestamp as char) as ConsignmentDate,
+pi.tbl_parcel_info_shipperName SenderName,
+pi.tbl_parcel_info_shipperContact SenderContact,
+pi.tbl_parcel_info_shipperPhone SenderPhone,
+pi.tbl_parcel_info_shipperEmail SenderEmail,
+pi.tbl_parcel_info_shipperAddressLine1 SenderStreetAddress,
+pi.tbl_parcel_info_shipperAddressLine2 SenderStreetAddress1,
+pi.tbl_parcel_info_shipperSuburb SenderSuburb,
+pi.tbl_parcel_info_shipperState SenderState,
+pi.tbl_parcel_info_shipperPostcode SenderPostcode,
+'YES' Pickup,
+'YES' Delivery,
+'NO' DangerousGoods,
+pi.tbl_parcel_info_referenceNo ReceiverReference,
+pi.tbl_parcel_info_deliveryName ReceiverName,
+pi.tbl_parcel_info_deliveryContact ReceiverContact,
+pi.tbl_parcel_info_deliveryPhone ReceiverPhone,
+pi.tbl_parcel_info_deliveryEmail ReceiverEmail,
+pi.tbl_parcel_info_deliveryAddressLine1 ReceiverStreetAddress,
+pi.tbl_parcel_info_deliveryAddressLine2 ReceiverStreetAddress1,
+pi.tbl_parcel_info_deliverySuburb ReceiverSuburb,
+pi.tbl_parcel_info_deliveryState ReceiverState,
+pi.tbl_parcel_info_deliveryPostcode ReceiverPostcode,
+(select convert(sum(tbl_parcel_items_parcelWeight), char) from tbl_parcel_items where tbl_parcel_items_info_id=api.tbl_carrier_api_response_parcelId group by tbl_parcel_items_info_id) TotalWeight,
+ts.tbl_services_carrierAccount AccountCode,
+pi.tbl_parcel_info_serviceCode CarrierService,
+pi.tbl_parcel_info_instruction Comments,
+pit.tbl_parcel_items_parcelReference ItemReference,
+cast(pit.tbl_parcel_items_parcelQty as char) NumberOfUnits,
+pi.tbl_parcel_info_serviceCode LogisticUnit,
+cast(pit.tbl_parcel_items_parcelWeight as char) Weight,
+cast(pit.tbl_parcel_items_parcelLength as char) Length,
+cast(pit.tbl_parcel_items_parcelWidth as char) Width,
+cast(pit.tbl_parcel_items_parcelHeight as char) Height,
+convert(cast((tbl_parcel_items_parcelLength/100) * (tbl_parcel_items_parcelWidth/100) * (tbl_parcel_items_parcelHeight/100) as decimal(11,4)), char) Cubic,
+b.tbl_barcodes_code Barcode
+FROM tbl_carrier_api_response api
+LEFT join tbl_parcel_info pi on api.tbl_carrier_api_response_parcelId = pi.idtbl_parcel_info
+LEFT join tbl_parcel_items pit on pit.tbl_parcel_items_info_id = pi.idtbl_parcel_info
+LEFT JOIN tbl_services ts ON ts.tbl_services_code = pi.tbl_parcel_info_serviceCode
+LEFT JOIN tbl_carrier_info ci ON ci.tbl_carrier_code = ts.tbl_services_carrierId
+LEFT JOIN tbl_shippers_tracking_ref tr on api.tbl_carrier_api_response_parcelId = tr.tbl_shippers_tracking_shipmentId
+JOIN tbl_barcodes b on pit.idtbl_parcel_items = b.tbl_barcodes_parcel_id
+WHERE ci.tbl_carrier_code = carrierid and api.tbl_carrier_api_trackingRef = reference;
+END

@@ -1,0 +1,338 @@
+
+// BOOTSTRAP 4 VARIABLES
+
+@import "components/bootstrap4/functions";
+@import "components/bootstrap4/variables";
+@import "components/bootstrap4/mixins";
+
+// ArchitectUI Themes Variables
+
+@import "themes/layout-variables";
+
+// BOOTSTRAP 4 IMPORTS
+
+@import "components/bootstrap4/root";
+@import "components/bootstrap4/reboot";
+@import "components/bootstrap4/type";
+@import "components/bootstrap4/images";
+@import "components/bootstrap4/code";
+@import "components/bootstrap4/grid";
+@import "components/bootstrap4/tables";
+@import "components/bootstrap4/forms";
+@import "components/bootstrap4/buttons";
+@import "components/bootstrap4/transitions";
+@import "components/bootstrap4/dropdown";
+@import "components/bootstrap4/button-group";
+@import "components/bootstrap4/input-group";
+@import "components/bootstrap4/custom-forms";
+@import "components/bootstrap4/nav";
+@import "components/bootstrap4/navbar";
+@import "components/bootstrap4/card";
+@import "components/bootstrap4/breadcrumb";
+@import "components/bootstrap4/pagination";
+@import "components/bootstrap4/badge";
+@import "components/bootstrap4/jumbotron";
+@import "components/bootstrap4/alert";
+@import "components/bootstrap4/progress";
+@import "components/bootstrap4/media";
+@import "components/bootstrap4/list-group";
+@import "components/bootstrap4/close";
+@import "components/bootstrap4/toasts";
+@import "components/bootstrap4/modal";
+@import "components/bootstrap4/tooltip";
+@import "components/bootstrap4/popover";
+@import "components/bootstrap4/carousel";
+@import "components/bootstrap4/spinners";
+@import "components/bootstrap4/utilities";
+@import "components/bootstrap4/print";
+
+// LAYOUT
+
+@import "layout/layout";
+
+// UTILS
+
+@import "utils/helpers";
+@import "utils/backgrounds";
+@import "utils/animate";
+@import "utils/comps-animations";
+
+// ELEMENTS
+
+@import "elements/buttons";
+@import "elements/dropdown";
+@import "elements/navs";
+@import "elements/badges";
+@import "elements/cards";
+@import "elements/tabs";
+@import "test";
+@import "elements/accordions";
+@import "elements/modals";
+@import "elements/loaders";
+@import "elements/progressbar";
+@import "elements/timeline";
+@import "elements/listgroup";
+@import "elements/forms";
+@import "elements/pagination";
+@import "elements/chat";
+@import "elements/forms-wizard";
+
+// DASHBOARD BOXES
+
+@import "widgets/chart-boxes/chart-boxes";
+@import "widgets/content-boxes/content-boxes";
+@import "widgets/profile-boxes/profile-boxes";
+// PAGES
+@import "pages/userpages";
+// Applications
+@import "applications/applications-base";
+// COMPONENTS
+// Perfect Scrollbar
+@import "components/perfect-scrollbar/perfect-scrollbar";
+
+// FontAwesome
+@import "components/icons/fontawesome/fontawesome";
+// Ionicons
+@import "components/icons/ionicons/ionicons";
+// FlagKit
+@import "components/icons/flagkit/flagkit";
+// Image Crop
+@import "components/image-crop/image-crop";
+// Guided Tours
+@import "components/guided-tours/guided-tours";
+// Loading buttons
+@import "components/loading-buttons/loading-buttons";
+// Drawer
+@import "components/drawer/drawer";
+// Hamburger button
+@import "components/hamburgers/hamburgers";
+// Notifications
+@import "components/notifications/sweetalerts";
+@import "components/notifications/toastr";
+// Slick Carousel
+@import "components/slick-carousel/slick/slick";
+// Popovers & Tooltips
+@import "components/popovers-tooltips/popovers-tooltips";
+// Calendar
+@import "components/calendar/calendar";
+// Maps
+@import "components/maps/vector-maps";
+// Tree View
+@import "components/tree-view/tree-view";
+// Tables
+@import "components/tables/datatables";
+@import "components/tables/tables";
+// Icons
+@import "components/icons/linearicons";
+@import "components/icons/p7icons";
+
+// FORMS
+
+@import "components/forms/datepicker/datepicker";
+@import "components/forms/datepicker/daterangepicker";
+@import "components/forms/rangeslider/rangeslider";
+@import "components/forms/multiselect/multiselect";
+@import "components/forms/dropdown-select/dropdown-select";
+@import "components/forms/wysiwyg/wysiwyg";
+@import "components/forms/toggle-switch/switch";
+// Responsive
+@import "layout/responsive/responsive-base";
+// DEMO
+@import "demo-ui/demo";
+
+// Add Override CSS Here
+
+// Font
+body {
+    font-family: 'Lato', sans-serif !important;
+}
+
+
+
+// Sidebar
+.main-sidebar {
+    background-color: $blue
+    ;
+
+}
+
+//Sidebar title
+[class*=sidebar-dark-] .nav-sidebar > .nav-item.menu-open > .nav-link,
+[class*=sidebar-dark-] .nav-sidebar > .nav-item > .nav-link:focus,
+[class*=sidebar-dark-] .nav-sidebar > .nav-item:hover > .nav-link {
+    background-color: $blue;
+}
+
+[class*=sidebar-dark-] .nav-sidebar > .nav-item > .nav-link {
+    margin-bottom: 5px;
+}
+
+[class*=sidebar-dark-] .nav-treeview > .nav-item > .nav-link {
+    margin-bottom: 5px;
+}
+
+//Sidebar sub title
+[class*=sidebar-dark-] .nav-treeview > .nav-item > .nav-link:focus,
+[class*=sidebar-dark-] .nav-treeview > .nav-item > .nav-link:hover {
+    background-color: $blue;
+}
+
+[class*=sidebar-dark-] .nav-treeview > .nav-item > .nav-link {
+    color: #c2c7d0;
+    width: 190px;
+    margin-left: 44px;
+}
+
+// Sidebar item
+[class*=sidebar-dark-] .nav-treeview > .nav-item > .nav-link.active,
+[class*=sidebar-dark-] .nav-treeview > .nav-item > .nav-link.active:focus,
+[class*=sidebar-dark-] .nav-treeview > .nav-item > .nav-link.active:hover {
+    background-color: $black;
+}
+
+.nav-treeview .nav-treeview .nav-item .nav-link {
+    width: 150px;
+    height: 27px;
+    line-height: 5px;
+    margin-left: 70px;
+    margin-top:5px;
+}
+
+
+// Sidebar icon
+.nav-icon {
+    color: $white;
+}
+
+
+// Sidebar menu items font size
+.nav-link p {
+    font-size: 14px;
+    font-weight:500;
+    color: $white;    
+}
+
+.nav-link p:hover {
+    text-decoration: underline;
+}
+
+// Nav
+.navbar-expand {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    background-color: #f4f6f9;
+}
+
+// Form
+.select2-container--default .select2-selection--single {
+    border: 1px solid $light-blue;
+    height: 30px;
+    padding: 8px 0;
+}
+
+.select2-container .select2-selection--single .select2-selection__rendered {
+    display: block;
+    padding-left: 8px;
+    padding-right: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: $blue;
+    font-size: 14px;
+    font-weight:700;
+    line-height: 17px;
+}
+
+.select2-container--default.select2-container--open .select2-selection--single,
+.select2-container--default.select2-container--focus .select2-selection--multiple,
+.select2-container--default.select2-container--focus .select2-selection--single {
+    border-color: $light-blue;
+}
+
+// Nav tab
+.card-header > .nav {
+    height: 100%;
+    width: 100%;
+    border: none;
+    margin-left: 0;
+}
+
+.card-header > .nav .nav-link {
+    border:none;
+    text-transform: none;
+    width: 100%;
+    display: block;
+    color: $black;
+/*    background-color: $white;*/
+    font-size: 14px;
+    font-weight: 700;
+   /* margin-right: 0.5rem;*/
+}
+
+.card-header > .nav .nav-link::before
+{
+    background:none;
+}
+
+.card-header > .nav .nav-link.active {
+    color: $black;
+}
+
+.nav-tabs .nav-link {
+    color: $black;
+}
+
+.nav-tabs .nav-link:hover {
+    color: $black !important;
+    text-decoration: underline;
+}
+
+.card-title {
+    text-transform: none;
+    text-decoration: none;
+    color: $black;
+    font-weight: 700;
+    font-size: 18px;
+    height: 100%;
+    display: flex;
+    place-items: center;
+}
+
+a:hover {
+    color: $black !important;
+    text-decoration: underline;
+}
+
+// font size
+ h3 {
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    line-height: 29px !important;
+    color: $black !important;
+}
+
+ //table
+.table-bordered > :not(caption) > * > * {
+    border-width: thin !important;
+}
+
+.table-bordered thead tr:last-child > th {
+    border-color: $gray-table !important;
+}
+
+.table thead th, .table tbody td {
+    border-top: 1px solid $gray-table !important;
+}
+
+a {
+    color: $black !important;
+    text-decoration: none !important;
+}
+
+td a:hover, td a:focus {
+    text-decoration: underline !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 26px;
+}

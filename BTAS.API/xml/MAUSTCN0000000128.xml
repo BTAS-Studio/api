@@ -1,0 +1,54 @@
+﻿<Manifest>
+    <Consignment>
+        <ConsignmentNumber>AUEX001149</ConsignmentNumber>
+        <ConsignmentDate>2022-04-27</ConsignmentDate>
+        <SenderName>Austway AU</SenderName>
+        <SenderContact></SenderContact>
+        <SenderPhone></SenderPhone>
+        <SenderEmail></SenderEmail>
+        <SenderStreetAddress>24-32 Raymond Ave</SenderStreetAddress>
+        <SenderStreetAddress1></SenderStreetAddress1>
+        <SenderSuburb>Matraville</SenderSuburb>
+        <SenderState>NSW</SenderState>
+        <SenderPostcode>2036</SenderPostcode>
+        <Pickup>YES</Pickup>
+        <Delivery>YES</Delivery>
+        <DangerousGoods>NO</DangerousGoods>
+        <ReceiverReference>5916402553</ReceiverReference>
+        <ReceiverName>Tracy Williams</ReceiverName>
+        <ReceiverContact></ReceiverContact>
+        <ReceiverPhone>61-422276756</ReceiverPhone>
+        <ReceiverEmail>mjthomas0000@gmail.com</ReceiverEmail>
+        <ReceiverStreetAddress>360 High St</ReceiverStreetAddress>
+        <ReceiverStreetAddress1></ReceiverStreetAddress1>
+        <ReceiverSuburb>Maitland</ReceiverSuburb>
+        <ReceiverState>NSW</ReceiverState>
+        <ReceiverPostcode>2320</ReceiverPostcode>
+        <TotalWeight>25.32</TotalWeight>
+        <AccountCode>AUS206</AccountCode>
+        <CarrierService>BEP</CarrierService>
+        <Comments></Comments>
+        <LoadDetails>
+            <ItemReference>5916402553</ItemReference>
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Parcel</LogisticUnit>
+            <Weight>10.16</Weight>
+            <Length>0.25</Length>
+            <Width>0.51</Width>
+            <Height>0.29</Height>
+            <Cubic>0.04</Cubic>
+            <Barcode>AUEXBX00000001149001</Barcode>
+        </LoadDetails>
+        <LoadDetails>
+            <ItemReference>5916402553</ItemReference>
+            <NumberOfUnits>1</NumberOfUnits>
+            <LogisticUnit>Parcel</LogisticUnit>
+            <Weight>15.16</Weight>
+            <Length>0.30</Length>
+            <Width>0.51</Width>
+            <Height>0.36</Height>
+            <Cubic>0.06</Cubic>
+            <Barcode>AUEXBX00000001149002</Barcode>
+        </LoadDetails>
+    </Consignment>
+</Manifest>
