@@ -5,14 +5,19 @@ using BTAS.API.Repository.Interface;
 using BTAS.Data;
 using BTAS.Data.Models;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Threading.Tasks;
+using BTAS.API.Repository.SearchRepository;
 
 namespace BTAS.API.Repository
 {
-    public class HouseItemRepository : IRepository<tbl_house_itemDto>
+    public class HouseItemRepository : SRepository, IRepository<tbl_house_itemDto>
     {
         private readonly MainDbContext _context;
         private IMapper _mapper;
@@ -31,6 +36,103 @@ namespace BTAS.API.Repository
         {
             var _list = await _context.tbl_house_items.ToListAsync();
             return _mapper.Map<List<tbl_house_itemDto>>(_list);
+        }
+
+        public Task<IEnumerable<tbl_house_itemDto>> GetAllAsyncWithChildren()
+        {
+            //No children
+            throw new NotImplementedException();
+        }
+
+        //Added by HS on 19/05/2023
+        /// <summary>
+        /// Retrieves a specified number of houseItems according to input conditions(>, >=, <, <=, ==, !=, and contains)
+        /// </summary>
+        /// <returns> A list of houseItem objects including their linked parent houses</returns>
+        public async Task<IEnumerable<tbl_house_itemDto>> GetFilteredAsync(CustomFilters<tbl_house_itemDto> customFilters)
+        {
+            try
+            {
+                var qList = _context.tbl_house_items.Include(hi => hi.house)
+                    //.AsNoTracking()
+                    .OrderByDescending(h => h.idtbl_house_item).AsQueryable();
+                // excute each filter one by one 
+                if (customFilters.Filters != null)
+                {
+                    foreach (var filter in customFilters.Filters)
+                    {
+                        PropertyInfo propertyInfo = null;
+                        bool parent = false;
+                        var jsonString = JsonConvert.SerializeObject(filter.searchField);
+                        var jsonObj = JObject.Parse(jsonString);
+                        JToken originalValue = null;
+
+                        if (filter.tableName.ToUpper() == "HOUSEITEM")
+                        {
+                            filter.tableName = "house_item";
+                            bool containsDateTime = false;
+                            //used for searching Contains DateTime type's columns
+                            if (filter.condition.ToUpper() == "CONTAINS")
+                            {
+                                originalValue = jsonObj[filter.fieldName];
+                                //(containsDateTime, jsonString) = MakeHouseItemJsonString(filter, containsDateTime, jsonString);
+                            }
+
+                            (propertyInfo, filter.fieldValue, containsDateTime) = GetPropertyInfo<tbl_house_itemDto>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
+                        }
+                        else if (filter.tableName.ToUpper() == "HOUSE")
+                        {
+                            filter.tableName = "house";
+                            parent = true;
+                            bool containsDateTime = false;
+                            if (filter.condition.ToUpper() == "CONTAINS")
+                            {
+                                originalValue = jsonObj[filter.fieldName];
+                                (containsDateTime, jsonString) = MakeHouseJsonString(filter, containsDateTime, jsonString);
+                            }
+
+                            (propertyInfo, filter.fieldValue, containsDateTime) = GetParentPropertyInfo<tbl_house_item, tbl_house, tbl_houseDto>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
+                        }
+                        else
+                        {
+                            throw new ArgumentException($"Invalid table name: {filter.tableName}");
+                        }
+
+                        Type elementType = qList.ElementType;
+
+                        if (propertyInfo == null)
+                        {
+                            throw new ArgumentException($"Invalid property name: {propertyInfo.Name}");
+                        }
+
+                        Expression<Func<tbl_house_item, bool>> propertyLambda = null;
+                        propertyLambda = GetPropertyLambda<tbl_house_item>(propertyInfo, filter, parent);
+
+                        if (propertyLambda != null)
+                        {
+                            //qList = qList.Where(propertyLambda);
+                            qList = qList.Provider.CreateQuery<tbl_house_item>(Expression.Call(
+                                       typeof(Queryable),
+                                       "Where",
+                                       new[] { elementType },
+                                       qList.Expression,
+                                       propertyLambda
+                                   ));
+                        }
+                    }
+                }
+
+                if (qList.Count() == 0)
+                {
+                    return null;
+                }
+                var filtered = await qList.Skip(customFilters.Page * customFilters.PageSize).Take(customFilters.PageSize).ToListAsync();
+                return _mapper.Map<IEnumerable<tbl_house_itemDto>>(filtered);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -263,19 +365,6 @@ namespace BTAS.API.Repository
             }
         }
 
-        public Task<IEnumerable<tbl_house_itemDto>> GetAllAsyncWithChildren()
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task<IEnumerable<tbl_house_itemDto>> GetAllAsyncWithChildren(searchFilter filter = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<tbl_house_itemDto>> GetAllAsyncWithChildren(searchFilter<tbl_house_itemDto> filter = null)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

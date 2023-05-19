@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BTAS.API.Areas.Waybill.Controllers
@@ -234,6 +235,38 @@ namespace BTAS.API.Areas.Waybill.Controllers
                     responseDescription = ex.Message.ToString(),
                     success = false
                 });
+            }
+        }
+
+        [HttpGet("getfiltered")]
+        public async Task<IActionResult> GetFiltered([FromBody] CustomFilters<tbl_containerDto> customFilters)
+        {
+            try
+            {
+                var response = await _repository.GetAllAsyncWithChildren(customFilters);
+                if (response != null)
+                {
+                    return Ok(new GeneralResponse
+                    {
+                        success = true,
+                        responseDescription = response.ToArray().Length.ToString(),
+                        result = response
+                    });
+                }
+                else
+                {
+                    return new JsonResult(new GeneralResponse
+                    {
+                        response = 500,
+                        responseDescription = "No matching result",
+                        success = false
+                    });
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
             }
         }
     }

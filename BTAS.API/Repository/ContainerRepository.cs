@@ -3,6 +3,7 @@ using BTAS.API.Dto;
 using BTAS.API.Models;
 using BTAS.API.Models.Links;
 using BTAS.API.Repository.Interface;
+using BTAS.API.Repository.SearchRepository;
 using BTAS.Data;
 using BTAS.Data.Models;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace BTAS.API.Repository
 {
-    public class ContainerRepository : IRepository<tbl_containerDto>
+    public class ContainerRepository : SRepository, IRepository<tbl_containerDto>
     {
         private readonly MainDbContext _context;
         private IMapper _mapper;
@@ -330,252 +331,89 @@ namespace BTAS.API.Repository
             return referenceCode;
         }
 
+        //Added by HS on 19/05/2023
         /// <summary>
-        /// Retrieves filtered House
+        /// Retrieves a specified number of containers according to input conditions(>, >=, <, <=, ==, !=, and contains)
         /// </summary>
-        /// <returns></returns>
-        public async Task<IEnumerable<tbl_containerDto>> GetAllAsyncWithChildren(searchFilter filter = null)
+        /// <returns> A list of container objects including their linked parent masters and containers</returns>
+        public async Task<IEnumerable<tbl_containerDto>> GetAllAsyncWithChildren(CustomFilters<tbl_containerDto> customFilters)
         {
             try
             {
-
-                var jsonString = JsonConvert.SerializeObject(filter.searchFields);
-                var _searchFilter = JsonConvert.DeserializeObject<tbl_containerDto>(jsonString);
-                var qList = _context.tbl_containers.AsQueryable();
-                var parent = _searchFilter.GetType();
-
-                qList = qList
-                            .Include(p => p.master)
-                            .Include(x => x.houses).ThenInclude(x => x.houseItems);
-
-                if (_searchFilter != null)
+                var qList = _context.tbl_containers.Include(h => h.master)
+                    //.AsNoTracking()
+                    .OrderByDescending(h => h.idtbl_container).AsQueryable();
+                // excute each filter one by one 
+                if (customFilters.Filters != null)
                 {
-                    var properties = parent.GetProperties();
-
-                    foreach (var property in properties)
+                    foreach (var filter in customFilters.Filters)
                     {
-                        var value = property.GetValue(_searchFilter, null);
+                        PropertyInfo propertyInfo = null;
+                        bool parent = false;
+                        var jsonString = JsonConvert.SerializeObject(filter.searchField);
+                        var jsonObj = JObject.Parse(jsonString);
+                        JToken originalValue = null;
 
-                        PropertyInfo propertyInfo = _searchFilter.GetType().GetProperty(property.Name);
-
-                        if (property != null && value != null)
+                        if (filter.tableName.ToUpper() == "CONTAINER")
                         {
-                            if ((propertyInfo.PropertyType != typeof(object) ||
-                                property.PropertyType.IsClass) &&
-                                Type.GetTypeCode(value.GetType()) != TypeCode.Object)
+                            filter.tableName = "container";
+                            bool containsDateTime = false;
+                            //used for searching Contains DateTime type's columns
+                            if (filter.condition.ToUpper() == "CONTAINS")
                             {
-                                Type elementType = qList.ElementType;
-                                ParameterExpression parameter = Expression.Parameter(elementType, "p");
-                                MemberExpression childProperty = Expression.Property(parameter, property.Name);
-                                ConstantExpression valueConstant = null;
-
-                                switch (value.GetType().Name.ToUpper())
-                                {
-                                    case "INT32":
-                                        {
-                                            if ((int)value > 0)
-                                            {
-                                                valueConstant = Expression.Constant(value);
-                                            }
-                                            else
-                                            {
-                                                continue;
-                                            }
-                                            break;
-                                        }
-                                    case "DATETIME":
-                                        {
-                                            DateTime dateToCheck;
-                                            if (DateTime.TryParse(Convert.ToString(value), out dateToCheck) && dateToCheck != new DateTime(1900, 1, 1, 0, 0, 0))
-                                            {
-                                                valueConstant = Expression.Constant(DateTime.Parse(value.ToString()));
-                                            }
-                                            else
-                                            {
-                                                continue;
-                                            }
-                                            break;
-                                        }
-                                    default:
-                                        {
-                                            valueConstant = Expression.Constant(value);
-                                            break;
-                                        }
-                                }
-
-                                BinaryExpression equalsExpression = Expression.Equal(childProperty, valueConstant);
-                                Expression<Func<tbl_container, bool>> lambda = Expression.Lambda<Func<tbl_container, bool>>(equalsExpression, parameter);
-
-                                if (valueConstant != null)
-                                {
-                                    qList = qList.Provider.CreateQuery<tbl_container>(Expression.Call(
-                                    typeof(Queryable),
-                                    "Where",
-                                    new[] { elementType },
-                                    qList.Expression,
-                                    lambda
-                                ));
-                                }
+                                originalValue = jsonObj[filter.fieldName];
+                                (containsDateTime, jsonString) = MakeContainerJsonString(filter, containsDateTime, jsonString);
                             }
-                            else
+
+                            (propertyInfo, filter.fieldValue, containsDateTime) = GetPropertyInfo<tbl_containerDto>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
+                        }
+                        else if (filter.tableName.ToUpper() == "CONSOLIDATION")
+                        {
+                            filter.tableName = "master";
+                            parent = true;
+                            bool containsDateTime = false;
+                            if (filter.condition.ToUpper() == "CONTAINS")
                             {
-                                PropertyInfo childItemInfo = typeof(tbl_containerDto).GetProperty(property.Name);
-
-
-                                foreach (var objProp in value.GetType().GetProperties())
-                                {
-                                    var jsonProp = objProp.GetCustomAttributes(true);
-                                    object objValue = null;
-
-                                    // Check if the property is an indexed property
-                                    if (objProp.GetIndexParameters().Length > 0)
-                                    {
-                                        // If it's an indexed property, get its value using an index value
-                                        object[] index = new object[] { 0 }; // Replace 0 with the actual index value you want to retrieve
-
-                                        // Check if the property is public or not
-                                        if (!objProp.GetGetMethod().IsPublic)
-                                        {
-                                            // If the property is not public, set its accessibility to true
-                                            objProp.SetValue(value, null);
-                                        }
-
-                                        // Check if the property has an indexed getter method
-                                        if (objProp.GetIndexParameters().Length > 0)
-                                        {
-                                            try
-                                            {
-                                                objValue = objProp.GetValue(value, index);
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                Console.WriteLine(ex.StackTrace);
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        // If it's not an indexed property, get its value directly
-
-                                        // Check if the property is public or not
-                                        if (!objProp.GetGetMethod().IsPublic)
-                                        {
-                                            // If the property is not public, set its accessibility to true
-                                            objProp.SetValue(value, null);
-                                        }
-
-                                        try
-                                        {
-                                            objValue = objProp.GetValue(value);
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            Console.WriteLine(ex.StackTrace);
-                                        }
-                                    }
-
-                                    //var objValue = objProp.GetValue(value);
-                                    string propertyName = "";
-
-                                    foreach (var attribute in jsonProp)
-                                    {
-                                        if (attribute is JsonPropertyAttribute displayAttribute)
-                                        {
-                                            propertyName = displayAttribute.PropertyName;
-                                            break;
-                                        }
-                                    }
-
-                                    if (propertyName != string.Empty || objValue != null)
-                                    {
-                                        JObject jsonObject = JObject.Parse(jsonString);
-                                        bool isObjectExists = jsonObject.ContainsKey(propertyName);
-                                        bool isPropertyExists = jsonObject[propertyName] != null;
-
-                                        if (!isObjectExists || !isPropertyExists)
-                                        {
-                                            isObjectExists = jsonObject[propertyInfo.Name]?[propertyName] != null;
-                                        }
-
-                                        if ((isObjectExists || isPropertyExists) && propertyName != string.Empty)
-                                        {
-                                            if (objValue != null)
-                                            {
-                                                foreach (var subProperty in objValue.GetType().GetProperties())
-                                                {
-                                                    var subPropertyValue = subProperty.GetValue(objValue);
-
-                                                    if (Type.GetTypeCode(subPropertyValue.GetType()) != TypeCode.Object)
-                                                    {
-                                                        Type elementType = qList.ElementType;
-                                                        ParameterExpression parameter = Expression.Parameter(elementType, "p");
-                                                        MemberExpression voyageProperty = Expression.Property(parameter, property.Name);
-                                                        MemberExpression etdProperty = Expression.Property(voyageProperty, objProp.Name);
-                                                        ConstantExpression valueConstant = null;
-
-                                                        switch (objValue.GetType().Name.ToUpper())
-                                                        {
-                                                            case "INT32":
-                                                                {
-                                                                    if ((int)objValue > 0)
-                                                                    {
-                                                                        valueConstant = Expression.Constant(objValue);
-                                                                        //qList = qList.Where(x => objProp.GetValue(x, null) == objValue);
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        continue;
-                                                                    }
-
-                                                                    break;
-                                                                }
-                                                            case "DATETIME":
-                                                                {
-                                                                    try
-                                                                    {
-                                                                        valueConstant = Expression.Constant(DateTime.Parse(objValue.ToString()));
-
-                                                                    }
-                                                                    catch (Exception ex)
-                                                                    {
-                                                                        throw;
-                                                                    }
-                                                                    break;
-                                                                }
-                                                            default:
-                                                                {
-                                                                    valueConstant = Expression.Constant(objValue);
-                                                                    break;
-                                                                }
-                                                        }
-
-                                                        BinaryExpression equalsExpression = Expression.Equal(etdProperty, valueConstant);
-                                                        Expression<Func<tbl_container, bool>> lambda = Expression.Lambda<Func<tbl_container, bool>>(equalsExpression, parameter);
-
-                                                        if (valueConstant != null)
-                                                        {
-                                                            qList = qList.Provider.CreateQuery<tbl_container>(Expression.Call(
-                                                            typeof(Queryable),
-                                                            "Where",
-                                                            new[] { elementType },
-                                                            qList.Expression,
-                                                            lambda
-                                                        ));
-                                                        }
-
-                                                    }
-                                                }
-
-                                            }
-                                        }
-                                    }
-                                }
+                                originalValue = jsonObj[filter.fieldName];
+                                (containsDateTime, jsonString) = MakeMasterJsonString(filter, containsDateTime, jsonString);
                             }
+
+                            (propertyInfo, filter.fieldValue, containsDateTime) = GetParentPropertyInfo<tbl_container, tbl_master, tbl_masterDto>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
+                        }
+                     
+                        else
+                        {
+                            throw new ArgumentException($"Invalid table name: {filter.tableName}");
+                        }
+
+                        Type elementType = qList.ElementType;
+
+                        if (propertyInfo == null)
+                        {
+                            throw new ArgumentException($"Invalid property name: {propertyInfo.Name}");
+                        }
+
+                        Expression<Func<tbl_container, bool>> propertyLambda = null;
+                        propertyLambda = GetPropertyLambda<tbl_container>(propertyInfo, filter, parent);
+
+                        if (propertyLambda != null)
+                        {
+                            qList = qList.Provider.CreateQuery<tbl_container>(Expression.Call(
+                                       typeof(Queryable),
+                                       "Where",
+                                       new[] { elementType },
+                                       qList.Expression,
+                                       propertyLambda
+                                   ));
                         }
                     }
                 }
 
-                var filtered = await qList.Skip((filter.Page ?? 0) * filter.PageSize).Take(filter.PageSize).ToListAsync();
+                if (qList.Count() == 0)
+                {
+                    return null;
+                }
+                var filtered = await qList.Skip(customFilters.Page * customFilters.PageSize).Take(customFilters.PageSize).ToListAsync();
                 return _mapper.Map<IEnumerable<tbl_containerDto>>(filtered);
             }
             catch (Exception ex)

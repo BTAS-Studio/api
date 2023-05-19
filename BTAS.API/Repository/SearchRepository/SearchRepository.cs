@@ -4,6 +4,10 @@ using System.Reflection;
 using System;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper.Internal.Mappers;
+using BTAS.API.Dto;
+using Newtonsoft.Json;
+using BTAS.Data.Models;
+using Newtonsoft.Json.Linq;
 
 namespace BTAS.API.Repository.SearchRepository
 {
@@ -27,6 +31,10 @@ namespace BTAS.API.Repository.SearchRepository
             else if (type == typeof(decimal))
             {
                 return GetLambda<T, decimal>(propertyInfo, filter, parent);
+            }
+            else if (type == typeof(byte))
+            {
+                return GetLambda<T, byte>(propertyInfo, filter, parent);
             }
             else
             {
@@ -84,7 +92,7 @@ namespace BTAS.API.Repository.SearchRepository
             
         }
 
-        private static BinaryExpression GetBinaryExpression(MemberExpression memberExpression, ConstantExpression constantExpression, string condition/*, Type type*/)
+        private static BinaryExpression GetBinaryExpression(MemberExpression memberExpression, ConstantExpression constantExpression, string condition)
         {
             var memberType = memberExpression.Type;
             Expression nullableConstantExpression = Expression.Convert(constantExpression, memberType);
@@ -105,6 +113,187 @@ namespace BTAS.API.Repository.SearchRepository
                 default:
                     throw new ArgumentException("Invalid condition");
             }
+        }
+    
+        public static (bool, string) MakeVoyageJsonString(CustomFilter<dynamic> filter, bool containsDateTime, string jsonString)
+        {
+            tbl_voyageDto voyage = new tbl_voyageDto();
+            if (filter.fieldName == "ETA")
+            {
+                containsDateTime = true;
+                voyage.tbl_voyage_eta = new DateTime(1000, 01, 01);
+                jsonString = JsonConvert.SerializeObject(voyage);
+            }
+            else if (filter.fieldName == "ETD")
+            {
+                containsDateTime = true;
+                voyage.tbl_voyage_etd = new DateTime(1000, 01, 01);
+                jsonString = JsonConvert.SerializeObject(voyage);
+            }
+            else if (filter.fieldName == "ATA")
+            {
+                containsDateTime = true;
+                voyage.tbl_voyage_ata = new DateTime(1000, 01, 01);
+                jsonString = JsonConvert.SerializeObject(voyage);
+            }
+            else if (filter.fieldName == "ATD")
+            {
+                containsDateTime = true;
+                voyage.tbl_voyage_ata = new DateTime(1000, 01, 01);
+                jsonString = JsonConvert.SerializeObject(voyage);
+            }
+            else if (filter.fieldName == "ETADischarge")
+            {
+                containsDateTime = true;
+                voyage.tbl_voyage_etaDischarge = new DateTime(1000, 01, 01);
+                jsonString = JsonConvert.SerializeObject(voyage);
+            }
+            return (containsDateTime, jsonString);
+        }
+        public static (bool, string) MakeMasterJsonString(CustomFilter<dynamic> filter, bool containsDateTime, string jsonString)
+        {
+            tbl_masterDto master = new tbl_masterDto();
+            if (filter.fieldName == "CreatedDate")
+            {
+                containsDateTime = true;
+                master.tbl_master_createdDate = new DateTime(1000, 01, 01);
+                jsonString = JsonConvert.SerializeObject(master);
+            }
+            return (containsDateTime, jsonString);
+        }
+
+        public static (bool, string) MakeContainerJsonString(CustomFilter<dynamic> filter, bool containsDateTime, string jsonString)
+        {
+            tbl_containerDto container = new tbl_containerDto();
+            if (filter.fieldName == "CreatedDate")
+            {
+                containsDateTime = true;
+                container.tbl_container_createdDate = new DateTime(1000, 01, 01);
+                jsonString = JsonConvert.SerializeObject(container);
+            }
+            return (containsDateTime, jsonString);
+        }
+        public static (bool, string) MakeHouseJsonString(CustomFilter<dynamic> filter, bool containsDateTime, string jsonString)
+        {
+            tbl_houseDto house = new tbl_houseDto();
+            if (filter.fieldName == "CreatedDate")
+            {
+                containsDateTime = true;
+                house.tbl_house_createdDate = new DateTime(1000, 01, 01);
+                jsonString = JsonConvert.SerializeObject(house);
+            }
+            else if (filter.fieldName == "DeliveryDate")
+            {
+                containsDateTime = true;
+                house.tbl_house_deliveryDate = new DateTime(1000, 01, 01);
+                jsonString = JsonConvert.SerializeObject(house);
+            }
+            else if (filter.fieldName == "ClearanceDate")
+            {
+                containsDateTime = true;
+                house.tbl_house_clearanceDate = new DateTime(1000, 01, 01);
+                jsonString = JsonConvert.SerializeObject(house);
+            }
+            return (containsDateTime, jsonString);
+        }
+
+        public static (bool, string) MakeReceptacleJsonString(CustomFilter<dynamic> filter, bool containsDateTime, string jsonString)
+        {
+            tbl_receptacleDto receptacle = new tbl_receptacleDto();
+            if (filter.fieldName == "CreatedDate")
+            {
+                containsDateTime = true;
+                receptacle.tbl_receptacle_createdDate = new DateTime(1000, 01, 01);
+                jsonString = JsonConvert.SerializeObject(receptacle);
+            }
+            return (containsDateTime, jsonString);
+        }
+
+        public static (bool, string) MakeShipmentJsonString(CustomFilter<dynamic> filter, bool containsDateTime, string jsonString)
+        {
+            tbl_shipmentDto shipment = new tbl_shipmentDto();
+            if (filter.fieldName == "CreatedDate")
+            {
+                containsDateTime = true;
+                shipment.tbl_shipment_createdDate = new DateTime(1000, 01, 01);
+                jsonString = JsonConvert.SerializeObject(shipment);
+            }
+            else if (filter.fieldName == "ReadyDate")
+            {
+                containsDateTime = true;
+                shipment.tbl_shipment_readyDate = new DateTime(1000, 01, 01);
+                jsonString = JsonConvert.SerializeObject(shipment);
+            }
+            else if (filter.fieldName == "DeliveryDate")
+            {
+                containsDateTime = true;
+                shipment.tbl_shipment_deliveryDate = new DateTime(1000, 01, 01);
+                jsonString = JsonConvert.SerializeObject(shipment);
+            }
+            return (containsDateTime, jsonString);
+        }
+
+        public static (bool, string) MakeClientHeaderJsonString(CustomFilter<dynamic> filter, bool containsDateTime, string jsonString)
+        {
+            tbl_client_headerDto clientHeader = new tbl_client_headerDto();
+            if (filter.fieldName == "CreatedDate")
+            {
+                containsDateTime = true;
+                clientHeader.tbl_client_header_createdDate = new DateTime(1000, 01, 01);
+                jsonString = JsonConvert.SerializeObject(clientHeader);
+            }
+            return (containsDateTime, jsonString);
+        }
+    
+        public static (PropertyInfo, object, bool) GetPropertyInfo<T> (string jsonString, PropertyInfo propertyInfo, CustomFilter<dynamic> filter, bool containsDateTime, JToken originalValue)
+        {
+            var objFields = JsonConvert.DeserializeObject<T>(jsonString);
+            var properties = objFields.GetType().GetProperties();
+            //propertyInfo: get the data table column name from JsonProperty
+            foreach (var property in properties)
+            {
+                var value = property.GetValue(objFields, null);
+                //not default value, including int, string, datetime, double and byte
+                if (property != null && (value != null && !value.Equals(0) && !value.Equals(new DateTime(0001, 1, 1, 0, 0, 0)))
+                                        && !value.Equals(0m) && !value.Equals((byte)0))
+                {
+                    propertyInfo = typeof(tbl_house).GetProperty(property.Name);
+                    filter.fieldValue = value;
+
+                    if (containsDateTime)
+                    {
+                        propertyInfo = typeof(tbl_house).GetProperty(property.Name);
+                        filter.fieldValue = originalValue;
+                    }
+                    break;
+                }
+            }
+            return (propertyInfo, filter.fieldValue, containsDateTime);
+        }
+        public static (PropertyInfo, object, bool) GetParentPropertyInfo<T, TParent, TParentDto>(string jsonString, PropertyInfo propertyInfo, CustomFilter<dynamic> filter, bool containsDateTime, JToken originalValue)
+        {
+            var parentFields = JsonConvert.DeserializeObject<TParentDto>(jsonString);
+            var properties = parentFields.GetType().GetProperties();
+            //propertyInfo: get the data table column name from JsonProperty
+            foreach (var property in properties)
+            {
+                var value = property.GetValue(parentFields, null);
+                if (property != null && (value != null && !value.Equals(0) && !value.Equals(new DateTime(0001, 1, 1, 0, 0, 0)))
+                    && !value.Equals(0m) && !value.Equals((byte)0))
+                {
+                    var pProperty = typeof(T).GetProperty(filter.tableName);
+                    propertyInfo = pProperty.PropertyType.GetProperty(property.Name);
+                    filter.fieldValue = value;
+
+                    if (containsDateTime == true)
+                    {
+                        propertyInfo = typeof(TParent).GetProperty(property.Name);
+                        filter.fieldValue = originalValue;
+                    }
+                    break;
+                }
+            }
+            return (propertyInfo, filter.fieldValue, containsDateTime);
         }
     }
 }
