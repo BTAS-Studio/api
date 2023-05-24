@@ -3,6 +3,7 @@ using BTAS.API.Dto;
 using BTAS.API.Models;
 using BTAS.API.Models.Links;
 using BTAS.API.Repository.Interface;
+using BTAS.API.Repository.SearchRepository;
 using BTAS.Data;
 using BTAS.Data.Models;
 using Microsoft.EntityFrameworkCore;
@@ -18,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace BTAS.API.Repository
 {
-    public class ReceptacleRepository : IRepository<tbl_receptacleDto>
+    public class ReceptacleRepository : SRepository, IRepository<tbl_receptacleDto>
     {
         private readonly MainDbContext _context;
         private IMapper _mapper;
@@ -37,10 +38,122 @@ namespace BTAS.API.Repository
         public async Task<IEnumerable<tbl_receptacleDto>> GetAllAsync()
         {
             IEnumerable<tbl_receptacle> _list = await _context.tbl_receptacles
-                .Include(r => r.shipments)
+                .OrderByDescending(r => r.idtbl_receptacle)
+                //.Include(r => r.shipments)
                 .ToListAsync();
             _list = _list.Take(200);
             return _mapper.Map<List<tbl_receptacleDto>>(_list);
+        }
+        public async Task<IEnumerable<tbl_receptacleDto>> GetAllAsyncWithChildren()
+        {
+            try
+            {
+                IEnumerable<tbl_receptacle> _list = await _context.tbl_receptacles
+                .OrderByDescending(x => x.idtbl_receptacle)
+                .Include(r => r.shipments)
+                .Take(40)
+                .ToListAsync();
+
+                return _mapper.Map<List<tbl_receptacleDto>>(_list);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        //Added by HS on 22/05/2023
+        /// <summary>
+        /// Retrieves a specified number of receptacles according to input conditions(>, >=, <, <=, ==, !=, and contains)
+        /// </summary>
+        /// <returns> A list of receptacle objects including their linked parent houses</returns>
+        public async Task<IEnumerable<tbl_receptacleDto>> GetFilteredAsync(CustomFilters<tbl_receptacleDto> customFilters)
+        {
+            try
+            {
+                var qList = _context.tbl_receptacles.Include(r => r.house)
+                    //.AsNoTracking()
+                    .OrderByDescending(r => r.idtbl_receptacle).AsQueryable();
+                // excute each filter one by one 
+                if (customFilters.Filters != null)
+                {
+                    foreach (var filter in customFilters.Filters)
+                    {
+                        PropertyInfo propertyInfo = null;
+                        bool parent = false;
+                        var jsonString = JsonConvert.SerializeObject(filter.searchField);
+                        var jsonObj = JObject.Parse(jsonString);
+                        JToken originalValue = null;
+
+                        if (filter.tableName.ToUpper() == "RECEPTACLE")
+                        {
+                            filter.tableName = "receptacle";
+                            bool containsDateTime = false;
+                            //used for searching Contains DateTime type's columns
+                            if (filter.condition.ToUpper() == "CONTAINS")
+                            {
+                                originalValue = jsonObj[filter.fieldName];
+                                (containsDateTime, jsonString) = MakeReceptacleJsonString(filter, containsDateTime, jsonString);
+                            }
+
+                            (propertyInfo, filter.fieldValue, containsDateTime) = 
+                                GetPropertyInfo<tbl_receptacleDto, tbl_receptacle>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
+                        }
+                        else if (filter.tableName.ToUpper() == "HOUSE")
+                        {
+                            filter.tableName = "house";
+                            parent = true;
+                            bool containsDateTime = false;
+                            if (filter.condition.ToUpper() == "CONTAINS")
+                            {
+                                originalValue = jsonObj[filter.fieldName];
+                                (containsDateTime, jsonString) = MakeHouseJsonString(filter, containsDateTime, jsonString);
+                            }
+
+                            (propertyInfo, filter.fieldValue, containsDateTime) = 
+                                GetParentPropertyInfo<tbl_receptacle, tbl_house, tbl_houseDto>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
+                        }
+                        else
+                        {
+                            throw new ArgumentException($"Invalid table name: {filter.tableName}");
+                        }
+
+                        Type elementType = qList.ElementType;
+
+                        if (propertyInfo == null)
+                        {
+                            throw new ArgumentException($"Invalid property name: {propertyInfo.Name}");
+                        }
+
+                        Expression<Func<tbl_receptacle, bool>> propertyLambda = null;
+                        propertyLambda = GetPropertyLambda<tbl_receptacle>(propertyInfo, filter, parent);
+
+                        if (propertyLambda != null)
+                        {
+                            //qList = qList.Where(propertyLambda);
+                            qList = qList.Provider.CreateQuery<tbl_receptacle>(Expression.Call(
+                                       typeof(Queryable),
+                                       "Where",
+                                       new[] { elementType },
+                                       qList.Expression,
+                                       propertyLambda
+                                   ));
+                        }
+                    }
+                }
+
+                if (qList.Count() == 0)
+                {
+                    return null;
+                }
+                var filtered = await qList.Skip(customFilters.Page * customFilters.PageSize).Take(customFilters.PageSize).ToListAsync();
+                return _mapper.Map<IEnumerable<tbl_receptacleDto>>(filtered);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -57,6 +170,99 @@ namespace BTAS.API.Repository
                 
             return _mapper.Map<tbl_receptacleDto>(result);
 
+        }
+
+        public async Task<ResponseDto> GetByReference(string referenceNumber, bool includeChild = false)
+        {
+            try
+            {
+                tbl_receptacle result = new();
+
+                if (includeChild)
+                {
+                    result = await _context.tbl_receptacles
+                        .Include(x => x.shipments)
+                        .FirstOrDefaultAsync(x => x.tbl_receptacle_code == referenceNumber);
+                }
+                else
+                {
+                    result = await _context.tbl_receptacles
+                        .FirstOrDefaultAsync(x => x.tbl_receptacle_code == referenceNumber);
+                }
+                return new ResponseDto
+                {
+                    IsSuccess = true,
+                    ReferenceNumber = result.tbl_receptacle_code,
+                    DisplayMessage = "Success",
+                    Result = _mapper.Map<tbl_receptacleDto>(result)
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto
+                {
+                    IsSuccess = false,
+                    DisplayMessage = "Error retrieving record."
+                };
+            }
+        }
+
+        public async Task<ResponseDto> GetByHouseBillNo(string houseBillNo)
+        {
+            try
+            {
+                var houseResult = await _context.tbl_houses.OrderByDescending(x => x.idtbl_house)
+                    .FirstOrDefaultAsync(y => y.tbl_house_billNumber == houseBillNo);
+                //Edited by HS on 01/02/2023
+                tbl_receptacle result = await _context.tbl_receptacles.OrderByDescending(x => x.idtbl_receptacle)
+                    .FirstOrDefaultAsync(y => y.HouseCode == houseResult.tbl_house_code);
+                return new ResponseDto
+                {
+                    IsSuccess = true,
+                    DisplayMessage = "Successfully retrieved House by reference" + houseBillNo,
+                    Result = _mapper.Map<tbl_receptacleDto>(result),
+                    ReferenceNumber = result.tbl_receptacle_code
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto
+                {
+                    IsSuccess = false,
+                    DisplayMessage = "Error retrieving record."
+                };
+            }
+        }
+        //Added by HS on 01/02/2023
+        public async Task<ResponseDto> GetDummyByMasterBillNo(string referenceNumber)
+        {
+            try
+            {
+                tbl_master masterResult = await _context.tbl_masters.OrderByDescending(x => x.idtbl_master)
+                    .FirstOrDefaultAsync(y => y.tbl_master_billNumber == referenceNumber);
+                var masterReference = masterResult.tbl_master_code;
+                tbl_house houseResult = await _context.tbl_houses.OrderByDescending(x => x.idtbl_house)
+                    .FirstOrDefaultAsync(y => (y.MasterCode == masterReference && y.tbl_house_billNumber == "DUMMY"));
+                var houseReference = houseResult.tbl_house_code;
+                tbl_receptacle receptacleResult = await _context.tbl_receptacles.OrderByDescending(x => x.idtbl_receptacle)
+                    .FirstOrDefaultAsync(y => y.HouseCode == houseReference);
+
+                return new ResponseDto
+                {
+                    IsSuccess = true,
+                    DisplayMessage = "Successfully retrieved Dummy Receptacle by master bill number" + referenceNumber,
+                    Result = _mapper.Map<tbl_receptacleDto>(receptacleResult),
+                    ReferenceNumber = receptacleResult.tbl_receptacle_code
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto
+                {
+                    IsSuccess = false,
+                    DisplayMessage = "Error retrieving dummy receptacle. " + ex.Message,
+                };
+            }
         }
 
         /// <summary>
@@ -311,99 +517,7 @@ namespace BTAS.API.Repository
             }
         }
 
-        public async Task<ResponseDto> GetByReference(string referenceNumber, bool includeChild = false)
-        {
-            try
-            {
-                tbl_receptacle result = new();
-
-                if (includeChild)
-                {
-                    result = await _context.tbl_receptacles
-                        .Include(x => x.shipments)
-                        .FirstOrDefaultAsync(x => x.tbl_receptacle_code == referenceNumber);
-                }
-                else
-                {
-                    result = await _context.tbl_receptacles
-                        .FirstOrDefaultAsync(x => x.tbl_receptacle_code == referenceNumber);
-                }
-                return new ResponseDto
-                {
-                    IsSuccess = true,
-                    ReferenceNumber = result.tbl_receptacle_code,
-                    DisplayMessage = "Success",
-                    Result = _mapper.Map<tbl_receptacleDto>(result)
-                };
-            }
-            catch (Exception ex)
-            {
-                return new ResponseDto
-                {
-                    IsSuccess = false,
-                    DisplayMessage = "Error retrieving record."
-                };
-            }
-        }
-
-        public async Task<ResponseDto> GetByHouseBillNo(string houseBillNo)
-        {
-            try
-            {
-                var houseResult = await _context.tbl_houses.OrderByDescending(x => x.idtbl_house)
-                    .FirstOrDefaultAsync(y => y.tbl_house_billNumber == houseBillNo);
-                //Edited by HS on 01/02/2023
-                tbl_receptacle result = await _context.tbl_receptacles.OrderByDescending(x => x.idtbl_receptacle)
-                    .FirstOrDefaultAsync(y => y.HouseCode == houseResult.tbl_house_code);
-                return new ResponseDto
-                {
-                    IsSuccess = true, 
-                    DisplayMessage = "Successfully retrieved House by reference" + houseBillNo,
-                    Result = _mapper.Map<tbl_receptacleDto>(result),
-                    ReferenceNumber = result.tbl_receptacle_code
-                };
-            }
-            catch (Exception ex)
-            {
-                return new ResponseDto
-                {
-                    IsSuccess = false,
-                    DisplayMessage = "Error retrieving record."
-                };
-            }
-        }
-        //Added by HS on 01/02/2023
-        public async Task<ResponseDto> GetDummyByMasterBillNo(string referenceNumber)
-        {
-            try
-            {
-                tbl_master masterResult = await _context.tbl_masters.OrderByDescending(x => x.idtbl_master)
-                    .FirstOrDefaultAsync(y => y.tbl_master_billNumber== referenceNumber);
-                var masterReference = masterResult.tbl_master_code;
-                tbl_house houseResult = await _context.tbl_houses.OrderByDescending(x => x.idtbl_house)
-                    .FirstOrDefaultAsync(y => (y.MasterCode == masterReference && y.tbl_house_billNumber == "DUMMY"));
-                var houseReference = houseResult.tbl_house_code;
-                tbl_receptacle receptacleResult = await _context.tbl_receptacles.OrderByDescending(x => x.idtbl_receptacle)
-                    .FirstOrDefaultAsync(y => y.HouseCode == houseReference);
-
-                return new ResponseDto
-                {
-                    IsSuccess = true,
-                    DisplayMessage = "Successfully retrieved Dummy Receptacle by master bill number" + referenceNumber,
-                    Result = _mapper.Map<tbl_receptacleDto>(receptacleResult),
-                    ReferenceNumber = receptacleResult.tbl_receptacle_code
-                };
-            }
-            catch (Exception ex)
-            {
-                return new ResponseDto
-                {
-                    IsSuccess = false,
-                    DisplayMessage = "Error retrieving dummy receptacle. " + ex.Message,
-                };
-            }
-        }
-
+  
         public async Task<string> GetNextId(string shipperId)
         {
 
@@ -414,259 +528,6 @@ namespace BTAS.API.Repository
             return referenceCode;
         }
 
-        public async Task<IEnumerable<tbl_receptacleDto>> GetAllAsyncWithChildren(searchFilter filter = null)
-        {
-            try
-            {
-                var jsonString = JsonConvert.SerializeObject(filter.searchFields);
-                var _searchFilter = JsonConvert.DeserializeObject<tbl_receptacleDto>(jsonString);
-                var qList = _context.tbl_receptacles.AsQueryable();
-                var parent = _searchFilter.GetType();
 
-                qList = qList
-                            .Include(p => p.house)
-                            .Include(p => p.shipments).ThenInclude(p => p.shipmentItems);
-
-                if (_searchFilter != null)
-                {
-                    var properties = parent.GetProperties();
-
-                    foreach (var property in properties)
-                    {
-                        var value = property.GetValue(_searchFilter, null);
-
-                        PropertyInfo propertyInfo = _searchFilter.GetType().GetProperty(property.Name);
-
-                        if (property != null && value != null)
-                        {
-                            if ((propertyInfo.PropertyType != typeof(object) ||
-                                property.PropertyType.IsClass) &&
-                                Type.GetTypeCode(value.GetType()) != TypeCode.Object)
-                            {
-                                Type elementType = qList.ElementType;
-                                ParameterExpression parameter = Expression.Parameter(elementType, "p");
-                                MemberExpression childProperty = Expression.Property(parameter, property.Name);
-                                ConstantExpression valueConstant = null;
-
-                                switch (value.GetType().Name.ToUpper())
-                                {
-                                    case "INT32":
-                                        {
-                                            if ((int)value > 0)
-                                            {
-                                                valueConstant = Expression.Constant(value);
-                                            }
-                                            else
-                                            {
-                                                continue;
-                                            }
-                                            break;
-                                        }
-                                    case "DATETIME":
-                                        {
-                                            DateTime dateToCheck;
-                                            if (DateTime.TryParse(Convert.ToString(value), out dateToCheck) && dateToCheck != new DateTime(1900, 1, 1, 0, 0, 0))
-                                            {
-                                                valueConstant = Expression.Constant(DateTime.Parse(value.ToString()));
-                                            }
-                                            else
-                                            {
-                                                continue;
-                                            }
-                                            break;
-                                        }
-                                    default:
-                                        {
-                                            valueConstant = Expression.Constant(value);
-                                            break;
-                                        }
-                                }
-
-                                BinaryExpression equalsExpression = Expression.Equal(childProperty, valueConstant);
-                                Expression<Func<tbl_receptacle, bool>> lambda = Expression.Lambda<Func<tbl_receptacle, bool>>(equalsExpression, parameter);
-
-                                if (valueConstant != null)
-                                {
-                                    qList = qList.Provider.CreateQuery<tbl_receptacle>(Expression.Call(
-                                    typeof(Queryable),
-                                    "Where",
-                                    new[] { elementType },
-                                    qList.Expression,
-                                    lambda
-                                ));
-                                }
-                            }
-                            else
-                            {
-                                PropertyInfo childItemInfo = typeof(tbl_receptacleDto).GetProperty(property.Name);
-
-
-                                foreach (var objProp in value.GetType().GetProperties())
-                                {
-                                    var jsonProp = objProp.GetCustomAttributes(true);
-                                    object objValue = null;
-
-                                    // Check if the property is an indexed property
-                                    if (objProp.GetIndexParameters().Length > 0)
-                                    {
-                                        // If it's an indexed property, get its value using an index value
-                                        object[] index = new object[] { 0 }; // Replace 0 with the actual index value you want to retrieve
-
-                                        // Check if the property is public or not
-                                        if (!objProp.GetGetMethod().IsPublic)
-                                        {
-                                            // If the property is not public, set its accessibility to true
-                                            objProp.SetValue(value, null);
-                                        }
-
-                                        // Check if the property has an indexed getter method
-                                        if (objProp.GetIndexParameters().Length > 0)
-                                        {
-                                            try
-                                            {
-                                                objValue = objProp.GetValue(value, index);
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                Console.WriteLine(ex.StackTrace);
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        // If it's not an indexed property, get its value directly
-
-                                        // Check if the property is public or not
-                                        if (!objProp.GetGetMethod().IsPublic)
-                                        {
-                                            // If the property is not public, set its accessibility to true
-                                            objProp.SetValue(value, null);
-                                        }
-
-                                        try
-                                        {
-                                            objValue = objProp.GetValue(value);
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            Console.WriteLine(ex.StackTrace);
-                                        }
-                                    }
-
-                                    string propertyName = "";
-
-                                    foreach (var attribute in jsonProp)
-                                    {
-                                        if (attribute is JsonPropertyAttribute displayAttribute)
-                                        {
-                                            propertyName = displayAttribute.PropertyName;
-                                            break;
-                                        }
-                                    }
-
-                                    if (propertyName != string.Empty || objValue != null)
-                                    {
-                                        JObject jsonObject = JObject.Parse(jsonString);
-                                        bool isObjectExists = jsonObject.ContainsKey(propertyName);
-                                        bool isPropertyExists = jsonObject[propertyName] != null;
-
-                                        if (!isObjectExists || !isPropertyExists)
-                                        {
-                                            isObjectExists = jsonObject[propertyInfo.Name]?[propertyName] != null;
-                                        }
-
-                                        if ((isObjectExists || isPropertyExists) && propertyName != string.Empty)
-                                        {
-                                            if (objValue != null)
-                                            {
-                                                foreach (var subProperty in objValue.GetType().GetProperties())
-                                                {
-                                                    var subPropertyValue = subProperty.GetValue(objValue);
-
-                                                    if (Type.GetTypeCode(subPropertyValue.GetType()) != TypeCode.Object)
-                                                    {
-                                                        Type elementType = qList.ElementType;
-                                                        ParameterExpression parameter = Expression.Parameter(elementType, "p");
-                                                        ConstantExpression valueConstant = null;
-
-                                                        switch (objValue.GetType().Name.ToUpper())
-                                                        {
-                                                            case "INT32":
-                                                                {
-                                                                    if ((int)objValue > 0)
-                                                                    {
-                                                                        valueConstant = Expression.Constant(objValue);
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        continue;
-                                                                    }
-
-                                                                    break;
-                                                                }
-                                                            case "DATETIME":
-                                                                {
-                                                                    try
-                                                                    {
-                                                                        valueConstant = Expression.Constant(DateTime.Parse(objValue.ToString()));
-
-                                                                    }
-                                                                    catch (Exception ex)
-                                                                    {
-                                                                        throw;
-                                                                    }
-                                                                    break;
-                                                                }
-                                                            default:
-                                                                {
-                                                                    valueConstant = Expression.Constant(objValue);
-                                                                    break;
-                                                                }
-                                                        }
-
-                                                        BinaryExpression equalsExpression = Expression.Equal(parameter, valueConstant);
-                                                        Expression<Func<tbl_receptacle, bool>> lambda = Expression.Lambda<Func<tbl_receptacle, bool>>(equalsExpression, parameter);
-
-                                                        if (valueConstant != null)
-                                                        {
-                                                            qList = qList.Provider.CreateQuery<tbl_receptacle>(Expression.Call(
-                                                            typeof(Queryable),
-                                                            "Where",
-                                                            new[] { elementType },
-                                                            qList.Expression,
-                                                            lambda
-                                                        ));
-                                                        }
-
-                                                    }
-                                                }
-
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                var filtered = await qList.Skip((filter.Page ?? 0) * filter.PageSize).Take(filter.PageSize).ToListAsync();
-                return _mapper.Map<IEnumerable<tbl_receptacleDto>>(filtered);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
-        public Task<IEnumerable<tbl_receptacleDto>> GetAllAsyncWithChildren()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<tbl_receptacleDto>> GetAllAsyncWithChildren(searchFilter<tbl_receptacleDto> filter = null)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

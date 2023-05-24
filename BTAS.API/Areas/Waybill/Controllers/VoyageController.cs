@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 
@@ -27,6 +28,43 @@ namespace BTAS.API.Areas.Waybill.Controllers
             _repository = repository;
             _authRepo = authRepo;
             _masterRepo = masterRepo;
+        }
+
+        /// <summary>
+        /// This method is used to make a dynamic filtering made by user providing column, condition and value to dynamically generate the filter parameters
+        /// </summary>
+        /// <param name="customFilter"></param>
+        /// <returns></returns>
+        [HttpGet("getfiltered")]
+        public async Task<IActionResult> GetFiltered([FromBody] CustomFilters<tbl_voyageDto> customFilters)
+        {
+            try
+            {
+                var response = await _repository.GetFilteredAsync(customFilters);
+                if (response != null)
+                {
+                    return Ok(new GeneralResponse
+                    {
+                        success = true,
+                        responseDescription = response.ToArray().Length.ToString(),
+                        result = response
+                    });
+                }
+                else
+                {
+                    return new JsonResult(new GeneralResponse
+                    {
+                        success = false,
+                        response = 404,
+                        responseDescription = "No matching result"
+                    });
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]

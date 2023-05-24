@@ -31,7 +31,6 @@
 	  <Compile Remove="Areas\Waybill\Controllers\HawbIncotermsController.cs" />
 	  <Compile Remove="Areas\Waybill\Controllers\HawbItemController.cs" />
 	  <Compile Remove="Areas\Waybill\Controllers\HouseIncotermsController.cs" />
-	  <Compile Remove="Areas\Waybill\Controllers\HouseItemController.cs" />
 	  <Compile Remove="Areas\Waybill\Controllers\MAWBController.cs" />
 	  <Compile Remove="Dto\tbl_hawbDto.cs" />
 	  <Compile Remove="Dto\tbl_hawb_incotermsDto.cs" />

@@ -39,7 +39,7 @@ namespace BTAS.API.Dto
         [StringLength(30)]
         [JsonProperty("ContainerMode")]
         public string tbl_master_containerMode { get; set; }
-        [JsonProperty("DateCreated")]
+        [JsonProperty("CreatedDate")]
         public DateTime? tbl_master_createdDate { get; set; }
         
         [JsonProperty("VoyageId")]

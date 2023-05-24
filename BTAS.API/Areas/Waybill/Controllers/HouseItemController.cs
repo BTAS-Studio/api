@@ -15,21 +15,21 @@ namespace BTAS.API.Areas.Waybill.Controllers
 {
     [ApiController]
     [Area("Waybill")]
-    [Route("api/shipmentitem")]
+    [Route("api/houseitem")]
     [Authorize]
-    public class ShipmentItemController : GenericController<tbl_shipment_itemDto>
+    public class HouseItemController : GenericController<tbl_house_itemDto>
     {
-        private ShipmentItemRepository _repository;
+        private HouseItemRepository _repository;
         private readonly IAuthenticationRepository _authRepo;
 
-        public ShipmentItemController(ShipmentItemRepository repository, IAuthenticationRepository authRepo) : base(repository)
+        public HouseItemController(HouseItemRepository repository, IAuthenticationRepository authRepo) : base(repository)
         {
             _repository = repository;
             _authRepo = authRepo;
         }
 
         [HttpGet("getfiltered")]
-        public async Task<IActionResult> GetFiltered([FromBody] CustomFilters<tbl_shipment_itemDto> customFilters)
+        public async Task<IActionResult> GetFiltered([FromBody] CustomFilters<tbl_house_itemDto> customFilters)
         {
             try
             {
@@ -55,18 +55,19 @@ namespace BTAS.API.Areas.Waybill.Controllers
             }
             catch (Exception)
             {
+
                 throw;
             }
         }
 
         [HttpGet]
         [Route("GetByReference")]
-        public async Task<IActionResult> GetByReferenceAsync(string referenceNumber, bool includeChild = false, int isWeb = 0)
+        public async Task<IActionResult> GetByReferenceAsync(string referenceNumber)
         {
             try
             {
                 ResponseDto result = new();
-                var response = await _repository.GetByReference(referenceNumber, includeChild);
+                var response = await _repository.GetByReference(referenceNumber);
 
                 return Ok(new GeneralResponse
                 {
@@ -86,13 +87,14 @@ namespace BTAS.API.Areas.Waybill.Controllers
                 });
             }
         }
+
         [HttpPost]
         [Route("postrange")]
-        public async Task<object> PostAsync([FromBody] List<tbl_shipment_itemDto> entities)
+        public async Task<object> PostAsync([FromBody] List<tbl_house_itemDto> entities)
         {
             try
             {
-                List<tbl_shipment_itemDto> postedEntity = await _repository.CreateRangeAsync(entities);
+                List<tbl_house_itemDto> postedEntity = await _repository.CreateRangeAsync(entities);
 
                 _response.result = postedEntity;
             }
@@ -107,7 +109,7 @@ namespace BTAS.API.Areas.Waybill.Controllers
 
         [HttpPost]
         [Route("create")]
-        public async Task<IActionResult> CreateAsync([FromBody] tbl_shipment_itemDto request, int isWeb = 0)
+        public async Task<IActionResult> CreateAsync([FromBody] tbl_house_itemDto request)
         {
             try
             {
@@ -117,21 +119,8 @@ namespace BTAS.API.Areas.Waybill.Controllers
                 {
                     result = await _repository.CreateAsync(request);
 
-                    //if (isWeb == 1)
-                    //{
-                    //    var response = JsonConvert.SerializeObject(result, Formatting.Indented, new JsonSerializerSettings
-                    //    {
-                    //        ReferenceLoopHandling = ReferenceLoopHandling.Serialize
-                    //    });
-                    //    return Ok(response);
-                    //}
-                    //else
-                    //{
                     if (result.IsSuccess)
                     {
-                        //Edited by HS on 06/03/2023
-                        //var jsonString = JsonConvert.SerializeObject(result.Result, new JsonSerializerSettings { ContractResolver = CustomDataContractResolver.Instance });
-                        //var model = JsonConvert.DeserializeObject<tbl_shipment_itemDto>(jsonString);
                         return Ok(new GeneralResponse
                         {
                             success = true,
@@ -147,7 +136,6 @@ namespace BTAS.API.Areas.Waybill.Controllers
                         response = 500,
                         responseDescription = result.DisplayMessage
                     });
-
                 }
                 catch (Exception ex)
                 {
@@ -172,7 +160,7 @@ namespace BTAS.API.Areas.Waybill.Controllers
 
         [HttpPut]
         [Route("update")]
-        public async Task<IActionResult> UpdateAsync([FromBody] tbl_shipment_itemDto request, int isWeb = 0)
+        public async Task<IActionResult> UpdateAsync([FromBody] tbl_house_itemDto request)
         {
             try
             {
@@ -180,14 +168,12 @@ namespace BTAS.API.Areas.Waybill.Controllers
 
                 try
                 {
-                    if (request.idtbl_shipment_item > 0)
+                    if (request.idtbl_house_item > 0)
                     {
                         result = await _repository.UpdateAsync(request);
 
                         if (result.IsSuccess)
                         {
-                            //var jsonString = JsonConvert.SerializeObject(result.Result, new JsonSerializerSettings { ContractResolver = CustomDataContractResolver.Instance });
-                            //var model = JsonConvert.DeserializeObject<tbl_shipment_itemDto>(jsonString);
                             return Ok(new GeneralResponse
                             {
                                 success = true,
@@ -233,38 +219,5 @@ namespace BTAS.API.Areas.Waybill.Controllers
                 });
             }
         }
-
-        //[HttpGet]
-        //[Route("getbyparcelinfo")]
-        //public async Task<IActionResult> GetByParcelInfoAsync(string referenceNumber)
-        //{
-        //    try
-        //    {
-        //        try
-        //        {
-        //            var response = await _repository.GetByParcelInfo(referenceNumber);
-
-        //            return Ok(response);
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            return new JsonResult(new GeneralResponse
-        //            {
-        //                response = 500,
-        //                responseDescription = ex.Message.ToString(),
-        //                success = false
-        //            });
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return new JsonResult(new GeneralResponse
-        //        {
-        //            response = 300,
-        //            responseDescription = ex.Message.ToString(),
-        //            success = false
-        //        });
-        //    }
-        //}
     }
 }

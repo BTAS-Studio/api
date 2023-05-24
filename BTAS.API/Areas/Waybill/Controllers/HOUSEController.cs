@@ -87,17 +87,29 @@ namespace BTAS.API.Areas.Waybill.Controllers
         }
 
         [HttpGet("getfiltered")]
-        public async Task<IActionResult> GetFiltered([FromBody] searchFilter filter)
+        public async Task<IActionResult> GetFiltered([FromBody] CustomFilters<tbl_houseDto> customFilters)
         {
             try
             {
-                var response = await _repository.GetAllAsyncWithChildren(filter);
-
-                return Ok(new ResponseDto
+                var response = await _repository.GetFilteredAsync(customFilters);
+                if (response != null)
                 {
-                    Result = response,
-                    IsSuccess = true
-                });
+                    return Ok(new GeneralResponse
+                    {
+                        success = true,
+                        responseDescription = response.ToArray().Length.ToString(),
+                        result = response    
+                    });
+                }
+                else
+                {
+                    return new JsonResult(new GeneralResponse
+                    {
+                        response = 500,
+                        responseDescription = "No matching result",
+                        success = false
+                    });
+                }
             }
             catch (Exception)
             {
@@ -1836,48 +1848,22 @@ namespace BTAS.API.Areas.Waybill.Controllers
             {
                 ResponseDto result = new();
 
-                //Dictionary<string, string> requestHeaders = new Dictionary<string, string>();
-                //foreach (var header in Request.Headers)
-                //{
-                //    requestHeaders.Add(header.Key, header.Value);
-                //}
+                var response = await _repository.GetByReference(referenceNumber, includeChild);
 
-                //if (isWeb == 0)
-                //{
-                //    GeneralResponse apiResponse = JsonConvert.DeserializeObject<GeneralResponse>(await _authRepo.ValidateTokenAsync(requestHeaders["apikey"], requestHeaders["apiToken"], requestHeaders["shipperId"]));
-                //    if (apiResponse.success == false)
-                //    {
-                //        return NotFound(apiResponse);
-                //    }
-                //}
-
-                try
+                return Ok(new GeneralResponse
                 {
-                    var response = await _repository.GetByReference(referenceNumber, includeChild);
+                    success = response.IsSuccess,
+                    referenceNumber = response.ReferenceNumber,
+                    responseDescription = response.DisplayMessage,
+                    result = response.Result
+                });
 
-                    return Ok(new GeneralResponse
-                    {
-                        success = response.IsSuccess,
-                        referenceNumber = response.ReferenceNumber,
-                        responseDescription = response.DisplayMessage,
-                        result = response.Result
-                    });
-                }
-                catch (Exception ex)
-                {
-                    return new JsonResult(new GeneralResponse
-                    {
-                        response = 500,
-                        responseDescription = ex.Message.ToString(),
-                        success = false
-                    });
-                }
             }
             catch (Exception ex)
             {
                 return new JsonResult(new GeneralResponse
                 {
-                    response = 300,
+                    response = 500,
                     responseDescription = ex.Message.ToString(),
                     success = false
                 });

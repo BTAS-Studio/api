@@ -45,26 +45,7 @@ namespace BTAS.API.Areas.Waybill.Controllers
             //_logger = logger;
             //_configuration = configuration;
         }
-        /*
-        [HttpGet("getfiltered")]
-        public async Task<IActionResult> GetFiltered([FromBody] searchFilter filter)
-        {
-            try
-            {
-                var response = await _repository.GetAllAsyncWithChildren(filter);
-                
-                return Ok(new ResponseDto { 
-                    Result = response,
-                    IsSuccess = true
-                });
-            }
-            catch (Exception)
-            {
 
-                throw;
-            }
-        }
-        */
         /// <summary>
         /// This method is used to make a dynamic filtering made by user providing column, condition and value to dynamically generate the filter parameters
         /// </summary>
@@ -75,23 +56,22 @@ namespace BTAS.API.Areas.Waybill.Controllers
         {
             try
             {
-                var response = await _repository.GetAllAsyncWithChildren(customFilters);
+                var response = await _repository.GetFilteredAsync(customFilters);
                 if (response != null) {
                     return Ok(new GeneralResponse
                     {
                         success = true,
-                        result = response,
-                        responseDescription = response.ToArray().Length.ToString()
-
+                        responseDescription = response.ToArray().Length.ToString(),
+                        result = response
                     });
                 }
                 else
                 {
                     return new JsonResult(new GeneralResponse
                     {
-                        response = 500,
-                        responseDescription = "No matching result",
-                        success = false
+                        success = false,
+                        response = 404,
+                        responseDescription = "No matching result"
                     });
                 }
             }
