@@ -50,8 +50,7 @@ namespace BTAS.API.Repository
         /// <returns></returns>
         public async Task<IEnumerable<tbl_masterDto>> GetAllAsync()
         {
-            IEnumerable<tbl_master> _list = await _context.tbl_masters
-                .ToListAsync();
+            IEnumerable<tbl_master> _list = await _context.tbl_masters.OrderByDescending(m => m.idtbl_master).ToListAsync();
             return _mapper.Map<List<tbl_masterDto>>(_list);
         }
 
@@ -65,12 +64,12 @@ namespace BTAS.API.Repository
             {
                 IEnumerable<tbl_master> _list = await _context.tbl_masters.OrderByDescending(x => x.idtbl_master)
                 .Include(x => x.voyage)
-                .Include(x => x.houses)
-                .Include(x => x.containers)
                 .Include(x => x.originAgent)
                 .Include(x => x.destinationAgent)
                 .Include(x => x.carrierAgent)
                 .Include(x => x.creditorAgent)
+                .Include(x => x.containers)
+                .Include(x => x.houses)
                 .ToListAsync();
                 //_list = _list.Take(20);
                 return _mapper.Map<List<tbl_masterDto>>(_list);
@@ -80,8 +79,6 @@ namespace BTAS.API.Repository
 
                 throw;
             }
-
-
         }
 
         //Added by HS on 01/05/2023
@@ -114,7 +111,7 @@ namespace BTAS.API.Repository
                             if (filter.condition.ToUpper() == "CONTAINS")
                             {
                                 originalValue = jsonObj[filter.fieldName];
-                                //if (filter.fieldName == "DateCreated" )
+                                //if (filter.fieldName == "CreatedDate" )
                                 //{
                                 //    containsDateTime = true;
                                 //    //propertyInfo = typeof(tbl_master).GetProperty(filter.fieldName);
@@ -265,7 +262,45 @@ namespace BTAS.API.Repository
             return _mapper.Map<tbl_masterDto>(result);
 
         }
+        public async Task<ResponseDto> GetByReference(string referenceNumber, bool includeChild = false)
+        {
+            try
+            {
+                tbl_master result = new();
+                if (includeChild)
+                {
+                    result = await _context.tbl_masters
+                        .Include(m => m.voyage)
+                        .Include(m => m.houses)
+                        //Added by HS on 17/05/2023
+                        .Include(m => m.containers)
+                        //.AsNoTracking()
+                        .FirstOrDefaultAsync(m => m.tbl_master_code == referenceNumber);
+                }
+                else
+                {
+                    result = await _context.tbl_masters.FirstOrDefaultAsync(m => m.tbl_master_code == referenceNumber);
+                }
 
+
+                return new ResponseDto
+                {
+                    IsSuccess = true,
+                    Result = _mapper.Map<tbl_masterDto>(result),
+                    ReferenceNumber = result.tbl_master_code,
+                    DisplayMessage = "Success."
+
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto
+                {
+                    IsSuccess = false,
+                    DisplayMessage = "Error retrieving record."
+                };
+            }
+        }
         /// <summary>
         /// Creates/updates a MASTER record
         /// </summary>
@@ -501,46 +536,6 @@ namespace BTAS.API.Repository
             catch (Exception)
             {
                 return false;
-            }
-        }
-
-        public async Task<ResponseDto> GetByReference(string referenceNumber, bool includeChild = false)
-        {
-            try
-            {
-                tbl_master result = new();
-                if (includeChild)
-                {
-                    result = await _context.tbl_masters
-                        .Include(h => h.houses)
-                        .Include(d => d.voyage)
-                        //Added by HS on 17/05/2023
-                        .Include(c => c.containers)
-                        .AsNoTracking()
-                        .FirstOrDefaultAsync(x => x.tbl_master_code == referenceNumber);
-                }
-                else
-                {
-                    result = await _context.tbl_masters.FirstOrDefaultAsync(x => x.tbl_master_code == referenceNumber);
-                }
-
-                
-                return new ResponseDto
-                {
-                    IsSuccess = true,
-                    Result = _mapper.Map<tbl_masterDto>(result),
-                    ReferenceNumber = result.tbl_master_code,
-                    DisplayMessage = "Success."
-
-                };
-            }
-            catch (Exception ex)
-            {
-                return new ResponseDto
-                {
-                    IsSuccess = false,
-                    DisplayMessage = "Error retrieving record."
-                };
             }
         }
 

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BTAS.API.Areas.Waybill.Controllers
@@ -28,6 +29,65 @@ namespace BTAS.API.Areas.Waybill.Controllers
             _repository = repository;
             _houseRepository = houseRepository;
             _authRepo = authRepo;
+        }
+
+        [HttpGet("getfiltered")]
+        public async Task<IActionResult> GetFiltered([FromBody] CustomFilters<tbl_receptacleDto> customFilters)
+        {
+            try
+            {
+                var response = await _repository.GetFilteredAsync(customFilters);
+                if (response != null)
+                {
+                    return Ok(new GeneralResponse
+                    {
+                        success = true,
+                        responseDescription = response.ToArray().Length.ToString(),
+                        result = response
+                    });
+                }
+                else
+                {
+                    return new JsonResult(new GeneralResponse
+                    {
+                        response = 500,
+                        responseDescription = "No matching result",
+                        success = false
+                    });
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        [HttpGet]
+        [Route("GetByReference")]
+        public async Task<IActionResult> GetByReferenceAsync(string referenceNumber, bool includeChild = false)
+        {
+            try
+            {
+                var response = await _repository.GetByReference(referenceNumber, includeChild);
+
+                return Ok(new GeneralResponse
+                {
+                    success = response.IsSuccess,
+                    referenceNumber = response.ReferenceNumber,
+                    responseDescription = response.DisplayMessage,
+                    result = response.Result
+                });
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(new GeneralResponse
+                {
+                    response = 500,
+                    responseDescription = ex.Message.ToString(),
+                    success = false
+                });
+            }
         }
 
         [HttpPost]
@@ -246,44 +306,7 @@ namespace BTAS.API.Areas.Waybill.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("GetByReference")]
-        public async Task<IActionResult> GetByReferenceAsync(string referenceNumber)
-        {
-            try
-            {
-                try
-                {
-                    var response = await _repository.GetByReference(referenceNumber);
-
-                    return Ok(new GeneralResponse
-                    {
-                        success = response.IsSuccess,
-                        referenceNumber = response.ReferenceNumber,
-                        responseDescription = response.DisplayMessage,
-                        result = response.Result
-                    });
-                }
-                catch (Exception ex)
-                {
-                    return new JsonResult(new GeneralResponse
-                    {
-                        response = 500,
-                        responseDescription = ex.Message.ToString(),
-                        success = false
-                    });
-                }
-            }
-            catch (Exception ex)
-            {
-                return new JsonResult(new GeneralResponse
-                {
-                    response = 300,
-                    responseDescription = ex.Message.ToString(),
-                    success = false
-                });
-            }
-        }
+      
 
         [HttpGet]
         //Edited by HS on 01/02/2023

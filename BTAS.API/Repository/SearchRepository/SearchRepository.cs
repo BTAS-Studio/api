@@ -245,9 +245,9 @@ namespace BTAS.API.Repository.SearchRepository
             return (containsDateTime, jsonString);
         }
     
-        public static (PropertyInfo, object, bool) GetPropertyInfo<T> (string jsonString, PropertyInfo propertyInfo, CustomFilter<dynamic> filter, bool containsDateTime, JToken originalValue)
+        public static (PropertyInfo, object, bool) GetPropertyInfo<TDto, T> (string jsonString, PropertyInfo propertyInfo, CustomFilter<dynamic> filter, bool containsDateTime, JToken originalValue)
         {
-            var objFields = JsonConvert.DeserializeObject<T>(jsonString);
+            var objFields = JsonConvert.DeserializeObject<TDto>(jsonString);
             var properties = objFields.GetType().GetProperties();
             //propertyInfo: get the data table column name from JsonProperty
             foreach (var property in properties)
@@ -257,12 +257,12 @@ namespace BTAS.API.Repository.SearchRepository
                 if (property != null && (value != null && !value.Equals(0) && !value.Equals(new DateTime(0001, 1, 1, 0, 0, 0)))
                                         && !value.Equals(0m) && !value.Equals((byte)0))
                 {
-                    propertyInfo = typeof(tbl_house).GetProperty(property.Name);
+                    propertyInfo = typeof(T).GetProperty(property.Name);
                     filter.fieldValue = value;
 
                     if (containsDateTime)
                     {
-                        propertyInfo = typeof(tbl_house).GetProperty(property.Name);
+                        propertyInfo = typeof(T).GetProperty(property.Name);
                         filter.fieldValue = originalValue;
                     }
                     break;

@@ -37,8 +37,107 @@ namespace BTAS.API.Repository
         /// <returns></returns>
         public async Task<IEnumerable<tbl_containerDto>> GetAllAsync()
         {
-            IEnumerable<tbl_container> _list = await _context.tbl_containers.ToListAsync();
+            IEnumerable<tbl_container> _list = await _context.tbl_containers.OrderByDescending(c => c.idtbl_container).ToListAsync();
             return _mapper.Map<List<tbl_containerDto>>(_list);
+        }
+
+        public async Task<IEnumerable<tbl_containerDto>> GetAllAsyncWithChildren()
+        {
+            IEnumerable<tbl_container> _list = await _context.tbl_containers.OrderByDescending(c => c.idtbl_container)
+                .Include(c => c.houses)
+                .ToListAsync();
+            return _mapper.Map<List<tbl_containerDto>>(_list);
+        }
+
+        //Added by HS on 19/05/2023
+        /// <summary>
+        /// Retrieves a specified number of containers according to input conditions(>, >=, <, <=, ==, !=, and contains)
+        /// </summary>
+        /// <returns> A list of container objects including their linked parent masters and containers</returns>
+        public async Task<IEnumerable<tbl_containerDto>> GetFilteredAsync(CustomFilters<tbl_containerDto> customFilters)
+        {
+            try
+            {
+                var qList = _context.tbl_containers.Include(h => h.master)
+                    //.AsNoTracking()
+                    .OrderByDescending(h => h.idtbl_container).AsQueryable();
+                // excute each filter one by one 
+                if (customFilters.Filters != null)
+                {
+                    foreach (var filter in customFilters.Filters)
+                    {
+                        PropertyInfo propertyInfo = null;
+                        bool parent = false;
+                        var jsonString = JsonConvert.SerializeObject(filter.searchField);
+                        var jsonObj = JObject.Parse(jsonString);
+                        JToken originalValue = null;
+
+                        if (filter.tableName.ToUpper() == "CONTAINER")
+                        {
+                            filter.tableName = "container";
+                            bool containsDateTime = false;
+                            //used for searching Contains DateTime type's columns
+                            if (filter.condition.ToUpper() == "CONTAINS")
+                            {
+                                originalValue = jsonObj[filter.fieldName];
+                                (containsDateTime, jsonString) = MakeContainerJsonString(filter, containsDateTime, jsonString);
+                            }
+
+                            (propertyInfo, filter.fieldValue, containsDateTime) = GetPropertyInfo<tbl_containerDto, tbl_container>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
+                        }
+                        else if (filter.tableName.ToUpper() == "CONSOLIDATION")
+                        {
+                            filter.tableName = "master";
+                            parent = true;
+                            bool containsDateTime = false;
+                            if (filter.condition.ToUpper() == "CONTAINS")
+                            {
+                                originalValue = jsonObj[filter.fieldName];
+                                (containsDateTime, jsonString) = MakeMasterJsonString(filter, containsDateTime, jsonString);
+                            }
+
+                            (propertyInfo, filter.fieldValue, containsDateTime) = GetParentPropertyInfo<tbl_container, tbl_master, tbl_masterDto>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
+                        }
+
+                        else
+                        {
+                            throw new ArgumentException($"Invalid table name: {filter.tableName}");
+                        }
+
+                        Type elementType = qList.ElementType;
+
+                        if (propertyInfo == null)
+                        {
+                            throw new ArgumentException($"Invalid property name: {propertyInfo.Name}");
+                        }
+
+                        Expression<Func<tbl_container, bool>> propertyLambda = null;
+                        propertyLambda = GetPropertyLambda<tbl_container>(propertyInfo, filter, parent);
+
+                        if (propertyLambda != null)
+                        {
+                            qList = qList.Provider.CreateQuery<tbl_container>(Expression.Call(
+                                       typeof(Queryable),
+                                       "Where",
+                                       new[] { elementType },
+                                       qList.Expression,
+                                       propertyLambda
+                                   ));
+                        }
+                    }
+                }
+
+                if (qList.Count() == 0)
+                {
+                    return null;
+                }
+                var filtered = await qList.Skip(customFilters.Page * customFilters.PageSize).Take(customFilters.PageSize).ToListAsync();
+                return _mapper.Map<IEnumerable<tbl_containerDto>>(filtered);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -52,6 +151,44 @@ namespace BTAS.API.Repository
             tbl_container result = await _context.tbl_containers.FirstOrDefaultAsync(x => x.idtbl_container == id);
             return _mapper.Map<tbl_containerDto>(result);
 
+        }
+
+        public async Task<ResponseDto> GetByReference(string referenceNumber, bool includeChild = false)
+        {
+            try
+            {
+
+                tbl_container result = new();
+
+                if (includeChild)
+                {
+                    result = await _context.tbl_containers
+                        .Include(c => c.houses)
+                        .FirstOrDefaultAsync(x => x.tbl_container_code == referenceNumber);
+                }
+                else
+                {
+                    result = await _context.tbl_containers
+                        .FirstOrDefaultAsync(x => x.tbl_container_code == referenceNumber);
+                }
+
+                return new ResponseDto
+                {
+                    IsSuccess = true,
+                    ReferenceNumber = result.tbl_container_code,
+                    DisplayMessage = "Success",
+                    Result = _mapper.Map<tbl_containerDto>(result)
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto
+                {
+                    IsSuccess = false,
+                    ErrorMessages = new List<string> { ex.StackTrace.ToString() },
+                    DisplayMessage = ex.Message
+                };
+            }
         }
 
         /// <summary>
@@ -329,107 +466,6 @@ namespace BTAS.API.Repository
 
             string referenceCode = "CN" + shipperId + String.Format("{0:0000000000}", (result != null ? result.idtbl_container + count : 1));
             return referenceCode;
-        }
-
-        //Added by HS on 19/05/2023
-        /// <summary>
-        /// Retrieves a specified number of containers according to input conditions(>, >=, <, <=, ==, !=, and contains)
-        /// </summary>
-        /// <returns> A list of container objects including their linked parent masters and containers</returns>
-        public async Task<IEnumerable<tbl_containerDto>> GetAllAsyncWithChildren(CustomFilters<tbl_containerDto> customFilters)
-        {
-            try
-            {
-                var qList = _context.tbl_containers.Include(h => h.master)
-                    //.AsNoTracking()
-                    .OrderByDescending(h => h.idtbl_container).AsQueryable();
-                // excute each filter one by one 
-                if (customFilters.Filters != null)
-                {
-                    foreach (var filter in customFilters.Filters)
-                    {
-                        PropertyInfo propertyInfo = null;
-                        bool parent = false;
-                        var jsonString = JsonConvert.SerializeObject(filter.searchField);
-                        var jsonObj = JObject.Parse(jsonString);
-                        JToken originalValue = null;
-
-                        if (filter.tableName.ToUpper() == "CONTAINER")
-                        {
-                            filter.tableName = "container";
-                            bool containsDateTime = false;
-                            //used for searching Contains DateTime type's columns
-                            if (filter.condition.ToUpper() == "CONTAINS")
-                            {
-                                originalValue = jsonObj[filter.fieldName];
-                                (containsDateTime, jsonString) = MakeContainerJsonString(filter, containsDateTime, jsonString);
-                            }
-
-                            (propertyInfo, filter.fieldValue, containsDateTime) = GetPropertyInfo<tbl_containerDto>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
-                        }
-                        else if (filter.tableName.ToUpper() == "CONSOLIDATION")
-                        {
-                            filter.tableName = "master";
-                            parent = true;
-                            bool containsDateTime = false;
-                            if (filter.condition.ToUpper() == "CONTAINS")
-                            {
-                                originalValue = jsonObj[filter.fieldName];
-                                (containsDateTime, jsonString) = MakeMasterJsonString(filter, containsDateTime, jsonString);
-                            }
-
-                            (propertyInfo, filter.fieldValue, containsDateTime) = GetParentPropertyInfo<tbl_container, tbl_master, tbl_masterDto>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
-                        }
-                     
-                        else
-                        {
-                            throw new ArgumentException($"Invalid table name: {filter.tableName}");
-                        }
-
-                        Type elementType = qList.ElementType;
-
-                        if (propertyInfo == null)
-                        {
-                            throw new ArgumentException($"Invalid property name: {propertyInfo.Name}");
-                        }
-
-                        Expression<Func<tbl_container, bool>> propertyLambda = null;
-                        propertyLambda = GetPropertyLambda<tbl_container>(propertyInfo, filter, parent);
-
-                        if (propertyLambda != null)
-                        {
-                            qList = qList.Provider.CreateQuery<tbl_container>(Expression.Call(
-                                       typeof(Queryable),
-                                       "Where",
-                                       new[] { elementType },
-                                       qList.Expression,
-                                       propertyLambda
-                                   ));
-                        }
-                    }
-                }
-
-                if (qList.Count() == 0)
-                {
-                    return null;
-                }
-                var filtered = await qList.Skip(customFilters.Page * customFilters.PageSize).Take(customFilters.PageSize).ToListAsync();
-                return _mapper.Map<IEnumerable<tbl_containerDto>>(filtered);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
-        public Task<IEnumerable<tbl_containerDto>> GetAllAsyncWithChildren()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<tbl_containerDto>> GetAllAsyncWithChildren(searchFilter<tbl_containerDto> filter = null)
-        {
-            throw new NotImplementedException();
         }
     }
 }

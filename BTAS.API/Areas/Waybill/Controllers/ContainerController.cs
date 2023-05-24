@@ -243,7 +243,7 @@ namespace BTAS.API.Areas.Waybill.Controllers
         {
             try
             {
-                var response = await _repository.GetAllAsyncWithChildren(customFilters);
+                var response = await _repository.GetFilteredAsync(customFilters);
                 if (response != null)
                 {
                     return Ok(new GeneralResponse
@@ -267,6 +267,34 @@ namespace BTAS.API.Areas.Waybill.Controllers
             {
 
                 throw;
+            }
+        }
+
+        [HttpGet]
+        [Route("GetByReference")]
+        public async Task<IActionResult> GetByReferenceAsync(string referenceNumber, bool includeChild = false, int isWeb = 0)
+        {
+            try
+            {
+                ResponseDto result = new();
+                var response = await _repository.GetByReference(referenceNumber, includeChild);
+
+                return Ok(new GeneralResponse
+                {
+                    success = response.IsSuccess,
+                    referenceNumber = response.ReferenceNumber,
+                    responseDescription = response.DisplayMessage,
+                    result = response.Result
+                });
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(new GeneralResponse
+                {
+                    response = 500,
+                    responseDescription = ex.Message.ToString(),
+                    success = false
+                });
             }
         }
     }

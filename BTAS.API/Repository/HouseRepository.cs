@@ -37,10 +37,7 @@ namespace BTAS.API.Repository
         /// <returns></returns>
         public async Task<IEnumerable<tbl_houseDto>> GetAllAsync()
         {
-            IEnumerable<tbl_house> _list = await _context.tbl_houses.OrderByDescending(h => h.idtbl_house)
-                //.Include(c => c.houseItems)
-                //.Include(c => c.receptacles)
-                .ToListAsync();
+            IEnumerable<tbl_house> _list = await _context.tbl_houses.OrderByDescending(h => h.idtbl_house).ToListAsync();
             _list = _list.Take(40);
             return _mapper.Map<List<tbl_houseDto>>(_list);
         }
@@ -61,7 +58,7 @@ namespace BTAS.API.Repository
                 .Include(x => x.consignee)
                 .Include(x => x.houseItems)
                 .Include(x => x.receptacles)
-                .AsNoTracking()
+                //.AsNoTracking()
                 .OrderByDescending(x => x.idtbl_house).Take(40)
                 .ToListAsync();
 
@@ -111,7 +108,8 @@ namespace BTAS.API.Repository
                                 (containsDateTime, jsonString) = MakeHouseJsonString(filter, containsDateTime, jsonString);
                             }
 
-                            (propertyInfo, filter.fieldValue, containsDateTime) = GetPropertyInfo<tbl_houseDto>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
+                            (propertyInfo, filter.fieldValue, containsDateTime) = 
+                                GetPropertyInfo<tbl_houseDto, tbl_house>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
                         }
                         else if (filter.tableName.ToUpper() == "CONSOLIDATION")
                         {
@@ -195,6 +193,116 @@ namespace BTAS.API.Repository
                 .FirstOrDefaultAsync(x => x.idtbl_house == id);
             return _mapper.Map<tbl_houseDto>(result);
 
+        }
+
+        public async Task<ResponseDto> GetByReference(string referenceNumber, bool includeChild = false)
+        {
+            try
+            {
+
+                tbl_house result = new();
+
+                if (includeChild)
+                {
+                    result = await _context.tbl_houses
+                        .Include(c => c.houseItems)
+                        .Include(c => c.receptacles)
+                        .FirstOrDefaultAsync(x => x.tbl_house_code == referenceNumber);
+                }
+                else
+                {
+                    result = await _context.tbl_houses
+                        .FirstOrDefaultAsync(x => x.tbl_house_code == referenceNumber);
+                }
+
+                return new ResponseDto
+                {
+                    IsSuccess = true,
+                    ReferenceNumber = result.tbl_house_code,
+                    DisplayMessage = "Success",
+                    Result = _mapper.Map<tbl_houseDto>(result)
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto
+                {
+                    IsSuccess = false,
+                    ErrorMessages = new List<string> { ex.StackTrace.ToString() },
+                    DisplayMessage = ex.Message
+                };
+            }
+        }
+        //Added by HS on 13/01/2023
+        //Get consignee reference by house bill number
+        public async Task<ResponseDto> GetByBillNumber(string billNumber)
+        {
+            try
+            {
+
+                tbl_house result = new();
+                //Edited by HS on 06/02/2023
+                result = await _context.tbl_houses.OrderByDescending(x => x.idtbl_house)
+                    .FirstOrDefaultAsync(x => x.tbl_house_billNumber == billNumber);
+
+                return new ResponseDto
+                {
+                    ReferenceNumber = result.ConsigneeCode,
+                    DisplayMessage = "success",
+                    Result = _mapper.Map<tbl_houseDto>(result)
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto
+                {
+                    IsSuccess = false,
+                    ErrorMessages = new List<string> { ex.StackTrace.ToString() },
+                    DisplayMessage = ex.Message
+                };
+            }
+        }
+
+        public async Task<ResponseDto> GetByMaster(string referenceNumber)
+        {
+            try
+            {
+                var result = await _context.tbl_houses.Where(x => x.MasterCode == referenceNumber).ToListAsync();
+
+                return new ResponseDto
+                {
+                    Result = _mapper.Map<List<tbl_houseDto>>(result)
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto
+                {
+                    IsSuccess = false,
+                    DisplayMessage = "Error retrieving record."
+                };
+            }
+        }
+
+        public async Task<ResponseDto> GetByContainer(string referenceNumber)
+        {
+            try
+            {
+                var result = await _context.tbl_houses.Where(x => x.ContainerCode == referenceNumber).ToListAsync();
+
+                return new ResponseDto
+                {
+                    Result = _mapper.Map<List<tbl_houseDto>>(result)
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto
+                {
+                    IsSuccess = false,
+                    DisplayMessage = "Error retrieving record."
+                };
+            }
         }
 
         /// <summary>
@@ -549,116 +657,6 @@ namespace BTAS.API.Repository
             catch (Exception)
             {
                 return false;
-            }
-        }
-
-        public async Task<ResponseDto> GetByReference(string referenceNumber, bool includeChild = false)
-        {
-            try
-            {
-
-                tbl_house result = new();
-
-                if (includeChild)
-                {
-                    result = await _context.tbl_houses
-                        .Include(c => c.houseItems)
-                        .Include(c => c.receptacles)
-                        .FirstOrDefaultAsync(x => x.tbl_house_code == referenceNumber);
-                }
-                else
-                {
-                    result = await _context.tbl_houses
-                        .FirstOrDefaultAsync(x => x.tbl_house_code == referenceNumber);
-                }
-
-                return new ResponseDto
-                {
-                    IsSuccess = true,
-                    ReferenceNumber = result.tbl_house_code,
-                    DisplayMessage = "Success",
-                    Result = _mapper.Map<tbl_houseDto>(result)
-                };
-            }
-            catch (Exception ex)
-            {
-                return new ResponseDto
-                {
-                    IsSuccess = false,
-                    ErrorMessages = new List<string> { ex.StackTrace.ToString() }, 
-                    DisplayMessage = ex.Message
-                };
-            }
-        }
-        //Added by HS on 13/01/2023
-        //Get consignee reference by house bill number
-        public async Task<ResponseDto> GetByBillNumber(string billNumber)
-        {
-            try
-            {
-
-                tbl_house result = new();
-                //Edited by HS on 06/02/2023
-                result = await _context.tbl_houses.OrderByDescending(x => x.idtbl_house)
-                    .FirstOrDefaultAsync(x => x.tbl_house_billNumber == billNumber);
-                
-                return new ResponseDto
-                {
-                    ReferenceNumber = result.ConsigneeCode,
-                    DisplayMessage = "success",
-                    Result = _mapper.Map<tbl_houseDto>(result)
-                };
-            }
-            catch (Exception ex)
-            {
-                return new ResponseDto
-                {
-                    IsSuccess = false,
-                    ErrorMessages = new List<string> { ex.StackTrace.ToString() },
-                    DisplayMessage = ex.Message
-                };
-            }
-        }
-
-        public async Task<ResponseDto> GetByMaster(string referenceNumber)
-        {
-            try
-            {
-                var result = await _context.tbl_houses.Where(x => x.MasterCode == referenceNumber).ToListAsync();
-
-                return new ResponseDto
-                {
-                    Result = _mapper.Map<List<tbl_houseDto>>(result)
-                };
-            }
-            catch (Exception ex)
-            {
-                return new ResponseDto
-                {
-                    IsSuccess = false,
-                    DisplayMessage = "Error retrieving record."
-                };
-            }
-        }
-
-        public async Task<ResponseDto> GetByContainer(string referenceNumber)
-        {
-            try
-            {
-                var result = await _context.tbl_houses.Where(x => x.ContainerCode == referenceNumber).ToListAsync();
-
-                return new ResponseDto
-                {
-                    Result = _mapper.Map<List<tbl_houseDto>>(result)
-                };
-            }
-            catch (Exception ex)
-            {
-                return new ResponseDto
-                {
-                    IsSuccess = false,
-                    DisplayMessage = "Error retrieving record."
-                };
             }
         }
 

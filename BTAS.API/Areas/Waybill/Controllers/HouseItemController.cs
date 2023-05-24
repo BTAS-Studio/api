@@ -60,6 +60,34 @@ namespace BTAS.API.Areas.Waybill.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("GetByReference")]
+        public async Task<IActionResult> GetByReferenceAsync(string referenceNumber)
+        {
+            try
+            {
+                ResponseDto result = new();
+                var response = await _repository.GetByReference(referenceNumber);
+
+                return Ok(new GeneralResponse
+                {
+                    success = response.IsSuccess,
+                    referenceNumber = response.ReferenceNumber,
+                    responseDescription = response.DisplayMessage,
+                    result = response.Result
+                });
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(new GeneralResponse
+                {
+                    response = 500,
+                    responseDescription = ex.Message.ToString(),
+                    success = false
+                });
+            }
+        }
+
         [HttpPost]
         [Route("postrange")]
         public async Task<object> PostAsync([FromBody] List<tbl_house_itemDto> entities)

@@ -34,14 +34,14 @@ namespace BTAS.API.Repository
         /// <returns></returns>
         public async Task<IEnumerable<tbl_house_itemDto>> GetAllAsync()
         {
-            var _list = await _context.tbl_house_items.ToListAsync();
+            var _list = await _context.tbl_house_items.OrderByDescending(hi => hi.idtbl_house_item).ToListAsync();
             return _mapper.Map<List<tbl_house_itemDto>>(_list);
         }
 
         public Task<IEnumerable<tbl_house_itemDto>> GetAllAsyncWithChildren()
         {
             //No children
-            throw new NotImplementedException();
+            return null;
         }
 
         //Added by HS on 19/05/2023
@@ -78,7 +78,8 @@ namespace BTAS.API.Repository
                                 //(containsDateTime, jsonString) = MakeHouseItemJsonString(filter, containsDateTime, jsonString);
                             }
 
-                            (propertyInfo, filter.fieldValue, containsDateTime) = GetPropertyInfo<tbl_house_itemDto>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
+                            (propertyInfo, filter.fieldValue, containsDateTime) = 
+                                GetPropertyInfo<tbl_house_itemDto, tbl_house_item>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
                         }
                         else if (filter.tableName.ToUpper() == "HOUSE")
                         {
@@ -146,6 +147,33 @@ namespace BTAS.API.Repository
             var result = await _context.tbl_house_items.FirstOrDefaultAsync(x => x.idtbl_house_item == id);
             return _mapper.Map<tbl_house_itemDto>(result);
 
+        }
+
+        public async Task<ResponseDto> GetByReference(string referenceNumber)
+        {
+            try
+            {
+                tbl_house_item result = new();
+                result = await _context.tbl_house_items
+                    .FirstOrDefaultAsync(x => x.tbl_house_item_code == referenceNumber);
+
+                return new ResponseDto
+                {
+                    IsSuccess = true,
+                    ReferenceNumber = result.tbl_house_item_code,
+                    DisplayMessage = "Success",
+                    Result = _mapper.Map<tbl_houseDto>(result)
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto
+                {
+                    IsSuccess = false,
+                    ErrorMessages = new List<string> { ex.StackTrace.ToString() },
+                    DisplayMessage = ex.Message
+                };
+            }
         }
 
         /// <summary>

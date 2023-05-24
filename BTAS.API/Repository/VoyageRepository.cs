@@ -5,14 +5,19 @@ using BTAS.API.Repository.Interface;
 using BTAS.Data;
 using BTAS.Data.Models;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Threading.Tasks;
+using BTAS.API.Repository.SearchRepository;
 
 namespace BTAS.API.Repository
 {
-    public class VoyageRepository : IRepository<tbl_voyageDto>
+    public class VoyageRepository : SRepository, IRepository<tbl_voyageDto>
     {
         private readonly MainDbContext _context;
         private IMapper _mapper;
@@ -37,11 +42,93 @@ namespace BTAS.API.Repository
         /// <returns></returns>
         public async Task<IEnumerable<tbl_voyageDto>> GetAllAsync()
         {
-            var _list = await _context.tbl_voyages
-                .Include(c => c.masters)
-                .AsNoTracking()
-                .ToListAsync();
+            var _list = await _context.tbl_voyages.OrderByDescending(v => v.idtbl_voyage).ToListAsync();
             return _mapper.Map<List<tbl_voyageDto>>(_list);
+        }
+
+        public async Task<IEnumerable<tbl_voyageDto>> GetAllAsyncWithChildren()
+        {
+            var _list = await _context.tbl_voyages.OrderByDescending(v=> v.idtbl_voyage)
+                .Include(v => v.masters).ToListAsync();
+            return _mapper.Map<List<tbl_voyageDto>>(_list);
+        }
+
+        //Added by HS on 24/05/2023
+        /// <summary>
+        /// Retrieves a specified number of voyages according to input conditions(>, >=, <, <=, ==, !=, and contains)
+        /// </summary>
+        /// <returns> A list of voyage objects</returns>
+        public async Task<IEnumerable<tbl_voyageDto>> GetFilteredAsync(CustomFilters<tbl_voyageDto> customFilters)
+        {
+            try
+            {
+                var qList = _context.tbl_voyages
+                    //.AsNoTracking()
+                    .OrderByDescending(h => h.idtbl_voyage).AsQueryable();
+                // excute each filter one by one 
+                if (customFilters.Filters != null)
+                {
+                    foreach (var filter in customFilters.Filters)
+                    {
+                        PropertyInfo propertyInfo = null;
+                        bool parent = false;
+                        var jsonString = JsonConvert.SerializeObject(filter.searchField);
+                        var jsonObj = JObject.Parse(jsonString);
+                        JToken originalValue = null;
+
+                        if (filter.tableName.ToUpper() == "VOYAGE")
+                        {
+                            filter.tableName = "voyage";
+                            bool containsDateTime = false;
+                            //used for searching Contains DateTime type's columns
+                            if (filter.condition.ToUpper() == "CONTAINS")
+                            {
+                                originalValue = jsonObj[filter.fieldName];
+                                (containsDateTime, jsonString) = MakeVoyageJsonString(filter, containsDateTime, jsonString);
+                            }
+
+                            (propertyInfo, filter.fieldValue, containsDateTime) = GetPropertyInfo<tbl_voyageDto, tbl_voyage>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
+                        }
+                        else
+                        {
+                            throw new ArgumentException($"Invalid table name: {filter.tableName}");
+                        }
+
+                        Type elementType = qList.ElementType;
+
+                        if (propertyInfo == null)
+                        {
+                            throw new ArgumentException($"Invalid property name: {propertyInfo.Name}");
+                        }
+
+                        Expression<Func<tbl_voyage, bool>> propertyLambda = null;
+                        propertyLambda = GetPropertyLambda<tbl_voyage>(propertyInfo, filter, parent);
+
+                        if (propertyLambda != null)
+                        {
+                            //qList = qList.Provider.CreateQuery<tbl_voyage>(Expression.Call(
+                            //           typeof(Queryable),
+                            //           "Where",
+                            //           new[] { elementType },
+                            //           qList.Expression,
+                            //           propertyLambda
+                            //       ));
+                            qList = qList.Where(propertyLambda);
+                        }
+                    }
+                }
+
+                if (qList.Count() == 0)
+                {
+                    return null;
+                }
+                var filtered = await qList.Skip(customFilters.Page * customFilters.PageSize).Take(customFilters.PageSize).ToListAsync();
+                return _mapper.Map<IEnumerable<tbl_voyageDto>>(filtered);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -58,6 +145,39 @@ namespace BTAS.API.Repository
                 .FirstOrDefaultAsync(x => x.idtbl_voyage == id);
             return _mapper.Map<tbl_voyageDto>(result);
 
+        }
+
+        public async Task<ResponseDto> GetByReference(string referenceNumber, bool includeChild = false)
+        {
+            try
+            {
+                tbl_voyage result = new();
+                if (includeChild)
+                {
+                    result = await _context.tbl_voyages
+                        .Include(v => v.masters)
+                        .FirstOrDefaultAsync(v => v.tbl_voyage_code == referenceNumber);
+                }
+                else
+                {
+                    result = await _context.tbl_voyages.FirstOrDefaultAsync(v => v.tbl_voyage_code == referenceNumber);
+                }
+                return new ResponseDto
+                {
+                    IsSuccess = true,
+                    Result = _mapper.Map<tbl_voyageDto>(result),
+                    ReferenceNumber = result.tbl_voyage_code,
+                    DisplayMessage = "Success."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto
+                {
+                    IsSuccess = false,
+                    DisplayMessage = "Error retrieving record."
+                };
+            }
         }
 
         /// <summary>
@@ -297,43 +417,6 @@ namespace BTAS.API.Repository
             }
         }
 
-        public async Task<ResponseDto> GetByReference(string referenceNumber, bool includeChild = false)
-        {
-            try
-            {
-                var result = new tbl_voyage();
-                //if (includeChild)
-                //{
-                //    result = await _context.tbl_voyage
-                //        .Include(c => c.masters)
-                //        .FirstOrDefaultAsync(x => x.tbl_voyage_number == referenceNumber);
-                //}
-                //else
-                //{
-                //    result = await _context.tbl_voyages.FirstOrDefaultAsync(x => x.tbl_voyage_number == referenceNumber);
-                //}
-                result = await _context.tbl_voyages
-                    .Include(c => c.masters)
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(x => x.tbl_voyage_code == referenceNumber);
-
-                return new ResponseDto
-                {
-                    IsSuccess = true,
-                    ReferenceNumber = result.tbl_voyage_code,
-                    DisplayMessage = "Success",
-                    Result = _mapper.Map<tbl_voyageDto>(result)
-                };
-            }
-            catch (Exception ex)
-            {
-                return new ResponseDto
-                {
-                    IsSuccess = false,
-                    DisplayMessage = "Error retrieving record."
-                };
-            }
-        }
 
         public async Task<string> GetNextId(string shipperId)
         {
@@ -341,21 +424,6 @@ namespace BTAS.API.Repository
 
             string referenceCode = "VY" + shipperId + String.Format("{0:0000000000}", (result != null ? result.idtbl_voyage + 1 : 1));
             return referenceCode;
-        }
-
-        public Task<IEnumerable<tbl_voyageDto>> GetAllAsyncWithChildren()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<tbl_voyageDto>> GetAllAsyncWithChildren(searchFilter filter = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<tbl_voyageDto>> GetAllAsyncWithChildren(searchFilter<tbl_voyageDto> filter = null)
-        {
-            throw new NotImplementedException();
         }
     }
 }
