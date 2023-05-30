@@ -56,7 +56,9 @@ namespace BTAS.API.Repository
             try
             {
                 var qList = _context.tbl_shipments
-                    .Include(x => x.receptable)
+                    //Edit by HS on 25/05/2023
+                    //.Include(x => x.receptable)
+                    .Include(x => x.receptacle)
                     //.AsNoTracking()
                     .OrderByDescending(x => x.idtbl_shipment)
                     .AsQueryable();
@@ -87,7 +89,7 @@ namespace BTAS.API.Repository
                         }
                         else if (filter.tableName.ToUpper() == "RECEPTACLE")
                         {
-                            filter.tableName = "receptable";
+                            filter.tableName = "receptacle";
                             parent = true;
                             bool containsDateTime = false;
                             if (filter.condition.ToUpper() == "CONTAINS")

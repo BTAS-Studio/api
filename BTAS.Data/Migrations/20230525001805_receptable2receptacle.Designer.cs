@@ -3,24 +3,395 @@ using System;
 using BTAS.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-
-#nullable disable
 
 namespace BTAS.Data.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230525001805_receptable2receptacle")]
+    partial class receptable2receptacle
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasCharSet("utf8mb4")
                 .UseCollation("utf8mb4_general_ci")
-                .HasAnnotation("ProductVersion", "7.0.5")
-                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+                .HasAnnotation("Relational:MaxIdentifierLength", 64)
+                .HasAnnotation("ProductVersion", "5.0.17");
 
-            MySqlModelBuilderExtensions.HasCharSet(modelBuilder, "utf8mb4");
+            modelBuilder.Entity("BTAS.Data.Models.NextId", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+                });
+
+            modelBuilder.Entity("BTAS.Data.Models.ShipmentDetailsResponse", b =>
+                {
+                    b.Property<string>("idshippers_tracking_ref")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("idtbl_carrier_api_response")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("idtbl_carrier_info")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("idtbl_parcel_info")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("idtbl_parcel_items")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_carrier_active")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_carrier_address1")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_carrier_address2")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_carrier_api_response_ind")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_carrier_api_response_message")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_carrier_api_response_parcelId")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_carrier_api_trackingRef")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_carrier_city")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_carrier_code")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_carrier_contactName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_carrier_country_destination")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_carrier_country_origin")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_carrier_email")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_carrier_name")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_carrier_phone")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_carrier_postCode")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_carrier_state")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_carrier_suburb")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_carrier_type")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_abnnumber")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_authorityToLeave")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_batchId")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_coveramount")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_deliveryAddressLine1")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_deliveryAddressLine2")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_deliveryAddressLine3")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_deliveryCity")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_deliveryCompany")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_deliveryContact")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_deliveryContactEmail")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_deliveryContactPhone")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_deliveryCountry")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_deliveryDate")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_deliveryEmail")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_deliveryInstructions")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_deliveryName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_deliveryPhone")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_deliveryPostcode")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_deliveryState")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_deliverySuburb")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_description")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_dg")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_dgClass")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_dgPackaging")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_dgUn")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_facility")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_gstexemptioncode")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_incoterm")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_instruction")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_invoiceCurrency")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_invoiceValue")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_lockerService")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_nativeDescription")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_orderItems")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_phone")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_platform")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_readyDate")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_referenceNo")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_returnAddress1")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_returnAddress2")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_returnAddress3")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_returnCity")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_returnCountry")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_returnName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_returnOption")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_returnPostcode")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_returnState")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_serviceCode")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_serviceOption")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_shipment")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_shipperAddressLine1")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_shipperAddressLine2")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_shipperAddressLine3")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_shipperCity")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_shipperCompany")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_shipperContact")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_shipperCountry")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_shipperEmail")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_shipperId")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_shipperInstructions")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_shipperLastName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_shipperName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_shipperPhone")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_shipperPostcode")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_shipperState")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_shipperSuburb")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_sortCode")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_tailLiftD")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_tailLiftO")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_timestamp")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_trackingNo")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_vendorid")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_info_warehouse")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_items_info_id")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_items_parcelDescription")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_items_parcelDimensionUnit")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_items_parcelHeight")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_items_parcelLength")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_items_parcelQty")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_items_parcelReference")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_items_parcelType")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_items_parcelWeight")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_items_parcelWeightUnit")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_parcel_items_parcelWidth")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_services_active")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_services_carrierAccount")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_services_carrierCode")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_services_carrierId")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_services_code")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_services_id")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_services_name")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_shippers_tracking_batch_id")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_shippers_tracking_createDate")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_shippers_tracking_est_cost")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_shippers_tracking_prefix")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("tbl_shippers_tracking_shipmentId")
+                        .HasColumnType("longtext");
+                });
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_3pl_routing", b =>
                 {
@@ -94,7 +465,7 @@ namespace BTAS.Data.Migrations
                     b.HasKey("idtbl_address")
                         .HasName("PRIMARY");
 
-                    b.ToTable("tbl_address", (string)null);
+                    b.ToTable("tbl_address");
                 });
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_amazon_routing", b =>
@@ -233,7 +604,7 @@ namespace BTAS.Data.Migrations
                     b.HasKey("idtbl_carrier_api_response")
                         .HasName("PRIMARY");
 
-                    b.ToTable("tbl_carrier_api_response", (string)null);
+                    b.ToTable("tbl_carrier_api_response");
                 });
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_carrier_info", b =>
@@ -305,7 +676,7 @@ namespace BTAS.Data.Migrations
                     b.HasKey("idtbl_carrier_info")
                         .HasName("PRIMARY");
 
-                    b.ToTable("tbl_carrier_info", (string)null);
+                    b.ToTable("tbl_carrier_info");
                 });
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_client_contact_detail", b =>
@@ -385,7 +756,7 @@ namespace BTAS.Data.Migrations
                     b.HasKey("idtbl_client_contact_group")
                         .HasName("PRIMARY");
 
-                    b.ToTable("tbl_client_contact_group", (string)null);
+                    b.ToTable("tbl_client_contact_group");
                 });
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_client_header", b =>
@@ -485,7 +856,7 @@ namespace BTAS.Data.Migrations
 
                     b.HasIndex(new[] { "tbl_pickup_address_id" }, "FK_tbl_client_header_tbl_address_tbl_address_id_idx");
 
-                    b.ToTable("tbl_client_header", (string)null);
+                    b.ToTable("tbl_client_header");
                 });
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_container", b =>
@@ -545,7 +916,7 @@ namespace BTAS.Data.Migrations
 
                     b.HasIndex(new[] { "tbl_master_id" }, "FK_tbl_container_tbl_master_tbl_master_id_idx");
 
-                    b.ToTable("tbl_container", (string)null);
+                    b.ToTable("tbl_container");
                 });
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_containerType", b =>
@@ -560,7 +931,7 @@ namespace BTAS.Data.Migrations
                     b.HasKey("idtbl_containerType")
                         .HasName("PRIMARY");
 
-                    b.ToTable("tbl_containerType", (string)null);
+                    b.ToTable("tbl_containerType");
                 });
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_default_setting", b =>
@@ -897,7 +1268,7 @@ namespace BTAS.Data.Migrations
 
                     b.HasIndex(new[] { "tbl_master_id" }, "IX_tbl_hawb_tbl_master_id");
 
-                    b.ToTable("tbl_house", (string)null);
+                    b.ToTable("tbl_house");
                 });
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_house_item", b =>
@@ -1125,7 +1496,7 @@ namespace BTAS.Data.Migrations
                     b.HasKey("idtbl_item_sku")
                         .HasName("PRIMARY");
 
-                    b.ToTable("tbl_item_sku", (string)null);
+                    b.ToTable("tbl_item_sku");
                 });
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_manifest", b =>
@@ -1239,7 +1610,7 @@ namespace BTAS.Data.Migrations
 
                     b.HasIndex(new[] { "tbl_voyage_id" }, "IX_tbl_master_tbl_voyage_id");
 
-                    b.ToTable("tbl_master", (string)null);
+                    b.ToTable("tbl_master");
                 });
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_nz_routing", b =>
@@ -1285,7 +1656,7 @@ namespace BTAS.Data.Migrations
                     b.HasKey("tbl_parcel_tracking_id")
                         .HasName("PRIMARY");
 
-                    b.ToTable("tbl_parcel_tracking", (string)null);
+                    b.ToTable("tbl_parcel_tracking");
                 });
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_pluscourier", b =>
@@ -1308,7 +1679,7 @@ namespace BTAS.Data.Migrations
                     b.HasKey("tbl_pluscourier_id")
                         .HasName("PRIMARY");
 
-                    b.ToTable("tbl_pluscourier", (string)null);
+                    b.ToTable("tbl_pluscourier");
                 });
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_pluscourier_rate", b =>
@@ -1331,7 +1702,7 @@ namespace BTAS.Data.Migrations
                     b.HasKey("tbl_pluscourier_rate_id")
                         .HasName("PRIMARY");
 
-                    b.ToTable("tbl_pluscourier_rate", (string)null);
+                    b.ToTable("tbl_pluscourier_rate");
                 });
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_receptacle", b =>
@@ -1403,7 +1774,7 @@ namespace BTAS.Data.Migrations
 
                     b.HasIndex(new[] { "tbl_house_id" }, "IX_tbl_receptacle_tbl_house_id");
 
-                    b.ToTable("tbl_receptacle", (string)null);
+                    b.ToTable("tbl_receptacle");
                 });
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_return", b =>
@@ -1497,7 +1868,7 @@ namespace BTAS.Data.Migrations
                     b.HasKey("tbl_returns_sku_id")
                         .HasName("PRIMARY");
 
-                    b.ToTable("tbl_returns_sku", (string)null);
+                    b.ToTable("tbl_returns_sku");
                 });
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_routing", b =>
@@ -1546,7 +1917,7 @@ namespace BTAS.Data.Migrations
 
                     b.HasIndex(new[] { "tbl_voyage_id" }, "IX_tbl_routing_tbl_voyage_id");
 
-                    b.ToTable("tbl_routing", (string)null);
+                    b.ToTable("tbl_routing");
                 });
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_sea_shipment", b =>
@@ -1789,7 +2160,7 @@ namespace BTAS.Data.Migrations
                     b.HasKey("tbl_sea_shipment_id")
                         .HasName("PRIMARY");
 
-                    b.ToTable("tbl_sea_shipment", (string)null);
+                    b.ToTable("tbl_sea_shipment");
                 });
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_service", b =>
@@ -2160,7 +2531,7 @@ namespace BTAS.Data.Migrations
 
                     b.HasIndex(new[] { "tbl_receptacle_id" }, "FK_tbl_shipment_tbl_receptacle_tbl_receptacle_id_idx");
 
-                    b.ToTable("tbl_shipment", (string)null);
+                    b.ToTable("tbl_shipment");
                 });
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_shipment_item", b =>
@@ -2224,6 +2595,48 @@ namespace BTAS.Data.Migrations
                     b.HasIndex(new[] { "tbl_shipment_id" }, "FK_tbl_shipmentl_items_tbl_shipment_tbl_shipment_id_idx");
 
                     b.ToTable("tbl_shipment_items");
+                });
+
+            modelBuilder.Entity("BTAS.Data.Models.tbl_shipment_search_response", b =>
+                {
+                    b.Property<string>("deliveryCompany")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("deliveryEmail")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("deliveryName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("deliveryPhone")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("jobNumber")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("jobReference")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("manifestId")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("manifestNumber")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("serviceName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("shipper")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("shipperId")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("shipperPrefix")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("trackingNumber")
+                        .HasColumnType("longtext");
                 });
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_shipper", b =>
@@ -2293,7 +2706,7 @@ namespace BTAS.Data.Migrations
                     b.HasKey("idtbl_shippers_air_ref")
                         .HasName("PRIMARY");
 
-                    b.ToTable("tbl_shippers_air_ref", (string)null);
+                    b.ToTable("tbl_shippers_air_ref");
                 });
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_shippers_tracking_ref", b =>
@@ -2323,7 +2736,7 @@ namespace BTAS.Data.Migrations
                     b.HasKey("idshippers_tracking_ref")
                         .HasName("PRIMARY");
 
-                    b.ToTable("tbl_shippers_tracking_ref", (string)null);
+                    b.ToTable("tbl_shippers_tracking_ref");
                 });
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_shipping_billing", b =>
@@ -2364,7 +2777,7 @@ namespace BTAS.Data.Migrations
 
                     b.HasIndex(new[] { "tbl_shipment_id" }, "IX_tbl_shipping_billing_tbl_shipment_id");
 
-                    b.ToTable("tbl_shipping_billing", (string)null);
+                    b.ToTable("tbl_shipping_billing");
                 });
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_ticket", b =>
@@ -2420,7 +2833,7 @@ namespace BTAS.Data.Migrations
                     b.HasKey("tbl_tracking_id")
                         .HasName("PRIMARY");
 
-                    b.ToTable("tbl_tracking_3pl", (string)null);
+                    b.ToTable("tbl_tracking_3pl");
                 });
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_tracking_amazon", b =>
@@ -2442,7 +2855,7 @@ namespace BTAS.Data.Migrations
                     b.HasKey("tbl_tracking_id")
                         .HasName("PRIMARY");
 
-                    b.ToTable("tbl_tracking_amazon", (string)null);
+                    b.ToTable("tbl_tracking_amazon");
                 });
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_tracking_austway", b =>
@@ -2464,7 +2877,7 @@ namespace BTAS.Data.Migrations
                     b.HasKey("tbl_tracking_id")
                         .HasName("PRIMARY");
 
-                    b.ToTable("tbl_tracking_austway", (string)null);
+                    b.ToTable("tbl_tracking_austway");
                 });
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_tracking_border", b =>
@@ -2488,7 +2901,7 @@ namespace BTAS.Data.Migrations
                     b.HasKey("tbl_tracking_id")
                         .HasName("PRIMARY");
 
-                    b.ToTable("tbl_tracking_border", (string)null);
+                    b.ToTable("tbl_tracking_border");
                 });
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_tracking_nz", b =>
@@ -2510,7 +2923,7 @@ namespace BTAS.Data.Migrations
                     b.HasKey("tbl_tracking_id")
                         .HasName("PRIMARY");
 
-                    b.ToTable("tbl_tracking_nz", (string)null);
+                    b.ToTable("tbl_tracking_nz");
                 });
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_tracking_tnt", b =>
@@ -2534,7 +2947,7 @@ namespace BTAS.Data.Migrations
                     b.HasKey("tbl_tracking_tnt_id")
                         .HasName("PRIMARY");
 
-                    b.ToTable("tbl_tracking_tnt", (string)null);
+                    b.ToTable("tbl_tracking_tnt");
                 });
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_voyage", b =>
@@ -2602,7 +3015,7 @@ namespace BTAS.Data.Migrations
                     b.HasKey("idtbl_voyage")
                         .HasName("PRIMARY");
 
-                    b.ToTable("tbl_voyage", (string)null);
+                    b.ToTable("tbl_voyage");
                 });
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_xml_template", b =>
@@ -2820,20 +3233,20 @@ namespace BTAS.Data.Migrations
                     b.HasOne("BTAS.Data.Models.tbl_house", "house")
                         .WithMany("documents")
                         .HasForeignKey("house_reference")
-                        .IsRequired()
-                        .HasConstraintName("document_house_link");
+                        .HasConstraintName("document_house_link")
+                        .IsRequired();
 
                     b.HasOne("BTAS.Data.Models.tbl_master", "master")
                         .WithMany("documents")
                         .HasForeignKey("master_reference")
-                        .IsRequired()
-                        .HasConstraintName("document_master_link");
+                        .HasConstraintName("document_master_link")
+                        .IsRequired();
 
                     b.HasOne("BTAS.Data.Models.tbl_shipment", "shipment")
                         .WithMany("documents")
                         .HasForeignKey("shipment_reference")
-                        .IsRequired()
-                        .HasConstraintName("document_shipment_link");
+                        .HasConstraintName("document_shipment_link")
+                        .IsRequired();
 
                     b.Navigation("house");
 
@@ -2976,9 +3389,9 @@ namespace BTAS.Data.Migrations
                     b.HasOne("BTAS.Data.Models.tbl_shipment", "shipment")
                         .WithMany("billings")
                         .HasForeignKey("tbl_shipment_id")
+                        .HasConstraintName("FK_tbl_shipping_billing_tbl_shipment_tbl_shipment_id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_tbl_shipping_billing_tbl_shipment_tbl_shipment_id");
+                        .IsRequired();
 
                     b.Navigation("shipment");
                 });
@@ -2994,9 +3407,9 @@ namespace BTAS.Data.Migrations
                     b.HasOne("BTAS.Data.Models.tbl_client_contact_group", null)
                         .WithMany()
                         .HasForeignKey("contactGroupsidtbl_client_contact_group")
+                        .HasConstraintName("FK_tbl_client_contact_detailtbl_client_contact_group_tbl_clien~1")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_tbl_client_contact_detailtbl_client_contact_group_tbl_clien~1");
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("tbl_house_itemtbl_item_sku", b =>

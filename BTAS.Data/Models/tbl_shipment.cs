@@ -90,10 +90,13 @@ namespace BTAS.Data.Models
         public string tbl_shipment_returnCountry { get; set; }
         public string tbl_shipment_returnOption { get; set; }
 
-        public int? tbl_receptable_id { get; set; }
+        //Edit by HS on 25/05/2023
+        //public int? tbl_receptable_id { get; set; }
+        public int? tbl_receptacle_id { get; set; }
         public string ReceptacleCode { get; set; }
-        public virtual tbl_receptacle receptable { get; set; }
-
+        //Edit by HS on 25/05/2023
+        //public virtual tbl_receptacle receptable { get; set; }
+        public virtual tbl_receptacle receptacle { get; set; }
         public int? tbl_incoterms_id { get; set; }
         public string IncotermsCode { get; set; }
         public virtual tbl_incoterm incoterm { get; set; }

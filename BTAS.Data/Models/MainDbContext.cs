@@ -1,7 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
-
+﻿using Microsoft.EntityFrameworkCore;
 #nullable disable
 
 namespace BTAS.Data.Models
@@ -72,8 +69,9 @@ namespace BTAS.Data.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                //optionsBuilder.UseMySql("server=api.austwayexpress.com;port=3306;database=db3kelolqhhvrr;user=uu7gangnepira;password=lygqjpgaf5zw", Microsoft.EntityFrameworkCore.ServerVersion.Parse("5.7.39-mysql"));
-                ServerVersion.AutoDetect("server=api.austwayexpress.com;port=3306;database=dbmubv5jluex76;user=ucbm95jl7gxdr;password=%$-1#~%7113p;");
+                //optionsBuilder.UseMySql("server=api.austwayexpress.com;port=3306;database=db3kelolqhhvrr;user=uu7gangnepira;password=lygqjpgaf5zw", Microsoft.EntityFrameworkCore.ServerVersion.Parse("5.7.39-mysql"));//dev
+                optionsBuilder.UseMySql("server=api.austwayexpress.com;port=3306;database=dbas5njhyhtcvu;user=uu7gangnepira;password=lygqjpgaf5zw", ServerVersion.Parse("5.7.39-mysql"));//poststaging
+                //ServerVersion.AutoDetect("server=api.austwayexpress.com;port=3306;database=dbmubv5jluex76;user=ucbm95jl7gxdr;password=%$-1#~%7113p;");
             }
         }
 
@@ -661,17 +659,17 @@ namespace BTAS.Data.Models
                 entity.HasOne(d => d.container)
                     .WithMany(p => p.houses)
                     .HasForeignKey(d => d.tbl_container_id)
-                    .HasConstraintName("FK_tbl_house_tbl_container_tbl_container_id"); 
+                    .HasConstraintName("FK_tbl_house_tbl_container_tbl_container_id");
 
                 entity.HasOne(d => d.incoterm)
                     .WithMany(p => p.houses)
                     .HasForeignKey(d => d.tbl_incoterms_id)
-                    .HasConstraintName("FK_tbl_house_tbl_incoterms_tbl_incoterms_id"); 
+                    .HasConstraintName("FK_tbl_house_tbl_incoterms_tbl_incoterms_id");
 
                 entity.HasOne(d => d.master)
                     .WithMany(p => p.houses)
                     .HasForeignKey(d => d.tbl_master_id)
-                    .HasConstraintName("FK_tbl_house_tbl_master_tbl_master_id"); 
+                    .HasConstraintName("FK_tbl_house_tbl_master_tbl_master_id");
             });
 
             modelBuilder.Entity<tbl_house_item>(entity =>
@@ -1267,8 +1265,9 @@ namespace BTAS.Data.Models
                 entity.ToTable("tbl_shipment");
 
                 entity.HasIndex(e => e.tbl_incoterms_id, "FK_tbl_shipment_tbl_incoterms_tbl_incoterms_id_idx");
-
-                entity.HasIndex(e => e.tbl_receptable_id, "FK_tbl_shipment_tbl_receptacle_tbl_receptacle_id_idx");
+                //Edit by HS on 25/05/2023
+                //entity.HasIndex(e => e.tbl_receptable_id, "FK_tbl_shipment_tbl_receptacle_tbl_receptacle_id_idx");
+                entity.HasIndex(e => e.tbl_receptacle_id, "FK_tbl_shipment_tbl_receptacle_tbl_receptacle_id_idx");
 
                 entity.Property(e => e.idtbl_shipment).HasColumnType("int(11)");
 
@@ -1277,8 +1276,9 @@ namespace BTAS.Data.Models
                 entity.Property(e => e.ReceptacleCode).HasMaxLength(30);
 
                 entity.Property(e => e.tbl_incoterms_id).HasColumnType("int(11)");
-
-                entity.Property(e => e.tbl_receptable_id).HasColumnType("int(11)");
+                //Edit by HS on 25/05/2023
+                //entity.Property(e => e.tbl_receptable_id).HasColumnType("int(11)");
+                entity.Property(e => e.tbl_receptacle_id).HasColumnType("int(11)");
 
                 entity.Property(e => e.tbl_shipment_abnNumber).HasMaxLength(45);
 
@@ -1434,9 +1434,14 @@ namespace BTAS.Data.Models
                     .WithMany(p => p.shipments)
                     .HasForeignKey(d => d.tbl_incoterms_id);
 
-                entity.HasOne(d => d.receptable)
+                //Edit by HS on 25/05/2023
+                //entity.HasOne(d => d.receptable)
+                //    .WithMany(p => p.shipments)
+                //    .HasForeignKey(d => d.tbl_receptable_id)
+                //    .HasConstraintName("FK_tbl_shipment_tbl_receptacle_tbl_receptacle_id");
+                entity.HasOne(d => d.receptacle)
                     .WithMany(p => p.shipments)
-                    .HasForeignKey(d => d.tbl_receptable_id)
+                    .HasForeignKey(d => d.tbl_receptacle_id)
                     .HasConstraintName("FK_tbl_shipment_tbl_receptacle_tbl_receptacle_id");
             });
 
@@ -1727,9 +1732,6 @@ namespace BTAS.Data.Models
             });
 
             modelBuilder.Entity<tbl_xml_template>().HasNoKey();
-            modelBuilder.Entity<tbl_shipment_search_response>().HasNoKey().ToView(null);
-            modelBuilder.Entity<ShipmentDetailsResponse>().HasNoKey().ToView(null);
-            modelBuilder.Entity<NextId>().HasNoKey().ToView(null);
 
             OnModelCreatingPartial(modelBuilder);
         }

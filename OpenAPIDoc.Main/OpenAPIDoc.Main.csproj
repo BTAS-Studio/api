@@ -12,7 +12,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Austway\BTAS.API\BTAS.API.csproj" />
+		<ProjectReference Include="..\..\Austway-Development\BTAS.API\BTAS.API.csproj" />
 	</ItemGroup>
 
 </Project>
