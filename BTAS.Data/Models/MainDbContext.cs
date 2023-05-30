@@ -1733,6 +1733,10 @@ namespace BTAS.Data.Models
 
             modelBuilder.Entity<tbl_xml_template>().HasNoKey();
 
+            modelBuilder.Entity<tbl_shipment_search_response>().HasNoKey().ToView(null);
+
+            modelBuilder.Entity<ShipmentDetailsResponse>().HasNoKey().ToView(null);
+
             OnModelCreatingPartial(modelBuilder);
         }
 
