@@ -129,7 +129,7 @@ namespace BTAS.API
             services.AddApiVersioning(config =>
             {
                 config.RegisterMiddleware = true;
-                config.DefaultApiVersion = new ApiVersion(1, 2);
+                config.DefaultApiVersion = new ApiVersion(2, 0);
                 config.AssumeDefaultVersionWhenUnspecified = true;
                 config.ReportApiVersions = true;
                 config.ApiVersionReader = new HeaderApiVersionReader("api-version");
@@ -157,7 +157,7 @@ namespace BTAS.API
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "BTAS.API", Version = "v1" });
+                c.SwaggerDoc("v2", new OpenApiInfo { Title = "BTAS.API", Version = "v2" });
                 //c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
                 //{
                 //    Description = "Austway API with OAuth2.0 Auth Code and PKCE",
@@ -235,7 +235,7 @@ namespace BTAS.API
                 //app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BTAS.API v1"));
                 app.UseSwaggerUI(c =>
                 {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "BTAS.API v1");
+                    c.SwaggerEndpoint("/swagger/v2/swagger.json", "BTAS.API v2");
                     c.OAuthClientId(Configuration["OpenIdClientId"]);
                     c.OAuthClientSecret(Configuration["ClientSecret"]);
                     c.OAuthUsePkce();
@@ -254,7 +254,7 @@ namespace BTAS.API
             app.UseSwaggerUI(c =>
             {
                 c.RoutePrefix = "swagger";
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
+                c.SwaggerEndpoint("/swagger/v2/swagger.json", "API v2");
 
                 // custom CSS
                 c.InjectStylesheet("/swagger-ui/custom.css");
