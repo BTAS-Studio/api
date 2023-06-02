@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System;
 #nullable disable
 
 namespace BTAS.Data.Models
@@ -39,6 +40,9 @@ namespace BTAS.Data.Models
         public virtual DbSet<tbl_item_sku> tbl_item_skus { get; set; }
         public virtual DbSet<tbl_manifest> tbl_manifests { get; set; }
         public virtual DbSet<tbl_master> tbl_masters { get; set; }
+        public virtual DbSet<tbl_milestone_master> tbl_milestone_masters { get; set; }
+        public virtual DbSet<tbl_note_category> tbl_note_categories { get; set; }
+        public virtual DbSet<tbl_note> tbl_notes { get; set; }
         public virtual DbSet<tbl_nz_routing> tbl_nz_routings { get; set; }
         public virtual DbSet<tbl_parcel_tracking> tbl_parcel_trackings { get; set; }
         public virtual DbSet<tbl_pluscourier> tbl_pluscouriers { get; set; }
@@ -463,39 +467,60 @@ namespace BTAS.Data.Models
                 entity.HasKey(e => e.idtbl_document)
                     .HasName("PRIMARY");
 
-                entity.HasIndex(e => e.house_reference, "idx_document_house_link_idx");
-
-                entity.HasIndex(e => e.shipment_reference, "idx_document_shipment_link_idx");
-
-                entity.HasIndex(e => e.master_reference, "idx_document_master_link_idx");
+                entity.HasIndex(e => e.tbl_house_id, "idx_document_house_link_idx");
+                entity.HasIndex(e => e.tbl_shipment_id, "idx_document_shipment_link_idx");
+                entity.HasIndex(e => e.tbl_master_id, "idx_document_master_link_idx");
+                entity.HasIndex(e => e.tbl_note_id, "idx_document_note_link_idx");
+                entity.HasIndex(e => e.tbl_milestone_master_id, "idx_document_milestone_master_link_idx");
 
                 entity.Property(e => e.idtbl_document).HasColumnType("int(11)");
+                entity.Property(e => e.tbl_document_code).HasMaxLength(50);
+                entity.Property(e => e.tbl_document_status).HasColumnType("tinyint(3) unsigned");
+                entity.Property(e => e.tbl_document_createdDate).HasMaxLength(6);
+                entity.Property(e => e.tbl_document_name).HasMaxLength(50);
+                entity.Property(e => e.tbl_document_extension).HasMaxLength(50);
+                entity.Property(e => e.tbl_document_group).HasMaxLength(50);
+                entity.Property(e => e.tbl_document_description).HasMaxLength(150);
+                entity.Property(e => e.tbl_doucument_internalAccess).HasColumnType("tinyint(3) unsigned");
+                entity.Property(e => e.tbl_doucument_externalAccess).HasColumnType("tinyint(3) unsigned");
+                entity.Property(e => e.tbl_document_blobToken).HasMaxLength(150);
+                entity.Property(e => e.tbl_document_route).HasMaxLength(150);
+                entity.Property(e => e.tbl_doucument_updatedBy).HasMaxLength(50);
+                
+                entity.Property(e => e.tbl_house_id).HasColumnType("int(11)");
+                entity.Property(e => e.tbl_shipment_id).HasColumnType("int(11)");
+                entity.Property(e => e.tbl_master_id).HasColumnType("int(11)");
+                entity.Property(e => e.tbl_note_id).HasColumnType("int(11)");
+                entity.Property(e => e.tbl_milestone_master_id).HasColumnType("int(11)");
 
-                entity.Property(e => e.date_added).HasMaxLength(6);
-
-                entity.Property(e => e.house_reference).HasColumnType("int(11)");
-
-                entity.Property(e => e.shipment_reference).HasColumnType("int(11)");
-
-                entity.Property(e => e.master_reference).HasColumnType("int(11)");
+                entity.Property(e => e.MasterCode).HasMaxLength(50);
+                entity.Property(e => e.HouseCode).HasMaxLength(50);
+                entity.Property(e => e.ShipmentCode).HasMaxLength(50);
+                entity.Property(e => e.NoteCode).HasMaxLength(50);
+                entity.Property(e => e.MilestoneMasterCode).HasMaxLength(50);
 
                 entity.HasOne(d => d.house)
                     .WithMany(p => p.documents)
-                    .HasForeignKey(d => d.house_reference)
+                    .HasForeignKey(d => d.tbl_house_id)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("document_house_link");
 
                 entity.HasOne(d => d.shipment)
                     .WithMany(p => p.documents)
-                    .HasForeignKey(d => d.shipment_reference)
+                    .HasForeignKey(d => d.tbl_shipment_id)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("document_shipment_link");
 
                 entity.HasOne(d => d.master)
                     .WithMany(p => p.documents)
-                    .HasForeignKey(d => d.master_reference)
+                    .HasForeignKey(d => d.tbl_master_id)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("document_master_link");
+                entity.HasOne(d => d.note)
+                    .WithMany(p => p.documents)
+                    .HasForeignKey(d => d.tbl_note_id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("document_note_link");
             });
 
             modelBuilder.Entity<tbl_dynamic_filter>(entity =>
@@ -887,6 +912,113 @@ namespace BTAS.Data.Models
                     .WithMany(p => p.masters)
                     .HasForeignKey(d => d.tbl_voyage_id)
                     .HasConstraintName("FK_tbl_master_tbl_voyage_tbl_voyage_id");
+            });
+
+            modelBuilder.Entity<tbl_milestone_master>(entity =>
+            {
+                entity.HasKey(e => e.idtbl_milestone_master)
+                .HasName("PRIMARY");
+
+                entity.ToTable("tbl_milestone_master");
+
+                entity.Property(e => e.idtbl_milestone_master).HasColumnType("int(11)");
+                entity.Property(e => e.code).HasMaxLength(50);
+                entity.Property(e => e.masterCut).HasMaxLength(6);
+                entity.Property(e => e.etd).HasMaxLength(6);
+                entity.Property(e => e.available).HasMaxLength(6);
+                entity.Property(e => e.ediReceive).HasMaxLength(6);
+                entity.Property(e => e.etaDischarge).HasMaxLength(6);
+                entity.Property(e => e.etaDestination).HasMaxLength(6);
+                entity.Property(e => e.ataDestination).HasMaxLength(6);
+                entity.Property(e => e.boundArrival).HasMaxLength(6);
+                entity.Property(e => e.excptReportSent).HasMaxLength(6);
+                entity.Property(e => e.lastMileCarrier).HasMaxLength(6);
+
+                entity.HasOne(d => d.originalDocument)
+                    .WithOne(p => p.milestone_master)
+                    .HasForeignKey<tbl_document>(p => p.tbl_milestone_master_id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("document_milestone_master_link");
+
+
+                entity.HasOne(d => d.master)
+                    .WithOne(p => p.milestone_master)
+                    .HasForeignKey<tbl_master>(d => d.tbl_milestone_master_id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("master_milestone_master_link");
+            });
+
+            modelBuilder.Entity<tbl_note_category>(entity =>
+            {
+                entity.HasKey(e => e.idtbl_note_category)
+                    .HasName("PRIMARY");
+
+                entity.Property(e => e.idtbl_note_category).HasColumnType("int(11)");
+                entity.Property(e => e.tbl_note_category_code).HasMaxLength(50);
+                entity.Property(e => e.tbl_note_category_name).HasMaxLength(50);
+                entity.Property(e => e.tbl_note_category_color).HasMaxLength(50);
+                entity.Property(e => e.tbl_note_category_value).HasMaxLength(50);
+
+            });
+
+            modelBuilder.Entity<tbl_note>(entity =>
+            {
+                entity.HasKey(e => e.idtbl_note)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("tbl_note");
+                entity.HasIndex(e => e.tbl_house_id, "idx_note_house_link_idx");
+                entity.HasIndex(e => e.tbl_shipment_id, "idx_note_shipment_link_idx");
+                entity.HasIndex(e => e.tbl_master_id, "idx_note_master_link_idx");
+                entity.HasIndex(e => e.tbl_client_header_id, "idx_note_client_header_link_idx");
+                entity.HasIndex(e => e.tbl_note_category_id, "idx_note_note_category_link_idx");
+
+                entity.Property(e => e.idtbl_note).HasColumnType("int(11)");
+                entity.Property(e => e.tbl_note_code).HasMaxLength(50);
+                entity.Property(e => e.tbl_note_status).HasColumnType("tinyint(3) unsigned");
+                entity.Property(e => e.tbl_note_createdDate).HasMaxLength(6);
+                entity.Property(e => e.tbl_note_title).HasMaxLength(50);
+                entity.Property(e => e.tbl_note_description).HasMaxLength(150);
+
+                entity.Property(e => e.tbl_house_id).HasColumnType("int(11)");
+                entity.Property(e => e.tbl_shipment_id).HasColumnType("int(11)");
+                entity.Property(e => e.tbl_master_id).HasColumnType("int(11)");
+                entity.Property(e => e.tbl_note_category_id).HasColumnType("int(11)");
+                entity.Property(e => e.tbl_client_header_id).HasColumnType("int(11)");
+
+                entity.Property(e => e.MasterCode).HasMaxLength(50);
+                entity.Property(e => e.HouseCode).HasMaxLength(50);
+                entity.Property(e => e.ShipmentCode).HasMaxLength(50);
+                entity.Property(e => e.ClientHeaderCode).HasMaxLength(50);
+                entity.Property(e => e.NoteCategoryCode).HasMaxLength(50);
+
+                entity.HasOne(d => d.house)
+                    .WithMany(p => p.notes)
+                    .HasForeignKey(d => d.tbl_house_id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("note_house_link");
+
+                entity.HasOne(d => d.shipment)
+                    .WithMany(p => p.notes)
+                    .HasForeignKey(d => d.tbl_shipment_id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("note_shipment_link");
+
+                entity.HasOne(d => d.master)
+                    .WithMany(p => p.notes)
+                    .HasForeignKey(d => d.tbl_master_id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("note_master_link");
+                entity.HasOne(d => d.clientHeader)
+                    .WithMany(p => p.notes)
+                    .HasForeignKey(d => d.tbl_client_header_id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("note_client_header_link");
+                entity.HasOne(d => d.noteCategory)
+                    .WithMany(p => p.notes)
+                    .HasForeignKey(d => d.tbl_note_category_id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("note_note_category_link");
             });
 
             modelBuilder.Entity<tbl_nz_routing>(entity =>

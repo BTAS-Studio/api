@@ -28,7 +28,7 @@ namespace BTAS.API.Areas.Maintenance.Controllers
             _authRepo = authRepo;
             //_configuration = configuration;
         }
-
+        
         [HttpPost]
         [Route("create")]
         public async Task<IActionResult> CreateAsync([FromBody] tbl_client_headerDto request, int isWeb = 0)
@@ -118,53 +118,26 @@ namespace BTAS.API.Areas.Maintenance.Controllers
 
         [HttpPut]
         [Route("update")]
-        public async Task<IActionResult> UpdateAsync([FromBody] tbl_client_headerDto request, int isWeb = 0)
+        public async Task<IActionResult> UpdateAsync([FromBody] tbl_client_headerDto request)
         {
+            ResponseDto result = new();
             try
             {
-                ResponseDto result = new();
-
-                //Dictionary<string, string> requestHeaders = new Dictionary<string, string>();
-                //foreach (var header in Request.Headers)
-                //{
-                //    requestHeaders.Add(header.Key, header.Value);
-                //}
-
-                //if (isWeb == 0)
-                //{
-                //    GeneralResponse apiResponse = JsonConvert.DeserializeObject<GeneralResponse>(await _authRepo.ValidateTokenAsync(requestHeaders["apikey"], requestHeaders["apiToken"], requestHeaders["shipperId"]));
-                //    if (apiResponse.success == false)
-                //    {
-
-                //        return NotFound(apiResponse);
-                //    }
-                //}
-
-                try
+                if (request.idtbl_client_header > 0 || (request.tbl_client_header_code != "" && request.tbl_client_header_code != null))
                 {
-                    if (request.idtbl_client_header > 0 || (request.tbl_client_header_code != "" && request.tbl_client_header_code != null))
+                    result = await _repository.UpdateAsync(request);
+
+                    if (result.IsSuccess)
                     {
-                        result = await _repository.UpdateAsync(request);
-
-                        if (result.IsSuccess)
+                        var response = JsonConvert.SerializeObject(result, Formatting.Indented, new JsonSerializerSettings
                         {
-                            var response = JsonConvert.SerializeObject(result, Formatting.Indented, new JsonSerializerSettings
-                            {
-                                ReferenceLoopHandling = ReferenceLoopHandling.Serialize
-                            });
-                            return Ok(new GeneralResponse
-                            {
-                                success = true,
-                                response = 200,
-                                responseDescription = "Address # " + request.tbl_client_header_code + " successfully updated."
-                            });
-                        }
-
-                        return new JsonResult(new GeneralResponse
+                            ReferenceLoopHandling = ReferenceLoopHandling.Serialize
+                        });
+                        return Ok(new GeneralResponse
                         {
-                            success = false,
-                            response = 500,
-                            responseDescription = result.DisplayMessage
+                            success = true,
+                            response = 200,
+                            responseDescription = "Address # " + request.tbl_client_header_code + " successfully updated."
                         });
                     }
 
@@ -172,24 +145,22 @@ namespace BTAS.API.Areas.Maintenance.Controllers
                     {
                         success = false,
                         response = 500,
-                        responseDescription = "Missing/Invalid address id or number."
+                        responseDescription = result.DisplayMessage
                     });
                 }
-                catch (Exception ex)
+
+                return new JsonResult(new GeneralResponse
                 {
-                    return new JsonResult(new GeneralResponse
-                    {
-                        response = 500,
-                        responseDescription = ex.Message.ToString(),
-                        success = false
-                    });
-                }
+                    success = false,
+                    response = 500,
+                    responseDescription = "Missing/Invalid address id or number."
+                });
             }
             catch (Exception ex)
             {
                 return new JsonResult(new GeneralResponse
                 {
-                    response = 300,
+                    response = 500,
                     responseDescription = ex.Message.ToString(),
                     success = false
                 });

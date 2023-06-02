@@ -404,5 +404,6 @@ namespace BTAS.API.Dto
 
         public virtual ICollection<tbl_documentDto> documents { get; set; } = new Collection<tbl_documentDto>();
         public virtual ICollection<tbl_shipment_itemDto> shipmentItems { get; set; } = new Collection<tbl_shipment_itemDto>();
+        public virtual ICollection<tbl_noteDto> notes { get; set; } = new Collection<tbl_noteDto>();
     }
 }

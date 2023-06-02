@@ -193,5 +193,6 @@ namespace BTAS.API.Dto
         public virtual ICollection<tbl_documentDto> documents { get; set; } = new Collection<tbl_documentDto>();
         public virtual ICollection<tbl_house_itemDto> houseItems { get; set; } = new Collection<tbl_house_itemDto>();
         public virtual ICollection<tbl_receptacleDto> receptacles { get; set; } = new Collection<tbl_receptacleDto>();
+        public virtual ICollection<tbl_noteDto> notes { get; set; } = new Collection<tbl_noteDto>();
     }
 }

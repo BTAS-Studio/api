@@ -16,6 +16,7 @@ namespace BTAS.Data.Models
             creditors = new HashSet<tbl_master>();
             destinations = new HashSet<tbl_master>();
             origins = new HashSet<tbl_master>();
+            notes = new HashSet<tbl_note>();
         }
 
         public int idtbl_client_header { get; set; }
@@ -56,5 +57,6 @@ namespace BTAS.Data.Models
         public virtual ICollection<tbl_master> creditors { get; set; }
         public virtual ICollection<tbl_master> destinations { get; set; }
         public virtual ICollection<tbl_master> origins { get; set; }
+        public virtual ICollection<tbl_note> notes { get; set; }
     }
 }

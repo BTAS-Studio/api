@@ -81,5 +81,11 @@ namespace BTAS.API.Dto
         public virtual ICollection<tbl_containerDto> containers { get; set; } = new Collection<tbl_containerDto>();
         public virtual ICollection<tbl_documentDto> documents { get; set; } = new Collection<tbl_documentDto>();
         public virtual ICollection<tbl_houseDto> houses { get; set; } = new Collection<tbl_houseDto>();
+        public virtual ICollection<tbl_noteDto> notes { get; set; } = new Collection<tbl_noteDto>();
+
+        //one to one relationship with tbl_milestone_master
+        public int? tbl_milestone_master_id { get; set; }
+        public string MilestoneMasterCode { get; set; }
+        public virtual tbl_milestone_masterDto milestone_master { get; set; }
     }
 }

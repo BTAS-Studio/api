@@ -26,14 +26,16 @@ namespace BTAS.API.Repository
             _mapper = mapper;
             _contactDetailsRepo = contactDetailsRepo;
         }
-
+        
         /// <summary>
         /// Retrieves all client header
         /// </summary>
         /// <returns></returns>
         public async Task<IEnumerable<tbl_client_headerDto>> GetAllAsync()
         {
-            IEnumerable<tbl_client_header> _list = await _context.tbl_client_headers.AsNoTracking().ToListAsync();
+            IEnumerable<tbl_client_header> _list = await _context.tbl_client_headers
+                .OrderByDescending(p => p.idtbl_client_header)
+                .AsNoTracking().ToListAsync();
             return _mapper.Map<List<tbl_client_headerDto>>(_list);
         }
 

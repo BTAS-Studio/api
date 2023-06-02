@@ -43,11 +43,12 @@ namespace BTAS.API.Dto
         [JsonProperty("IsReceivable")]
         [Description("Set client details for receivables")]
         public bool tbl_client_header_is_receivable { get; set; }
+        [StringLength(50)]
         [JsonProperty("CreatedBy")]
-        [DoNotInclude]
-        public int tbl_client_header_createdBy { get; set; }
+        //[DoNotInclude]
+        public string tbl_client_header_createdBy { get; set; }
         [JsonProperty("CreatedDate")]
-        [DoNotInclude]
+        //[DoNotInclude]
         public DateTime tbl_client_header_createdDate { get; set; }
         [StringLength(100)]
         [JsonProperty("CompanyName")]
@@ -144,5 +145,6 @@ namespace BTAS.API.Dto
         [Description("A json array of contact details request paramaters for auto creating in a single request.")]
         [DoNotInclude]
         public virtual ICollection<tbl_client_contact_detailDto> contactDetails { get; set; } = new Collection<tbl_client_contact_detailDto>(); 
+        public virtual ICollection<tbl_noteDto> notes { get; set; } = new Collection<tbl_noteDto>();
     }
 }

@@ -11,6 +11,7 @@ namespace BTAS.Data.Models
         {
             shipmentItems = new HashSet<tbl_shipment_item>();
             billings = new HashSet<tbl_shipping_billing>();
+            notes = new HashSet<tbl_note>();
         }
 
         public int idtbl_shipment { get; set; }
@@ -104,5 +105,6 @@ namespace BTAS.Data.Models
         public virtual ICollection<tbl_shipment_item> shipmentItems { get; set; }
         public virtual ICollection<tbl_shipping_billing> billings { get; set; }
         public virtual ICollection<tbl_document> documents { get; set; }
+        public virtual ICollection<tbl_note> notes { get; set; }
     }
 }

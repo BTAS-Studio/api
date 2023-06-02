@@ -12,6 +12,7 @@ namespace BTAS.Data.Models
             documents = new HashSet<tbl_document>();
             houseItems = new HashSet<tbl_house_item>();
             receptacles = new HashSet<tbl_receptacle>();
+            notes = new HashSet<tbl_note>();
         }
 
         public int idtbl_house { get; set; }
@@ -76,5 +77,6 @@ namespace BTAS.Data.Models
         public virtual ICollection<tbl_document> documents { get; set; }
         public virtual ICollection<tbl_house_item> houseItems { get; set; }
         public virtual ICollection<tbl_receptacle> receptacles { get; set; }
+        public virtual ICollection<tbl_note> notes { get; set; }    
     }
 }
