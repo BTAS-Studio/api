@@ -2,7 +2,6 @@
 using BTAS.API.Dto;
 using BTAS.API.Models;
 using BTAS.API.Repository.Interface;
-using BTAS.Data;
 using BTAS.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -16,17 +15,16 @@ namespace BTAS.API.Repository
     {
         private readonly MainDbContext _context;
         private IMapper _mapper;
-        private ClientHeaderRepository _clientHeaderRepository;
-        private ContactDetailRepository _contactDetailsRepository;
-        public AddressRepository(MainDbContext context, IMapper mapper, ClientHeaderRepository clientHeaderRepository, ContactDetailRepository contactDetailsRepository)
+        private int count;
+
+        public AddressRepository(MainDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
-            _clientHeaderRepository = clientHeaderRepository;
-            _contactDetailsRepository = contactDetailsRepository;
+            count = 1;
         }
 
-        public async Task<ResponseDto> CreateAsync(tbl_addressDto entity, string shipperId)
+        public async Task<ResponseDto> CreateAsync(tbl_addressDto entity)
         {
             try
             {
@@ -65,28 +63,112 @@ namespace BTAS.API.Repository
                 };
             }
         }
-        public Task<tbl_addressDto> UpdateAsync(tbl_addressDto dto)
+        public async Task<ResponseDto> UpdateAsync(tbl_addressDto entity)
         {
-            throw new System.NotImplementedException();
+            try
+            {
+                var result = await _context.tbl_addresses
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync(x => x.tbl_address_code == entity.tbl_address_code);
+
+                if (result != null)
+                {
+                    _mapper.Map(entity, result);
+                    _context.ChangeTracker.Clear();
+                    _context.tbl_addresses.Update(result);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    return new ResponseDto
+                    {
+                        DisplayMessage = "Address does not exist.",
+                        IsSuccess = false
+                    };
+                }
+
+                return new ResponseDto
+                {
+                    DisplayMessage = "Address successfully updated.",
+                    IsSuccess = true,
+                    ReferenceNumber = result.tbl_address_code
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto
+                {
+                    DisplayMessage = ex.StackTrace.ToString(),
+                    IsSuccess = false
+                };
+            }
         }
 
-        public Task<tbl_addressDto> CreateUpdateAsync(tbl_addressDto entity)
+        public async Task<IEnumerable<tbl_addressDto>> GetAllAsync()
         {
-            throw new System.NotImplementedException();
+            IEnumerable<tbl_address> _list = await _context.tbl_addresses.OrderByDescending(p => p.idtbl_address).ToListAsync();
+            return _mapper.Map<List<tbl_addressDto>>(_list);
         }
 
-        public Task<IEnumerable<tbl_addressDto>> GetAllAsync()
+        public async Task<IEnumerable<tbl_addressDto>> GetAllAsyncWithChildren()
         {
-            throw new System.NotImplementedException();
+            IEnumerable<tbl_address> _list = await _context.tbl_addresses
+                .OrderByDescending(p => p.idtbl_address)
+                .Include(p => p.billingClients)
+                .Include(p => p.deliveryClients)
+                .Include(p => p.pickupClients)
+                .Include(p => p.contactDetails)
+                .ToListAsync();
+            return _mapper.Map<List<tbl_addressDto>>(_list);
         }
 
-        public Task<tbl_addressDto> GetByIdAsync(int id)
+        public async Task<tbl_addressDto> GetByIdAsync(int id)
         {
-            throw new System.NotImplementedException();
+            var result = await _context.tbl_addresses.FirstOrDefaultAsync(x => x.idtbl_address == id);
+            return _mapper.Map<tbl_addressDto>(result);
         }
-        public Task<tbl_addressDto> GetByReferenceAsync(string reference)
+
+        public async Task<ResponseDto> GetByReference(string referenceNumber, bool includeChild)
         {
-            throw new System.NotImplementedException();
+            try
+            {
+                tbl_address result = new();
+                if (includeChild)
+                {
+                    result = await _context.tbl_addresses
+                        .Include(p => p.billingClients)
+                        .Include(p => p.deliveryClients)
+                        .Include(p => p.pickupClients)
+                        .Include(p => p.contactDetails)
+                        .FirstOrDefaultAsync(v => v.tbl_address_code == referenceNumber);
+                }
+                else
+                {
+                    result = await _context.tbl_addresses.FirstOrDefaultAsync(v => v.tbl_address_code == referenceNumber);
+                }
+                
+
+                return new ResponseDto
+                {
+                    IsSuccess = true,
+                    Result = _mapper.Map<tbl_addressDto>(result),
+                    ReferenceNumber = result.tbl_address_code,
+                    DisplayMessage = "Success."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto
+                {
+                    IsSuccess = false,
+                    DisplayMessage = "Error retrieving record."
+                };
+            }
+        }
+
+        public async Task<tbl_addressDto> CreateUpdateAsync(tbl_addressDto entity)
+        {
+            throw new NotImplementedException();
         }
         public Task<tbl_addressDto> DeleteAsync(int id)
         {
@@ -95,24 +177,11 @@ namespace BTAS.API.Repository
         public async Task<string> GetNextId()
         {
             tbl_address result = await _context.tbl_addresses.OrderByDescending(x => x.idtbl_address).FirstOrDefaultAsync();
-            string referenceCode = "AD" + string.Format("{0:0000000000}", (result != null ? result.idtbl_address + 1 : 1));
+            string referenceCode = "AD" + string.Format("{0:0000000}", (result != null ? result.idtbl_address + count : 1));
             return referenceCode;
         }
 
-        public Task<IEnumerable<tbl_addressDto>> GetAllAsyncWithChildren()
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task<IEnumerable<tbl_addressDto>> GetAllAsyncWithChildren(searchFilter filter = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<tbl_addressDto>> GetAllAsyncWithChildren(searchFilter<tbl_addressDto> filter = null)
-        {
-            throw new NotImplementedException();
- }
         //Added by HS on 22/03/2023
         //This function is used for generating address code when address data is imported in bunch
         public async Task<GeneralResponse> MakeCode()
@@ -122,7 +191,7 @@ namespace BTAS.API.Repository
             {
                 if (address.tbl_address_code == null)
                 {
-                    address.tbl_address_code = "AD" + string.Format("{0:0000000000}", (address.idtbl_address));
+                    address.tbl_address_code = "AD" + string.Format("{0:0000000}", (address.idtbl_address));
                     _context.tbl_addresses.Update(address);
                 }
             }

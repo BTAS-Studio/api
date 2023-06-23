@@ -49,7 +49,9 @@ namespace BTAS.API.Repository
         public async Task<IEnumerable<tbl_voyageDto>> GetAllAsyncWithChildren()
         {
             var _list = await _context.tbl_voyages.OrderByDescending(v=> v.idtbl_voyage)
-                .Include(v => v.masters).ToListAsync();
+                .Include(v => v.masters)
+                .Include(v => v.houses)
+                .ToListAsync();
             return _mapper.Map<List<tbl_voyageDto>>(_list);
         }
 
@@ -141,6 +143,7 @@ namespace BTAS.API.Repository
 
             var result = await _context.tbl_voyages
                 .Include(c => c.masters)
+                .Include(p => p.houses)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.idtbl_voyage == id);
             return _mapper.Map<tbl_voyageDto>(result);
@@ -156,6 +159,7 @@ namespace BTAS.API.Repository
                 {
                     result = await _context.tbl_voyages
                         .Include(v => v.masters)
+                        .Include(c => c.houses)
                         .FirstOrDefaultAsync(v => v.tbl_voyage_code == referenceNumber);
                 }
                 else
@@ -216,7 +220,7 @@ namespace BTAS.API.Repository
                 //tbl_voyage result = _mapper.Map<tbl_voyageDto, tbl_voyage>(entity);
                 var result = _mapper.Map<tbl_voyage>(entity);
 
-                string referenceNumber = await GetNextId(shipperId);
+                string referenceNumber = await GetNextId();
                 result.tbl_voyage_code = referenceNumber;
                 result.tbl_voyage_status = "OPEN";
 
@@ -236,7 +240,7 @@ namespace BTAS.API.Repository
                     foreach (var master in result.masters)
                     {
                         //Generate master reference
-                        master.tbl_master_code = await _masterRepo.GetNextId(shipperId);
+                        master.tbl_master_code = await _masterRepo.GetNextId();
                         //link master to voyage
                         master.VoyageCode = referenceNumber;
                         //Master Sea
@@ -244,13 +248,13 @@ namespace BTAS.API.Repository
                         {
                             foreach (var container in master.containers)
                             {
-                                container.tbl_container_code = await _containerRepo.GetNextId(shipperId);
+                                container.tbl_container_code = await _containerRepo.GetNextId();
                                 container.MasterCode = master.tbl_master_code;
                                 if (container.houses.Count != 0)
                                 {
                                     foreach (var house in container.houses)
                                     {
-                                        house.tbl_house_code = await _houseRepo.GetNextId(shipperId);
+                                        house.tbl_house_code = await _houseRepo.GetNextId();
                                         house.ContainerCode = container.tbl_container_code;
                                         house.tbl_master_id = container.tbl_master_id;
                                         house.MasterCode = container.MasterCode;
@@ -271,7 +275,7 @@ namespace BTAS.API.Repository
                         {
                             foreach (var house in master.houses)
                             {
-                                house.tbl_house_code = await _houseRepo.GetNextId(shipperId);
+                                house.tbl_house_code = await _houseRepo.GetNextId();
                                 house.MasterCode = master.tbl_master_code;
                                 //if (house.receptacles.Count != 0)
                                 //{
@@ -326,27 +330,26 @@ namespace BTAS.API.Repository
         {
             try
             {
-                var voyage = await _context.tbl_voyages
+                var result = await _context.tbl_voyages
                     .AsNoTracking()
-                    .FirstOrDefaultAsync(x => x.tbl_voyage_code == entity.tbl_voyage_code);
+                    .SingleOrDefaultAsync(x => x.tbl_voyage_code == entity.tbl_voyage_code);
                 //.FirstOrDefaultAsync(x => x.idtbl_voyage == mapped.idtbl_voyage || x.tbl_voyage_number == mapped.tbl_voyage_number);
 
-                if (voyage != null)
+                if (result != null)
                 {
                     //mapped.idtbl_voyage = voyage.idtbl_voyage;
                     //mapped.tbl_voyage_number = address.tbl_voyage_number;
-                    _mapper.Map<tbl_voyageDto, tbl_voyage>(entity, voyage);
+                    _mapper.Map<tbl_voyageDto, tbl_voyage>(entity, result);
 
                     _context.ChangeTracker.Clear();
-                    _context.tbl_voyages.Update(voyage);
+                    _context.tbl_voyages.Update(result);
                     await _context.SaveChangesAsync();
 
                     return new ResponseDto
                     {
-                        Result = _mapper.Map<tbl_voyageDto>(voyage),
                         DisplayMessage = "Voyage successfully updated.",
                         IsSuccess = true,
-                        ReferenceNumber = voyage.tbl_voyage_code
+                        ReferenceNumber = result.tbl_voyage_code
                     };
                 }
                 else
@@ -418,11 +421,11 @@ namespace BTAS.API.Repository
         }
 
 
-        public async Task<string> GetNextId(string shipperId)
+        public async Task<string> GetNextId()
         {
             var result = await _context.tbl_voyages.OrderByDescending(x => x.idtbl_voyage).FirstOrDefaultAsync();
 
-            string referenceCode = "VY" + shipperId + String.Format("{0:0000000000}", (result != null ? result.idtbl_voyage + 1 : 1));
+            string referenceCode = "VY" + String.Format("{0:0000000}", (result != null ? result.idtbl_voyage + 1 : 1));
             return referenceCode;
         }
     }

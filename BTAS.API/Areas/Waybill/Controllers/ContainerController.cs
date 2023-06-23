@@ -53,67 +53,40 @@ namespace BTAS.API.Areas.Waybill.Controllers
 
         [HttpPost]
         [Route("create")]
-        public async Task<IActionResult> CreateAsync([FromBody] tbl_containerDto request, int isWeb = 0)
+        public async Task<IActionResult> CreateAsync([FromBody] tbl_containerDto request)
         {
             try
             {
-                ResponseDto result = new();
-
-                try
-                {
-                    result = await _repository.CreateAsync(request, Request.Headers["shipperId"]);
-                    if (!result.IsSuccess)
-                    {
-                        return new JsonResult(new GeneralResponse
-                        {
-                            response = 500,
-                            responseDescription = result.DisplayMessage,
-                            success = false
-                        });
-                    }
-                    if (isWeb == 1)
-                    {
-                        var response = JsonConvert.SerializeObject(result, Formatting.Indented, new JsonSerializerSettings
-                        {
-                            ReferenceLoopHandling = ReferenceLoopHandling.Serialize
-                        });
-                        return Ok(response);
-                    }
-                    else
-                    {
-                        // Edited by HS on 06/03/2023
-                        //var jsonString = JsonConvert.SerializeObject(result.Result);
-                        //var model = JsonConvert.DeserializeObject<tbl_containerDto>(jsonString);
-
-                        return Ok(new GeneralResponse
-                        {
-                            success = true,
-                            response = 200,
-                            responseDescription = result.DisplayMessage,
-                            referenceNumber = result.ReferenceNumber
-                        });
-                    }
-                }
-                catch (Exception ex)
+                var result = await _repository.CreateAsync(request);
+                if (!result.IsSuccess)
                 {
                     return new JsonResult(new GeneralResponse
                     {
                         response = 500,
-                        responseDescription = "Check your request parameters",
+                        responseDescription = result.DisplayMessage,
                         success = false
                     });
                 }
+
+                return Ok(new GeneralResponse
+                {
+                    success = true,
+                    response = 200,
+                    responseDescription = result.DisplayMessage,
+                    referenceNumber = result.ReferenceNumber
+                });
             }
             catch (Exception ex)
             {
                 return new JsonResult(new GeneralResponse
                 {
-                    response = 300,
+                    response = 500,
                     responseDescription = ex.Message.ToString(),
                     success = false
                 });
             }
         }
+    
 
         [HttpPut]
         [Route("update")]
@@ -181,7 +154,7 @@ namespace BTAS.API.Areas.Waybill.Controllers
             {
                 if (request.master != null)
                 {
-                    var parent = await _masterRepository.CreateAsync(request.master, Request.Headers["shipperId"]);
+                    var parent = await _masterRepository.CreateAsync(request.master);
                     if (parent.IsSuccess)
                     {
                         request.parentReference = parent.ReferenceNumber;

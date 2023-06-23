@@ -3,19 +3,22 @@ using BTAS.API.Dto;
 using BTAS.API.Models;
 using BTAS.API.Repository;
 using BTAS.API.Repository.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BTAS.API.Areas.Maintenance.Controllers
 {
     [ApiController]
     [Area("Maintenance")]
-    [Route("api/addressbook")]
+    //*[Route("api/addressbook")]
     //Added by HS on 14/12/2022
     [Route("api/clientheader")]
+    [Authorize]
     public class ClientHeaderController : GenericController<tbl_client_headerDto>
     {
         //readonly IConfiguration _configuration;
@@ -31,86 +34,46 @@ namespace BTAS.API.Areas.Maintenance.Controllers
         
         [HttpPost]
         [Route("create")]
-        public async Task<IActionResult> CreateAsync([FromBody] tbl_client_headerDto request, int isWeb = 0)
+        public async Task<IActionResult> CreateAsync([FromBody] tbl_client_headerDto request)
         {
+            ResponseDto result = new();
             try
             {
-                ResponseDto result = new();
+                //Comment out by HS on 22/03/2023, move generate CH code into repository
+                //string referenceNumber = await _repository.GetNextId(Request.Headers["shipperId"]);
+                //request.tbl_client_header_code = referenceNumber;
 
-                //Dictionary<string, string> requestHeaders = new Dictionary<string, string>();
-                //foreach (var header in Request.Headers)
-                //{
-                //    requestHeaders.Add(header.Key, header.Value);
-                //}
+                result = await _repository.CreateAsync(request);
 
-                //if (isWeb == 0)
-                //{
-                //    GeneralResponse apiResponse = JsonConvert.DeserializeObject<GeneralResponse>(await _authRepo.ValidateTokenAsync(requestHeaders["apikey"], requestHeaders["apiToken"], requestHeaders["shipperId"]));
-                //    if (apiResponse.success == false)
-                //    {
-
-                //        return NotFound(apiResponse);
-                //    }
-                //}
-
-
-                try
+                if (result.IsSuccess)
                 {
-                    //Comment out by HS on 22/03/2023, move generate CH code into repository
-                    //string referenceNumber = await _repository.GetNextId(Request.Headers["shipperId"]);
-                    //request.tbl_client_header_code = referenceNumber;
+                    //Edited by HS on 07/02/2023
+                    //var jsonString = JsonConvert.SerializeObject(result.Result);
+                    //var model = JsonConvert.DeserializeObject<tbl_client_headerDto>(jsonString);
 
-                    result = await _repository.CreateAsync(request, Request.Headers["shipperId"]);
-
-                    if (isWeb == 1)
+                    return Ok(new GeneralResponse
                     {
-                        var response = JsonConvert.SerializeObject(result, Formatting.Indented, new JsonSerializerSettings
-                        {
-                            ReferenceLoopHandling = ReferenceLoopHandling.Serialize
-                        });
-                        return Ok(response);
-                    }
-                    else
-                    {
-                        if (result.IsSuccess)
-                        {
-                            //Edited by HS on 07/02/2023
-                            //var jsonString = JsonConvert.SerializeObject(result.Result);
-                            //var model = JsonConvert.DeserializeObject<tbl_client_headerDto>(jsonString);
-
-                            return Ok(new GeneralResponse
-                            {
-                                success = true,
-                                response = 200,
-                                responseDescription = result.DisplayMessage,
-                                referenceNumber = result.ReferenceNumber
-                            });
-                        }
-
-                        return Ok(new GeneralResponse
-                        {
-                            success = false,
-                            response = 500,
-                            responseDescription = result.DisplayMessage
-                        });
-                    }
-                }
-                catch (Exception ex)
-                {
-                    return new JsonResult(new GeneralResponse
-                    {
-                        response = 500,
-                        responseDescription = "Check your request parameters",
-                        success = false
+                        success = true,
+                        response = 200,
+                        responseDescription = result.DisplayMessage,
+                        referenceNumber = result.ReferenceNumber
                     });
                 }
+
+                return Ok(new GeneralResponse
+                {
+                    success = false,
+                    response = 500,
+                    responseDescription = result.DisplayMessage
+                });
+
             }
             catch (Exception ex)
             {
                 return new JsonResult(new GeneralResponse
                 {
-                    response = 300,
-                    responseDescription = ex.Message.ToString(),
+                    response = 500,
+                    responseDescription = "Check your request parameters",
                     success = false
                 });
             }
@@ -169,56 +132,68 @@ namespace BTAS.API.Areas.Maintenance.Controllers
 
         [HttpGet]
         [Route("GetByReference")]
-        public async Task<IActionResult> GetByReferenceAsync(string reference, string field)
+        public async Task<IActionResult> GetByReferenceAsync(string referenceNumber, bool includeChild = false, string field = "code")
         {
+            ResponseDto result = new();
             try
             {
-                ResponseDto result = new();
-
-                //Dictionary<string, string> requestHeaders = new Dictionary<string, string>();
-                //foreach (var header in Request.Headers)
-                //{
-                //    requestHeaders.Add(header.Key, header.Value);
-                //}
-
-                //GeneralResponse apiResponse = JsonConvert.DeserializeObject<GeneralResponse>(await _authRepo.ValidateTokenAsync(requestHeaders["apikey"], requestHeaders["apiToken"], requestHeaders["shipperId"]));
-                //if (apiResponse.success == false)
-                //{
-                //    return NotFound(apiResponse);
-                //}
-
-                try
+                if (field == "code")
                 {
-                    if (field == "code")
-                    {
-                        result = await _repository.GetByReference(reference);
-                    }
-                    else
-                    {
-                        result = await _repository.GetByName(reference);
-                    }
-
-
-                    return Ok(result);
+                    result = await _repository.GetByReference(referenceNumber, includeChild);
                 }
-                catch (Exception ex)
+                else
                 {
-                    return new JsonResult(new GeneralResponse
-                    {
-                        response = 500,
-                        responseDescription = ex.Message.ToString(),
-                        success = false
-                    });
+                    result = await _repository.GetByName(referenceNumber);
                 }
+
+                return Ok(new GeneralResponse
+                {
+                    success = true,
+                    responseDescription = result.DisplayMessage,
+                    response = 200,
+                    result = result.Result
+                });
             }
             catch (Exception ex)
             {
                 return new JsonResult(new GeneralResponse
                 {
-                    response = 300,
+                    response = 500,
                     responseDescription = ex.Message.ToString(),
                     success = false
                 });
+            }
+        }
+
+        [HttpGet]
+        [Route("getfiltered")]
+        public async Task<IActionResult> GetFiltered([FromBody] CustomFilters<tbl_client_headerDto> customFilters)
+        {
+            try
+            {
+                var response = await _repository.GetFilteredAsync(customFilters);
+                if (response != null)
+                {
+                    return Ok(new GeneralResponse
+                    {
+                        success = true,
+                        responseDescription = response.ToArray().Length.ToString(),
+                        result = response
+                    });
+                }
+                else
+                {
+                    return new JsonResult(new GeneralResponse
+                    {
+                        response = 500,
+                        responseDescription = "No matching result",
+                        success = false
+                    });
+                }
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
     }

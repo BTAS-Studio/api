@@ -20,7 +20,7 @@ namespace BTAS.API.Dto
         [DoNotInclude]
         public int idtbl_shipment { get; set; }
         [StringLength(30)]
-        [Description("HOUSE Unique reference, this is system generated on create. Only needed for update and get.")]
+        [Description("Shipment Unique reference, this is system generated on create. Only needed for update and get.")]
         //[Conditional]
         [JsonProperty("Code")]
         public string tbl_shipment_code { get; set; }
@@ -113,7 +113,7 @@ namespace BTAS.API.Dto
         [Description("Refer to internatioanlly recognised incoterms.")]
         [JsonProperty("ShipmentIncoterm")]
         public string tbl_shipment_incoterm { get; set; }
-        [StringLength(150)]
+        [StringLength(20000)]
         [Description("Shipment Items")]
         [JsonProperty("ShipmentItems")]
         public string tbl_shipment_shipmentItems { get; set; }
@@ -333,7 +333,7 @@ namespace BTAS.API.Dto
         [Description("Instructions for the Shipper")]
         [JsonProperty("ShipperInstructions")]
         public string tbl_shipment_shipperInstructions { get; set; }
-        [StringLength(50)]
+        [StringLength(150)]
         ////[Conditional]
         [Description("Return contact name, required for some carriers.")]
         [JsonProperty("ReturnName")]
@@ -405,5 +405,6 @@ namespace BTAS.API.Dto
         public virtual ICollection<tbl_documentDto> documents { get; set; } = new Collection<tbl_documentDto>();
         public virtual ICollection<tbl_shipment_itemDto> shipmentItems { get; set; } = new Collection<tbl_shipment_itemDto>();
         public virtual ICollection<tbl_noteDto> notes { get; set; } = new Collection<tbl_noteDto>();
+        public virtual ICollection<tbl_milestone_linkDto> milestoneLinks { get; set; } = new Collection<tbl_milestone_linkDto>();
     }
 }

@@ -21,14 +21,14 @@ namespace BTAS.Data.Models
 
         public int idtbl_client_header { get; set; }
         public string tbl_client_header_code { get; set; }
-        public bool tbl_client_header_active { get; set; }
-        public bool tbl_client_header_is_agent { get; set; }
-        public bool tbl_client_header_is_consignee { get; set; }
-        public bool tbl_client_header_is_consignor { get; set; }
-        public bool tbl_client_header_is_broker { get; set; }
-        public bool tbl_client_header_is_carrier { get; set; }
-        public bool tbl_client_header_is_payable { get; set; }
-        public bool tbl_client_header_is_receivable { get; set; }
+        public bool? tbl_client_header_active { get; set; }
+        public bool? tbl_client_header_is_agent { get; set; }
+        public bool? tbl_client_header_is_consignee { get; set; }
+        public bool? tbl_client_header_is_consignor { get; set; }
+        public bool? tbl_client_header_is_broker { get; set; }
+        public bool? tbl_client_header_is_carrier { get; set; }
+        public bool? tbl_client_header_is_payable { get; set; }
+        public bool? tbl_client_header_is_receivable { get; set; }
         public string tbl_client_header_createdBy { get; set; }
         public DateTime tbl_client_header_createdDate { get; set; }
         public string tbl_client_header_companyName { get; set; }

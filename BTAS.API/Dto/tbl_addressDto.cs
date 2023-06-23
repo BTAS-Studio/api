@@ -1,6 +1,6 @@
-﻿using BTAS.Data.Models;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace BTAS.API.Dto
@@ -37,7 +37,9 @@ namespace BTAS.API.Dto
         [StringLength(50)]
         [JsonProperty("Country")]
         public string tbl_address_country { get; set; }
-        public virtual ICollection<tbl_client_header> clientHeaders { get; set; }
-        public virtual ICollection<tbl_client_contact_detail> contactDetails { get; set; }
+        public virtual ICollection<tbl_client_headerDto> billingClients { get; set; } = new Collection<tbl_client_headerDto>();
+        public virtual ICollection<tbl_client_headerDto> deliveryClients { get; set; } = new Collection<tbl_client_headerDto>();
+        public virtual ICollection<tbl_client_headerDto> pickupClients { get; set; } = new Collection<tbl_client_headerDto>();
+        public virtual ICollection<tbl_client_contact_detailDto> contactDetails { get; set; } = new Collection<tbl_client_contact_detailDto>();
     }
 }

@@ -62,7 +62,7 @@ namespace BTAS.API.Areas.Waybill.Controllers
 
         [HttpGet]
         [Route("GetByReference")]
-        public async Task<IActionResult> GetByReferenceAsync(string referenceNumber)
+        public async Task<IActionResult> GetByReferenceAsync(string referenceNumber, bool includeChild)
         {
             try
             {

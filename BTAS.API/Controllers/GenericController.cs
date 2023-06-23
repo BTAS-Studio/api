@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BTAS.API.Controllers
@@ -25,20 +26,29 @@ namespace BTAS.API.Controllers
 
         [HttpGet]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task<object> GetAsync(bool includeChild = false)
+        public async Task<object> GetAsync(bool includeChild = false, int size = 40)
         {
             try
             {
                 if (includeChild)
                 {
                     IEnumerable<T> entities = await _repository.GetAllAsyncWithChildren();
-                    _response.result = entities;
+                    if (entities.Count() <= size)
+                    {
+                        size = entities.Count();
+                    }
+                    _response.result = entities.Take(size);
                 }
                 else
                 {
                     IEnumerable<T> entities = await _repository.GetAllAsync();
-                    _response.result = entities;
+                    if (entities.Count() <= size) 
+                    { 
+                        size = entities.Count(); 
+                    }
+                        _response.result = entities.Take(size);
                 }
+                _response.responseDescription = $"{size}";
                 
             }
             catch (Exception ex)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 #nullable disable
 
@@ -10,9 +11,10 @@ namespace BTAS.Data.Models
         public tbl_address()
         {
             contactDetails = new HashSet<tbl_client_contact_detail>();
-            billingAddresses = new HashSet<tbl_client_header>();
-            deliveryAddresses = new HashSet<tbl_client_header>();
-            pickupAddresses = new HashSet<tbl_client_header>();
+            billingClients = new HashSet<tbl_client_header>();
+            deliveryClients = new HashSet<tbl_client_header>();
+            pickupClients = new HashSet<tbl_client_header>();
+
         }
 
         public int idtbl_address { get; set; }
@@ -27,8 +29,8 @@ namespace BTAS.Data.Models
         public string tbl_address_country { get; set; }
 
         public virtual ICollection<tbl_client_contact_detail> contactDetails { get; set; }
-        public virtual ICollection<tbl_client_header> billingAddresses { get; set; }
-        public virtual ICollection<tbl_client_header> deliveryAddresses { get; set; }
-        public virtual ICollection<tbl_client_header> pickupAddresses { get; set; }
+        public virtual ICollection<tbl_client_header> billingClients { get; set; }
+        public virtual ICollection<tbl_client_header> deliveryClients { get; set; }
+        public virtual ICollection<tbl_client_header> pickupClients { get; set; }
     }
 }

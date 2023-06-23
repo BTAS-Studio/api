@@ -11,12 +11,12 @@ using System.Threading.Tasks;
 
 namespace BTAS.API.Repository
 {
-    public class HouseIncotermsRepository : IRepository<tbl_incotermDto>
+    public class IncotermRepository : IRepository<tbl_incotermDto>
     {
         private readonly MainDbContext _context;
         private IMapper _mapper;
 
-        public HouseIncotermsRepository(MainDbContext context, IMapper mapper)
+        public IncotermRepository(MainDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
@@ -119,23 +119,19 @@ namespace BTAS.API.Repository
         {
             try
             {
-                var mapped = _mapper.Map<tbl_incoterm>(entity);
-
-                var incoterms = await _context.tbl_incoterms
+                var result = await _context.tbl_incoterms
                     .AsNoTracking()
-                    .FirstOrDefaultAsync(x => x.idtbl_incoterm == mapped.idtbl_incoterm || x.tbl_incoterm_code == mapped.tbl_incoterm_code);
+                    .SingleOrDefaultAsync(x => x.tbl_incoterm_code == entity.tbl_incoterm_code);
 
-                if (incoterms != null)
+                if (result != null)
                 {
-                    mapped.idtbl_incoterm = incoterms.idtbl_incoterm;
-                    mapped.tbl_incoterm_code = incoterms.tbl_incoterm_code;
-
-                    _context.tbl_incoterms.Update(mapped);
+                    _mapper.Map(entity, result);
+                    _context.ChangeTracker.Clear();
+                    _context.tbl_incoterms.Update(result);
                     await _context.SaveChangesAsync();
 
                     return new ResponseDto
                     {
-                        Result = _mapper.Map<tbl_incotermDto>(mapped),
                         DisplayMessage = "HOUSE Incoterms successfully updated.",
                         IsSuccess = true
                     };
@@ -143,7 +139,6 @@ namespace BTAS.API.Repository
 
                 return new ResponseDto
                 {
-                    Result = entity,
                     DisplayMessage = "HOUSE Incoterms successfully updated.",
                     IsSuccess = true
                 };
@@ -152,7 +147,6 @@ namespace BTAS.API.Repository
             {
                 return new ResponseDto
                 {
-                    Result = entity,
                     DisplayMessage = ex.StackTrace.ToString(),
                     IsSuccess = false
                 };

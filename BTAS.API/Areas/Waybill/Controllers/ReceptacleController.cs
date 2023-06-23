@@ -283,7 +283,7 @@ namespace BTAS.API.Areas.Waybill.Controllers
             {
                 if (request.house != null)
                 {
-                    var house = await _houseRepository.CreateAsync(request.house, Request.Headers["shipperId"]);
+                    var house = await _houseRepository.CreateAsync(request.house);
                     if (house.IsSuccess)
                     {
                         request.parentReference = house.ReferenceNumber;

@@ -50,7 +50,7 @@ namespace BTAS.API.Repository
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
-        public async Task<tbl_item_skuDto> GetByCodeAsync(string code)
+        public async Task<tbl_item_skuDto> GetByReferenceAsync(string code)
         {
             try
             {
@@ -121,15 +121,6 @@ namespace BTAS.API.Repository
             }
             catch(Exception ex)
             {
-                //if(ex.GetBaseException().ToString().IndexOf("Duplicate") > -1)
-                //{
-                //    return new ResponseDto
-                //    {
-                //        Result = entity,
-                //        DisplayMessage = "Unable to save record. Possible duplicate SKU code.",
-                //        IsSuccess = false
-                //    };
-                //}
                 return new ResponseDto
                 {
                     Result = entity,
@@ -149,12 +140,13 @@ namespace BTAS.API.Repository
         {
             try
             {
-                var result = await _context.tbl_item_skus
+                var result = await _context.tbl_item_skus.AsNoTracking()
                         .SingleOrDefaultAsync(x => x.idtbl_item_sku == entity.idtbl_item_sku);
                 if (result != null)
                 {
-
-                    _context.tbl_item_skus.Update(_mapper.Map(entity, result));
+                    _mapper.Map(entity, result);
+                    _context.ChangeTracker.Clear();
+                    _context.tbl_item_skus.Update(result);
                     await _context.SaveChangesAsync();
                 }
                 else

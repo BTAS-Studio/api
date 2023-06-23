@@ -11,11 +11,11 @@ namespace BTAS.Data.Models
         }
         public int idtbl_note { get; set; }
         public string tbl_note_code { get; set; }
-        public bool tbl_note_status { get; set; }
+        public bool? tbl_note_status { get; set; }
         public string tbl_note_title { get; set; }
         //public string tbl_note_category { get; set; }
         public string tbl_note_description { get; set; }
-        public DateTime tbl_note_createdDate { get; set; }
+        public DateTime? tbl_note_createdDate { get; set; }
 
         public int? tbl_master_id { get; set; }
         public string MasterCode { get; set; }

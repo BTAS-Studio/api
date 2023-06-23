@@ -77,7 +77,7 @@ namespace BTAS.API.Areas.Carriers.Models.Apg
         public string hsCode { get; set; }
         public string originCountry { get; set; }
         public int itemCount { get; set; }
-        public decimal unitValue { get; set; }
+        public decimal? unitValue { get; set; }
         public string warehouseNo { get; set; }
         public string productURL { get; set; }
         public decimal weight { get; set; }

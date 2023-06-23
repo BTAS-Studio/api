@@ -783,7 +783,7 @@ namespace BTAS.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<bool>("tbl_client_header_active")
+                    b.Property<bool?>("tbl_client_header_active")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("tbl_client_header_closestPort")
@@ -815,25 +815,25 @@ namespace BTAS.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<bool>("tbl_client_header_is_agent")
+                    b.Property<bool?>("tbl_client_header_is_agent")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("tbl_client_header_is_broker")
+                    b.Property<bool?>("tbl_client_header_is_broker")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("tbl_client_header_is_carrier")
+                    b.Property<bool?>("tbl_client_header_is_carrier")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("tbl_client_header_is_consignee")
+                    b.Property<bool?>("tbl_client_header_is_consignee")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("tbl_client_header_is_consignor")
+                    b.Property<bool?>("tbl_client_header_is_consignor")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("tbl_client_header_is_payable")
+                    b.Property<bool?>("tbl_client_header_is_payable")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("tbl_client_header_is_receivable")
+                    b.Property<bool?>("tbl_client_header_is_receivable")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("tbl_client_header_phone")
@@ -983,10 +983,6 @@ namespace BTAS.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<string>("MilestoneMasterCode")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
                     b.Property<string>("NoteCode")
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
@@ -1003,7 +999,7 @@ namespace BTAS.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<DateTime>("tbl_document_createdDate")
+                    b.Property<DateTime?>("tbl_document_createdDate")
                         .HasMaxLength(6)
                         .HasColumnType("datetime(6)");
 
@@ -1027,13 +1023,13 @@ namespace BTAS.Data.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("varchar(150)");
 
-                    b.Property<byte>("tbl_document_status")
+                    b.Property<byte?>("tbl_document_status")
                         .HasColumnType("tinyint(3) unsigned");
 
-                    b.Property<byte>("tbl_doucument_externalAccess")
+                    b.Property<byte?>("tbl_doucument_externalAccess")
                         .HasColumnType("tinyint(3) unsigned");
 
-                    b.Property<byte>("tbl_doucument_internalAccess")
+                    b.Property<byte?>("tbl_doucument_internalAccess")
                         .HasColumnType("tinyint(3) unsigned");
 
                     b.Property<string>("tbl_doucument_updatedBy")
@@ -1046,9 +1042,6 @@ namespace BTAS.Data.Migrations
                     b.Property<int?>("tbl_master_id")
                         .HasColumnType("int(11)");
 
-                    b.Property<int?>("tbl_milestone_master_id")
-                        .HasColumnType("int(11)");
-
                     b.Property<int?>("tbl_note_id")
                         .HasColumnType("int(11)");
 
@@ -1058,14 +1051,9 @@ namespace BTAS.Data.Migrations
                     b.HasKey("idtbl_document")
                         .HasName("PRIMARY");
 
-                    b.HasIndex("tbl_milestone_master_id")
-                        .IsUnique();
-
                     b.HasIndex(new[] { "tbl_house_id" }, "idx_document_house_link_idx");
 
                     b.HasIndex(new[] { "tbl_master_id" }, "idx_document_master_link_idx");
-
-                    b.HasIndex(new[] { "tbl_milestone_master_id" }, "idx_document_milestone_master_link_idx");
 
                     b.HasIndex(new[] { "tbl_note_id" }, "idx_document_note_link_idx");
 
@@ -1152,16 +1140,20 @@ namespace BTAS.Data.Migrations
                         .HasColumnType("varchar(50)");
 
                     b.Property<string>("ContainerCode")
-                        .HasMaxLength(30)
-                        .HasColumnType("varchar(30)");
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
                     b.Property<string>("IncotermsCode")
-                        .HasMaxLength(30)
-                        .HasColumnType("varchar(30)");
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
                     b.Property<string>("MasterCode")
-                        .HasMaxLength(30)
-                        .HasColumnType("varchar(30)");
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("VoyageCode")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
                     b.Property<int?>("tbl_consignee_id")
                         .HasColumnType("int(11)");
@@ -1172,10 +1164,10 @@ namespace BTAS.Data.Migrations
                     b.Property<int?>("tbl_container_id")
                         .HasColumnType("int(11)");
 
-                    b.Property<byte>("tbl_house_DG")
+                    b.Property<byte?>("tbl_house_DG")
                         .HasColumnType("tinyint(3) unsigned");
 
-                    b.Property<byte>("tbl_house_FTA")
+                    b.Property<byte?>("tbl_house_FTA")
                         .HasColumnType("tinyint(3) unsigned");
 
                     b.Property<string>("tbl_house_UN")
@@ -1205,10 +1197,10 @@ namespace BTAS.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<byte>("tbl_house_coo")
+                    b.Property<byte?>("tbl_house_coo")
                         .HasColumnType("tinyint(3) unsigned");
 
-                    b.Property<DateTime>("tbl_house_createdDate")
+                    b.Property<DateTime?>("tbl_house_createdDate")
                         .HasMaxLength(6)
                         .HasColumnType("datetime(6)");
 
@@ -1220,7 +1212,7 @@ namespace BTAS.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<DateTime>("tbl_house_deliveryDate")
+                    b.Property<DateTime?>("tbl_house_deliveryDate")
                         .HasMaxLength(6)
                         .HasColumnType("datetime(6)");
 
@@ -1236,7 +1228,7 @@ namespace BTAS.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<decimal>("tbl_house_height")
+                    b.Property<decimal?>("tbl_house_height")
                         .HasPrecision(12, 3)
                         .HasColumnType("decimal(12,3)");
 
@@ -1248,7 +1240,7 @@ namespace BTAS.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<decimal>("tbl_house_length")
+                    b.Property<decimal?>("tbl_house_length")
                         .HasPrecision(12, 3)
                         .HasColumnType("decimal(12,3)");
 
@@ -1264,7 +1256,7 @@ namespace BTAS.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<int>("tbl_house_qty")
+                    b.Property<int?>("tbl_house_qty")
                         .HasColumnType("int(11)");
 
                     b.Property<string>("tbl_house_serviceCode")
@@ -1279,17 +1271,17 @@ namespace BTAS.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<byte>("tbl_house_tailLiftD")
+                    b.Property<byte?>("tbl_house_tailLiftD")
                         .HasColumnType("tinyint(3) unsigned");
 
-                    b.Property<byte>("tbl_house_tailLiftO")
+                    b.Property<byte?>("tbl_house_tailLiftO")
                         .HasColumnType("tinyint(3) unsigned");
 
                     b.Property<string>("tbl_house_type")
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<decimal>("tbl_house_value")
+                    b.Property<decimal?>("tbl_house_value")
                         .HasPrecision(12, 2)
                         .HasColumnType("decimal(12,2)");
 
@@ -1301,7 +1293,7 @@ namespace BTAS.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<decimal>("tbl_house_weight")
+                    b.Property<decimal?>("tbl_house_weight")
                         .HasPrecision(12, 3)
                         .HasColumnType("decimal(12,3)");
 
@@ -1309,7 +1301,7 @@ namespace BTAS.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<decimal>("tbl_house_width")
+                    b.Property<decimal?>("tbl_house_width")
                         .HasPrecision(12, 3)
                         .HasColumnType("decimal(12,3)");
 
@@ -1317,6 +1309,9 @@ namespace BTAS.Data.Migrations
                         .HasColumnType("int(11)");
 
                     b.Property<int?>("tbl_master_id")
+                        .HasColumnType("int(11)");
+
+                    b.Property<int?>("tbl_voyage_id")
                         .HasColumnType("int(11)");
 
                     b.HasKey("idtbl_house")
@@ -1328,9 +1323,11 @@ namespace BTAS.Data.Migrations
 
                     b.HasIndex(new[] { "tbl_incoterms_id" }, "FK_tbl_house_tbl_incoterms_tbl_incoterms_id_idx");
 
-                    b.HasIndex(new[] { "tbl_container_id" }, "IX_tbl_hawb_tbl_container_id");
+                    b.HasIndex(new[] { "tbl_container_id" }, "IX_tbl_house_tbl_container_id");
 
-                    b.HasIndex(new[] { "tbl_master_id" }, "IX_tbl_hawb_tbl_master_id");
+                    b.HasIndex(new[] { "tbl_master_id" }, "IX_tbl_house_tbl_master_id");
+
+                    b.HasIndex(new[] { "tbl_voyage_id" }, "IX_tbl_house_tbl_voyage_id");
 
                     b.ToTable("tbl_house", (string)null);
                 });
@@ -1499,14 +1496,14 @@ namespace BTAS.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<byte>("tbl_items_dangerousGoods")
+                    b.Property<byte?>("tbl_items_dangerousGoods")
                         .HasColumnType("tinyint(3) unsigned");
 
                     b.Property<string>("tbl_items_description")
                         .HasMaxLength(150)
                         .HasColumnType("varchar(150)");
 
-                    b.Property<decimal>("tbl_items_height")
+                    b.Property<decimal?>("tbl_items_height")
                         .HasPrecision(12, 3)
                         .HasColumnType("decimal(12,3)");
 
@@ -1514,7 +1511,7 @@ namespace BTAS.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<decimal>("tbl_items_length")
+                    b.Property<decimal?>("tbl_items_length")
                         .HasPrecision(12, 3)
                         .HasColumnType("decimal(12,3)");
 
@@ -1530,14 +1527,14 @@ namespace BTAS.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<int>("tbl_items_qty")
+                    b.Property<int?>("tbl_items_qty")
                         .HasColumnType("int(11)");
 
-                    b.Property<decimal>("tbl_items_value")
+                    b.Property<decimal?>("tbl_items_value")
                         .HasPrecision(12, 2)
                         .HasColumnType("decimal(12,2)");
 
-                    b.Property<decimal>("tbl_items_volume")
+                    b.Property<decimal?>("tbl_items_volume")
                         .HasPrecision(12, 3)
                         .HasColumnType("decimal(12,3)");
 
@@ -1545,7 +1542,7 @@ namespace BTAS.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<decimal>("tbl_items_weight")
+                    b.Property<decimal?>("tbl_items_weight")
                         .HasPrecision(12, 3)
                         .HasColumnType("decimal(12,3)");
 
@@ -1553,7 +1550,7 @@ namespace BTAS.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<decimal>("tbl_items_width")
+                    b.Property<decimal?>("tbl_items_width")
                         .HasPrecision(12, 3)
                         .HasColumnType("decimal(12,3)");
 
@@ -1594,9 +1591,6 @@ namespace BTAS.Data.Migrations
                     b.Property<int>("idtbl_master")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int(11)");
-
-                    b.Property<string>("MilestoneMasterCode")
-                        .HasColumnType("longtext");
 
                     b.Property<string>("VoyageCode")
                         .HasMaxLength(30)
@@ -1661,17 +1655,11 @@ namespace BTAS.Data.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("varchar(30)");
 
-                    b.Property<int?>("tbl_milestone_master_id")
-                        .HasColumnType("int(11)");
-
                     b.Property<int?>("tbl_voyage_id")
                         .HasColumnType("int(11)");
 
                     b.HasKey("idtbl_master")
                         .HasName("PRIMARY");
-
-                    b.HasIndex("tbl_milestone_master_id")
-                        .IsUnique();
 
                     b.HasIndex(new[] { "tbl_client_header_carrier_id" }, "IX_tbl_master_tbl_client_header_carrier_id");
 
@@ -1686,60 +1674,100 @@ namespace BTAS.Data.Migrations
                     b.ToTable("tbl_master", (string)null);
                 });
 
-            modelBuilder.Entity("BTAS.Data.Models.tbl_milestone_master", b =>
+            modelBuilder.Entity("BTAS.Data.Models.tbl_milestone_header", b =>
                 {
-                    b.Property<int>("idtbl_milestone_master")
+                    b.Property<int>("idtbl_milestone_header")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int(11)");
 
-                    b.Property<DateTime>("ataDestination")
-                        .HasMaxLength(6)
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("available")
-                        .HasMaxLength(6)
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("boundArrival")
-                        .HasMaxLength(6)
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("code")
+                    b.Property<string>("tbl_milestone_header_code")
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<DateTime>("ediReceive")
+                    b.Property<string>("tbl_milestone_header_createdBy")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<DateTime?>("tbl_milestone_header_createdDate")
                         .HasMaxLength(6)
                         .HasColumnType("datetime(6)");
 
-                    b.Property<DateTime>("etaDestination")
-                        .HasMaxLength(6)
-                        .HasColumnType("datetime(6)");
+                    b.Property<string>("tbl_milestone_header_description")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
-                    b.Property<DateTime>("etaDischarge")
-                        .HasMaxLength(6)
-                        .HasColumnType("datetime(6)");
+                    b.Property<string>("tbl_milestone_header_name")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
-                    b.Property<DateTime>("etd")
-                        .HasMaxLength(6)
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("excptReportSent")
-                        .HasMaxLength(6)
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("lastMileCarrier")
-                        .HasMaxLength(6)
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("masterCut")
-                        .HasMaxLength(6)
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("idtbl_milestone_master")
+                    b.HasKey("idtbl_milestone_header")
                         .HasName("PRIMARY");
 
-                    b.ToTable("tbl_milestone_master", (string)null);
+                    b.ToTable("tbl_milestone_header", (string)null);
+                });
+
+            modelBuilder.Entity("BTAS.Data.Models.tbl_milestone_link", b =>
+                {
+                    b.Property<int>("idtbl_milestone_link")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int(11)");
+
+                    b.Property<string>("HouseCode")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("MasterCode")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("MilestoneHeaderCode")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("ShipmentCode")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<int?>("tbl_house_id")
+                        .HasColumnType("int(11)");
+
+                    b.Property<int?>("tbl_master_id")
+                        .HasColumnType("int(11)");
+
+                    b.Property<int?>("tbl_milestone_header_id")
+                        .HasColumnType("int(11)");
+
+                    b.Property<string>("tbl_milestone_link_code")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("tbl_milestone_link_createdBy")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<DateTime?>("tbl_milestone_link_createdDate")
+                        .HasMaxLength(6)
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("tbl_milestone_link_value")
+                        .HasMaxLength(6)
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int?>("tbl_shipment_id")
+                        .HasColumnType("int(11)");
+
+                    b.HasKey("idtbl_milestone_link")
+                        .HasName("PRIMARY");
+
+                    b.HasIndex("tbl_milestone_header_id");
+
+                    b.HasIndex(new[] { "tbl_house_id" }, "idx_mslink_house_link_idx");
+
+                    b.HasIndex(new[] { "tbl_master_id" }, "idx_mslink_master_link_idx");
+
+                    b.HasIndex(new[] { "tbl_shipment_id" }, "idx_mslink_shipment_link_idx");
+
+                    b.ToTable("tbl_milestone_link", (string)null);
                 });
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_note", b =>
@@ -1784,7 +1812,7 @@ namespace BTAS.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<DateTime>("tbl_note_createdDate")
+                    b.Property<DateTime?>("tbl_note_createdDate")
                         .HasMaxLength(6)
                         .HasColumnType("datetime(6)");
 
@@ -1792,7 +1820,7 @@ namespace BTAS.Data.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("varchar(150)");
 
-                    b.Property<byte>("tbl_note_status")
+                    b.Property<byte?>("tbl_note_status")
                         .HasColumnType("tinyint(3) unsigned");
 
                     b.Property<string>("tbl_note_title")
@@ -1955,7 +1983,7 @@ namespace BTAS.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<DateTime>("tbl_receptacle_createdDate")
+                    b.Property<DateTime?>("tbl_receptacle_createdDate")
                         .HasMaxLength(6)
                         .HasColumnType("datetime(6)");
 
@@ -1963,11 +1991,11 @@ namespace BTAS.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<decimal>("tbl_receptacle_height")
+                    b.Property<decimal?>("tbl_receptacle_height")
                         .HasPrecision(12, 3)
                         .HasColumnType("decimal(12,3)");
 
-                    b.Property<decimal>("tbl_receptacle_length")
+                    b.Property<decimal?>("tbl_receptacle_length")
                         .HasPrecision(12, 3)
                         .HasColumnType("decimal(12,3)");
 
@@ -1979,7 +2007,7 @@ namespace BTAS.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<int>("tbl_receptacle_qty")
+                    b.Property<int?>("tbl_receptacle_qty")
                         .HasColumnType("int(11)");
 
                     b.Property<string>("tbl_receptacle_shipper_code")
@@ -1994,11 +2022,11 @@ namespace BTAS.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<decimal>("tbl_receptacle_weight")
+                    b.Property<decimal?>("tbl_receptacle_weight")
                         .HasPrecision(12, 3)
                         .HasColumnType("decimal(12,3)");
 
-                    b.Property<decimal>("tbl_receptacle_width")
+                    b.Property<decimal?>("tbl_receptacle_width")
                         .HasPrecision(12, 3)
                         .HasColumnType("decimal(12,3)");
 
@@ -2571,7 +2599,8 @@ namespace BTAS.Data.Migrations
                         .HasColumnType("varchar(45)");
 
                     b.Property<string>("tbl_shipment_facility")
-                        .HasColumnType("text");
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)");
 
                     b.Property<bool?>("tbl_shipment_gstExemptionCode")
                         .ValueGeneratedOnAdd()
@@ -2604,7 +2633,8 @@ namespace BTAS.Data.Migrations
                         .HasColumnType("varchar(150)");
 
                     b.Property<string>("tbl_shipment_orderItems")
-                        .HasColumnType("text");
+                        .HasMaxLength(2000)
+                        .HasColumnType("varchar(2000)");
 
                     b.Property<string>("tbl_shipment_phone")
                         .HasMaxLength(45)
@@ -2642,7 +2672,8 @@ namespace BTAS.Data.Migrations
                         .HasColumnType("varchar(2)");
 
                     b.Property<string>("tbl_shipment_returnName")
-                        .HasColumnType("text");
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)");
 
                     b.Property<string>("tbl_shipment_returnOption")
                         .HasMaxLength(20)
@@ -2665,7 +2696,8 @@ namespace BTAS.Data.Migrations
                         .HasColumnType("varchar(45)");
 
                     b.Property<string>("tbl_shipment_shipmentItems")
-                        .HasColumnType("text");
+                        .HasMaxLength(2000)
+                        .HasColumnType("varchar(2000)");
 
                     b.Property<string>("tbl_shipment_shipperAddressLine1")
                         .HasMaxLength(150)
@@ -3193,11 +3225,11 @@ namespace BTAS.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int(11)");
 
-                    b.Property<DateTime>("tbl_voyage_ata")
+                    b.Property<DateTime?>("tbl_voyage_ata")
                         .HasMaxLength(6)
                         .HasColumnType("datetime(6)");
 
-                    b.Property<DateTime>("tbl_voyage_atd")
+                    b.Property<DateTime?>("tbl_voyage_atd")
                         .HasMaxLength(6)
                         .HasColumnType("datetime(6)");
 
@@ -3217,7 +3249,7 @@ namespace BTAS.Data.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("varchar(30)");
 
-                    b.Property<DateTime>("tbl_voyage_eta")
+                    b.Property<DateTime?>("tbl_voyage_eta")
                         .HasMaxLength(6)
                         .HasColumnType("datetime(6)");
 
@@ -3225,7 +3257,7 @@ namespace BTAS.Data.Migrations
                         .HasMaxLength(6)
                         .HasColumnType("datetime(6)");
 
-                    b.Property<DateTime>("tbl_voyage_etd")
+                    b.Property<DateTime?>("tbl_voyage_etd")
                         .HasMaxLength(6)
                         .HasColumnType("datetime(6)");
 
@@ -3435,17 +3467,17 @@ namespace BTAS.Data.Migrations
             modelBuilder.Entity("BTAS.Data.Models.tbl_client_header", b =>
                 {
                     b.HasOne("BTAS.Data.Models.tbl_address", "billingAddress")
-                        .WithMany("billingAddresses")
+                        .WithMany("billingClients")
                         .HasForeignKey("tbl_billing_address_id")
                         .HasConstraintName("FK_tbl_client_header_tbl_address_tbl_address_billing_address_id");
 
                     b.HasOne("BTAS.Data.Models.tbl_address", "deliveryAddress")
-                        .WithMany("deliveryAddresses")
+                        .WithMany("deliveryClients")
                         .HasForeignKey("tbl_delivery_address_id")
                         .HasConstraintName("FK_tbl_client_header_tbl_address_tbl_address_delivery_address_id");
 
                     b.HasOne("BTAS.Data.Models.tbl_address", "pickupAddress")
-                        .WithMany("pickupAddresses")
+                        .WithMany("pickupClients")
                         .HasForeignKey("tbl_pickup_address_id")
                         .HasConstraintName("FK_tbl_client_header_tbl_address_tbl_address_id");
 
@@ -3477,11 +3509,6 @@ namespace BTAS.Data.Migrations
                         .HasForeignKey("tbl_master_id")
                         .HasConstraintName("document_master_link");
 
-                    b.HasOne("BTAS.Data.Models.tbl_milestone_master", "milestone_master")
-                        .WithOne("originalDocument")
-                        .HasForeignKey("BTAS.Data.Models.tbl_document", "tbl_milestone_master_id")
-                        .HasConstraintName("document_milestone_master_link");
-
                     b.HasOne("BTAS.Data.Models.tbl_note", "note")
                         .WithMany("documents")
                         .HasForeignKey("tbl_note_id")
@@ -3495,8 +3522,6 @@ namespace BTAS.Data.Migrations
                     b.Navigation("house");
 
                     b.Navigation("master");
-
-                    b.Navigation("milestone_master");
 
                     b.Navigation("note");
 
@@ -3530,6 +3555,11 @@ namespace BTAS.Data.Migrations
                         .HasForeignKey("tbl_master_id")
                         .HasConstraintName("FK_tbl_house_tbl_master_tbl_master_id");
 
+                    b.HasOne("BTAS.Data.Models.tbl_voyage", "voyage")
+                        .WithMany("houses")
+                        .HasForeignKey("tbl_voyage_id")
+                        .HasConstraintName("FK_tbl_house_tbl_voyage_tbl_voyage_id");
+
                     b.Navigation("consignee");
 
                     b.Navigation("consignor");
@@ -3539,6 +3569,8 @@ namespace BTAS.Data.Migrations
                     b.Navigation("incoterm");
 
                     b.Navigation("master");
+
+                    b.Navigation("voyage");
                 });
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_house_item", b =>
@@ -3572,11 +3604,6 @@ namespace BTAS.Data.Migrations
                         .HasForeignKey("tbl_client_header_origin_id")
                         .HasConstraintName("FK_tbl_master_tbl_client_header_tbl_client_header_origin_id");
 
-                    b.HasOne("BTAS.Data.Models.tbl_milestone_master", "milestone_master")
-                        .WithOne("master")
-                        .HasForeignKey("BTAS.Data.Models.tbl_master", "tbl_milestone_master_id")
-                        .HasConstraintName("master_milestone_master_link");
-
                     b.HasOne("BTAS.Data.Models.tbl_voyage", "voyage")
                         .WithMany("masters")
                         .HasForeignKey("tbl_voyage_id")
@@ -3588,11 +3615,40 @@ namespace BTAS.Data.Migrations
 
                     b.Navigation("destinationAgent");
 
-                    b.Navigation("milestone_master");
-
                     b.Navigation("originAgent");
 
                     b.Navigation("voyage");
+                });
+
+            modelBuilder.Entity("BTAS.Data.Models.tbl_milestone_link", b =>
+                {
+                    b.HasOne("BTAS.Data.Models.tbl_house", "house")
+                        .WithMany("milestoneLinks")
+                        .HasForeignKey("tbl_house_id")
+                        .HasConstraintName("msLink_house_link");
+
+                    b.HasOne("BTAS.Data.Models.tbl_master", "master")
+                        .WithMany("milestoneLinks")
+                        .HasForeignKey("tbl_master_id")
+                        .HasConstraintName("msLink_master_link");
+
+                    b.HasOne("BTAS.Data.Models.tbl_milestone_header", "milestoneHeader")
+                        .WithMany("milestoneLinks")
+                        .HasForeignKey("tbl_milestone_header_id")
+                        .HasConstraintName("msLink_msHeader_link");
+
+                    b.HasOne("BTAS.Data.Models.tbl_shipment", "shipment")
+                        .WithMany("milestoneLinks")
+                        .HasForeignKey("tbl_shipment_id")
+                        .HasConstraintName("msLink_shipment_link");
+
+                    b.Navigation("house");
+
+                    b.Navigation("master");
+
+                    b.Navigation("milestoneHeader");
+
+                    b.Navigation("shipment");
                 });
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_note", b =>
@@ -3737,13 +3793,13 @@ namespace BTAS.Data.Migrations
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_address", b =>
                 {
-                    b.Navigation("billingAddresses");
+                    b.Navigation("billingClients");
 
                     b.Navigation("contactDetails");
 
-                    b.Navigation("deliveryAddresses");
+                    b.Navigation("deliveryClients");
 
-                    b.Navigation("pickupAddresses");
+                    b.Navigation("pickupClients");
                 });
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_client_header", b =>
@@ -3776,6 +3832,8 @@ namespace BTAS.Data.Migrations
 
                     b.Navigation("houseItems");
 
+                    b.Navigation("milestoneLinks");
+
                     b.Navigation("notes");
 
                     b.Navigation("receptacles");
@@ -3796,14 +3854,14 @@ namespace BTAS.Data.Migrations
 
                     b.Navigation("houses");
 
+                    b.Navigation("milestoneLinks");
+
                     b.Navigation("notes");
                 });
 
-            modelBuilder.Entity("BTAS.Data.Models.tbl_milestone_master", b =>
+            modelBuilder.Entity("BTAS.Data.Models.tbl_milestone_header", b =>
                 {
-                    b.Navigation("master");
-
-                    b.Navigation("originalDocument");
+                    b.Navigation("milestoneLinks");
                 });
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_note", b =>
@@ -3827,6 +3885,8 @@ namespace BTAS.Data.Migrations
 
                     b.Navigation("documents");
 
+                    b.Navigation("milestoneLinks");
+
                     b.Navigation("notes");
 
                     b.Navigation("shipmentItems");
@@ -3834,6 +3894,8 @@ namespace BTAS.Data.Migrations
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_voyage", b =>
                 {
+                    b.Navigation("houses");
+
                     b.Navigation("masters");
 
                     b.Navigation("routings");

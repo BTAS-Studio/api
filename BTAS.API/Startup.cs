@@ -75,6 +75,12 @@ namespace BTAS.API
             services.AddScoped<IRepository<tbl_containerDto>, ContainerRepository>();
             services.AddScoped<IRepository<tbl_barcodeDto>, BarcodeRepository>();
             services.AddScoped<IRepository<tbl_default_settingDto>, SettingsRepository>();
+            //Added by HS on 14/06/2023
+            services.AddScoped<IRepository<tbl_note_categoryDto>, NoteCategoryRepository>();
+            services.AddScoped<IRepository<tbl_noteDto>, NoteRepository>();
+            services.AddScoped<IRepository<tbl_milestone_headerDto>, MilestoneHeaderRepository>();
+            services.AddScoped<IRepository<tbl_milestone_linkDto>, MilestoneLinkRepository>();
+            services.AddScoped<IRepository<tbl_documentDto>, DocumentRepository>();
 
             services.AddScoped<IAustwayLabelRepository, AustwayLabelRepository>();
 
@@ -108,6 +114,12 @@ namespace BTAS.API
             services.AddTransient<SettingsRepository>();
             services.AddTransient<AddressRepository>();
             services.AddTransient<TTWSClient>();
+            //Added by HS on 14/06/2023
+            services.AddTransient<NoteCategoryRepository>();
+            services.AddTransient<NoteRepository>();
+            services.AddTransient<MilestoneHeaderRepository>();
+            services.AddTransient<MilestoneLinkRepository>();
+            services.AddTransient<DocumentRepository>();
 
             //services.AddSingleton<TTWS>();
             services.AddSingleton(Configuration);
@@ -271,7 +283,15 @@ namespace BTAS.API
 
             //app.UseMiddleware<AuthenticationMiddleware>();
 
+            //Edited by HS on 16/06/2023
             app.UseExceptionHandler("/exception");
+            //app.UseExceptionHandler(
+            //    new ExceptionHandlerOptions()
+            //    {
+            //        AllowStatusCode404Response = true,
+            //        ExceptionHandlingPath = "/exception"
+            //    });
+            
             //app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseRouting();

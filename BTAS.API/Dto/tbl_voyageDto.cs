@@ -40,16 +40,17 @@ namespace BTAS.API.Dto
         [JsonProperty("DestinationPort")]
         public string tbl_voyage_destinationPort { get; set; }
         [JsonProperty("ETD")]
-        public DateTime tbl_voyage_etd { get; set; }
+        public DateTime? tbl_voyage_etd { get; set; }
         [JsonProperty("ETA")]
-        public DateTime tbl_voyage_eta { get; set; }
+        public DateTime? tbl_voyage_eta { get; set; }
         [JsonProperty("ETADischarge")]
-        public DateTime tbl_voyage_etaDischarge { get; set; }
+        public DateTime? tbl_voyage_etaDischarge { get; set; }
         [JsonProperty("ATD")]
-        public DateTime tbl_voyage_atd { get; set; }
+        public DateTime? tbl_voyage_atd { get; set; }
         [JsonProperty("ATA")]
-        public DateTime tbl_voyage_ata { get; set; }
+        public DateTime? tbl_voyage_ata { get; set; }
 
         public virtual ICollection<tbl_masterDto> masters { get; set; } = new Collection<tbl_masterDto>();
+        public virtual ICollection<tbl_houseDto> houses { get; set; } = new Collection<tbl_houseDto>();
     }
 }

@@ -15,23 +15,23 @@ namespace BTAS.API.Dto
 		[StringLength(50)]
 		public string tbl_item_sku_code { get; set; }  
         [JsonProperty("Weight")]
-        public decimal tbl_items_weight { get; set; }
+        public decimal? tbl_items_weight { get; set; }
         [StringLength(50)]
 		[JsonProperty("WeightUnit")]
 		public string tbl_items_weightUnit { get; set; }
         [JsonProperty("Length")]
-        public decimal tbl_items_length { get; set; }
+        public decimal? tbl_items_length { get; set; }
         [JsonProperty("Width")]
-        public decimal tbl_items_width { get; set; }
+        public decimal? tbl_items_width { get; set; }
         [JsonProperty("Height")]
-        public decimal tbl_items_height { get; set; }
+        public decimal? tbl_items_height { get; set; }
         [JsonProperty("Volume")]
-        public decimal tbl_items_volume { get; set; }
+        public decimal? tbl_items_volume { get; set; }
         [StringLength(50)]
 		[JsonProperty("VolumeUnit")]
 		public string tbl_items_volumeUnit { get; set; }
 		[JsonProperty("Quantity")]
-		public int tbl_items_qty { get; set; }
+		public int? tbl_items_qty { get; set; }
 		[StringLength(150)]
 		[JsonProperty("Description")]
 		public string tbl_items_description { get; set; }
@@ -45,7 +45,7 @@ namespace BTAS.API.Dto
 		[JsonProperty("OriginCountry")]
 		public string tbl_items_originCountry { get; set; }
 		[JsonProperty("Value")]
-		public decimal tbl_items_value { get; set; }
+		public decimal? tbl_items_value { get; set; }
 		[StringLength(50)]
 		[JsonProperty("ProductUrl")]
 		public string tbl_items_productUrl { get; set; }

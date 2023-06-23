@@ -10,14 +10,14 @@ namespace BTAS.Data.Models
 
         public int idtbl_document { get; set; }
         public string tbl_document_code { get; set; }
-        public bool tbl_document_status { get; set; }
-        public DateTime tbl_document_createdDate { get; set; }
+        public bool? tbl_document_status { get; set; }
+        public DateTime? tbl_document_createdDate { get; set; }
         public string tbl_document_name { get; set; }
         public string tbl_document_extension { get; set; }
         public string tbl_document_group { get; set; }
         public string tbl_document_description { get; set; }
-        public bool tbl_doucument_internalAccess { get; set; }
-        public bool tbl_doucument_externalAccess { get; set; }
+        public bool? tbl_doucument_internalAccess { get; set; }
+        public bool? tbl_doucument_externalAccess { get; set; }
         public string tbl_document_blobToken { get; set; }
         public string tbl_document_route { get; set; }
         public string tbl_doucument_updatedBy { get; set; }
@@ -30,15 +30,10 @@ namespace BTAS.Data.Models
         public string ShipmentCode { get; set; }
         public int? tbl_note_id { get; set; }
         public string NoteCode { get; set; }
-        //public int? tbl_milestone_id { get; set; }
-        //public string MilestoneCode { get; set; }
+
         public virtual tbl_master master { get; set; }
         public virtual tbl_house house { get; set; }
         public virtual tbl_shipment shipment { get; set; }
         public virtual tbl_note note { get; set; }
-        //one to one relationship with tbl_milestone_master
-        public int? tbl_milestone_master_id { get; set; }
-        public string MilestoneMasterCode { get; set; }
-        public virtual tbl_milestone_master milestone_master { get; set; }
     }
 }

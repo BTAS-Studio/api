@@ -21,11 +21,13 @@ namespace BTAS.API.Repository
     {
         private readonly MainDbContext _context;
         private IMapper _mapper;
+        private int count;
 
         public HouseItemRepository(MainDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
+            count = 1;
         }
 
         /// <summary>
@@ -54,7 +56,7 @@ namespace BTAS.API.Repository
             try
             {
                 var qList = _context.tbl_house_items.Include(hi => hi.house)
-                    //.AsNoTracking()
+                    .AsNoTracking()
                     .OrderByDescending(h => h.idtbl_house_item).AsQueryable();
                 // excute each filter one by one 
                 if (customFilters.Filters != null)
@@ -111,14 +113,7 @@ namespace BTAS.API.Repository
 
                         if (propertyLambda != null)
                         {
-                            //qList = qList.Where(propertyLambda);
-                            qList = qList.Provider.CreateQuery<tbl_house_item>(Expression.Call(
-                                       typeof(Queryable),
-                                       "Where",
-                                       new[] { elementType },
-                                       qList.Expression,
-                                       propertyLambda
-                                   ));
+                            qList = qList.Where(propertyLambda);
                         }
                     }
                 }
@@ -207,6 +202,7 @@ namespace BTAS.API.Repository
         {
             try
             {
+                entity.house_item_code = await GetNextId();
                 var result = _mapper.Map<tbl_house_itemDto, tbl_house_item>(entity);
                 if (result.idtbl_house_item > 0)
                 {
@@ -233,7 +229,7 @@ namespace BTAS.API.Repository
                             return new ResponseDto
                             {
                                 Result = entity,
-                                DisplayMessage = "Unable to link item. Provided HOUSE code was not found.",
+                                DisplayMessage = "Unable to link to item. Provided HOUSE code was not found.",
                                 IsSuccess = false
                             };
                         }
@@ -270,61 +266,46 @@ namespace BTAS.API.Repository
         {
             try
             {
-                if (entity.idtbl_house_item > 0)
+                var result = await _context.tbl_house_items
+                    .SingleOrDefaultAsync(x => x.tbl_house_item_code == entity.house_item_code);
+                if (result != null)
                 {
-                    var result = await _context.tbl_house_items
-                        .SingleOrDefaultAsync(x => x.idtbl_house_item == entity.idtbl_house_item);
-                    if (result != null)
+                    _mapper.Map(entity, result);
+                    var house = await _context.tbl_houses
+                        .SingleOrDefaultAsync(x => x.idtbl_house == entity.tbl_house_id || x.tbl_house_code == entity.HouseCode);
+                    if (house != null)
                     {
-                        var house = await _context.tbl_houses
-                            .SingleOrDefaultAsync(x => x.idtbl_house == entity.tbl_house_id || x.tbl_house_code == entity.HouseCode);
-                        if (house != null)
-                        {
-                            result.tbl_house_id = house.idtbl_house;
-                            result.HouseCode = house.tbl_house_code;
-                        }
-                        else
-                        {
-                            return new ResponseDto
-                            {
-                                Result = entity,
-                                DisplayMessage = "Unable to link item. Provided HOUSE code was not found.",
-                                IsSuccess = false
-                            };
-                        }
-                        _context.tbl_house_items.Update(result);
-                        await _context.SaveChangesAsync();
+                        result.tbl_house_id = house.idtbl_house;
                     }
                     else
                     {
                         return new ResponseDto
                         {
-                            Result = _mapper.Map<tbl_house_itemDto>(result),
-                            DisplayMessage = "HOUSE Item does not exists.",
+                            Result = entity,
+                            DisplayMessage = "Unable to link to item. Provided HOUSE code was not found.",
                             IsSuccess = false
                         };
                     }
-
-                    return new ResponseDto
-                    {
-                        Result = _mapper.Map<tbl_house_itemDto>(result),
-                        DisplayMessage = "HOUSE Item successfully updated.",
-                        IsSuccess = true
-                    };
+                    _context.ChangeTracker.Clear();
+                    _context.tbl_house_items.Update(result);
+                    await _context.SaveChangesAsync();
                 }
                 else
                 {
                     return new ResponseDto
                     {
-                        Result = entity,
-                        DisplayMessage = "Invalid HOUSE Item Id.",
+                        DisplayMessage = "HOUSE Item does not exists.",
                         IsSuccess = false
                     };
                 }
 
-               
+                return new ResponseDto
+                {
+                    DisplayMessage = "HOUSE Item successfully updated.",
+                    IsSuccess = true
+                };
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return new ResponseDto
                 {
@@ -333,7 +314,7 @@ namespace BTAS.API.Repository
                     IsSuccess = false
                 };
             }
-            
+
         }
 
         public async Task<List<tbl_house_itemDto>> CreateRangeAsync(List<tbl_house_itemDto> entities)
@@ -393,6 +374,11 @@ namespace BTAS.API.Repository
             }
         }
 
-
+        public async Task<string> GetNextId()
+        {
+            var result = await _context.tbl_house_items.OrderByDescending(p => p.idtbl_house_item).FirstOrDefaultAsync();
+            string code = "HI" + String.Format("{0:0000000}", (result != null ? result.idtbl_house_item + count : 1));
+            return code;
+        }
     }
 }

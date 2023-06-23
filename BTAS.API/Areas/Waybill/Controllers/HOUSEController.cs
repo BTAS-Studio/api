@@ -155,7 +155,7 @@ namespace BTAS.API.Areas.Waybill.Controllers
 
             try
             {
-                result = await _repository.CreateAsync(request, Request.Headers["shipperId"]);
+                result = await _repository.CreateAsync(request);
                 /*
                 #region carriers
                 //if (result.IsSuccess)
@@ -920,7 +920,7 @@ namespace BTAS.API.Areas.Waybill.Controllers
                 */
                 if (!result.IsSuccess)
                 {
-                    return Ok(new GeneralResponse
+                    return new JsonResult(new GeneralResponse
                     {
                         success = false,
                         response = 500,
@@ -1784,7 +1784,7 @@ namespace BTAS.API.Areas.Waybill.Controllers
             {
                 if (request.master != null)
                 {
-                    var parent = await _masterRepository.CreateAsync(request.master, Request.Headers["shipperId"]);
+                    var parent = await _masterRepository.CreateAsync(request.master);
                     if (parent.IsSuccess)
                     {
                         request.parentReference = parent.ReferenceNumber;
@@ -1816,7 +1816,7 @@ namespace BTAS.API.Areas.Waybill.Controllers
             {
                 if (request.container != null)
                 {
-                    var parent = await _containerRepository.CreateAsync(request.container, Request.Headers["shipperId"]);
+                    var parent = await _containerRepository.CreateAsync(request.container);
                     if (parent.IsSuccess)
                     {
                         request.parentReference = parent.ReferenceNumber;

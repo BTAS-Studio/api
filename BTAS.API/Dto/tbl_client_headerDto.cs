@@ -21,35 +21,35 @@ namespace BTAS.API.Dto
         public string tbl_client_header_code { get; set; }
         [JsonProperty("IsActive")]
         [Description("Set client details as active or inactive")]
-        public bool tbl_client_header_active { get; set; }
+        public bool? tbl_client_header_active { get; set; }
         [JsonProperty("IsAgent")]
         [Description("Set client details as agent")]
-        public bool tbl_client_header_is_agent { get; set; }
+        public bool? tbl_client_header_is_agent { get; set; }
         [JsonProperty("IsConsignee")]
         [Description("Set client details as consignee")]
-        public bool tbl_client_header_is_consignee { get; set; }
+        public bool? tbl_client_header_is_consignee { get; set; }
         [JsonProperty("IsConsignor")]
         [Description("Set client details as consignor")]
-        public bool tbl_client_header_is_consignor { get; set; }
+        public bool? tbl_client_header_is_consignor { get; set; }
         [JsonProperty("IsBroker")]
         [Description("Set client details as broker")]
-        public bool tbl_client_header_is_broker { get; set; }
+        public bool? tbl_client_header_is_broker { get; set; }
         [JsonProperty("IsCarrier")]
         [Description("Set client details as carrier")]
-        public bool tbl_client_header_is_carrier { get; set; }
+        public bool? tbl_client_header_is_carrier { get; set; }
         [JsonProperty("IsPayable")]
         [Description("Set client details for payables")]
-        public bool tbl_client_header_is_payable { get; set; }
+        public bool? tbl_client_header_is_payable { get; set; }
         [JsonProperty("IsReceivable")]
         [Description("Set client details for receivables")]
-        public bool tbl_client_header_is_receivable { get; set; }
+        public bool? tbl_client_header_is_receivable { get; set; }
         [StringLength(50)]
         [JsonProperty("CreatedBy")]
         //[DoNotInclude]
         public string tbl_client_header_createdBy { get; set; }
         [JsonProperty("CreatedDate")]
         //[DoNotInclude]
-        public DateTime tbl_client_header_createdDate { get; set; }
+        public DateTime? tbl_client_header_createdDate { get; set; }
         [StringLength(100)]
         [JsonProperty("CompanyName")]
         [Description("Client's company name")]
@@ -146,5 +146,11 @@ namespace BTAS.API.Dto
         [DoNotInclude]
         public virtual ICollection<tbl_client_contact_detailDto> contactDetails { get; set; } = new Collection<tbl_client_contact_detailDto>(); 
         public virtual ICollection<tbl_noteDto> notes { get; set; } = new Collection<tbl_noteDto>();
+        public virtual ICollection<tbl_houseDto> consignees { get; set; } = new Collection<tbl_houseDto>();
+        public virtual ICollection<tbl_houseDto> consignors { get; set; } = new Collection<tbl_houseDto>();
+        public virtual ICollection<tbl_masterDto> carriers { get; set; } = new Collection<tbl_masterDto>();
+        public virtual ICollection<tbl_masterDto> creditors { get; set; } = new Collection<tbl_masterDto>();
+        public virtual ICollection<tbl_masterDto> destinations { get; set; } = new Collection<tbl_masterDto>();
+        public virtual ICollection<tbl_masterDto> origins { get; set; } = new Collection<tbl_masterDto>();
     }
 }

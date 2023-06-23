@@ -56,10 +56,8 @@ namespace BTAS.API.Repository
             try
             {
                 var qList = _context.tbl_shipments
-                    //Edit by HS on 25/05/2023
-                    //.Include(x => x.receptable)
                     .Include(x => x.receptacle)
-                    //.AsNoTracking()
+                    .AsNoTracking()
                     .OrderByDescending(x => x.idtbl_shipment)
                     .AsQueryable();
                 // excute each filter one by one 
@@ -101,6 +99,19 @@ namespace BTAS.API.Repository
                             (propertyInfo, filter.fieldValue, containsDateTime) =
                                 GetParentPropertyInfo<tbl_shipment, tbl_receptacle, tbl_receptacleDto>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
                         }
+                        else if (filter.tableName.ToUpper() == "INCOTERM")
+                        {
+                            filter.tableName = "incoterm";
+                            parent = true;
+                            bool containsDateTime = false;
+                            if (filter.condition.ToUpper() == "CONTAINS")
+                            {
+                                originalValue = jsonObj[filter.fieldName];
+                            }
+
+                            (propertyInfo, filter.fieldValue, containsDateTime) =
+                                GetParentPropertyInfo<tbl_shipment, tbl_incoterm, tbl_incotermDto>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
+                        }
                         else
                         {
                             throw new ArgumentException($"Invalid table name: {filter.tableName}");
@@ -118,13 +129,7 @@ namespace BTAS.API.Repository
 
                         if (propertyLambda != null)
                         {
-                            qList = qList.Provider.CreateQuery<tbl_shipment>(Expression.Call(
-                                       typeof(Queryable),
-                                       "Where",
-                                       new[] { elementType },
-                                       qList.Expression,
-                                       propertyLambda
-                                   ));
+                            qList = qList.Where(propertyLambda);
                         }
                     }
                 }
@@ -200,6 +205,22 @@ namespace BTAS.API.Repository
         public async Task<tbl_shipmentDto> CreateUpdateAsync(tbl_shipmentDto entity)
         {
             var shipment = _mapper.Map<tbl_shipmentDto, tbl_shipment>(entity);
+            if (!String.IsNullOrEmpty(shipment.ReceptacleCode))
+            {
+                var parent = await _context.tbl_receptacles.SingleOrDefaultAsync(p => p.tbl_receptacle_code == shipment.ReceptacleCode);
+                if (parent != null)
+                {
+                    shipment.tbl_receptacle_id = parent.idtbl_receptacle;
+                }
+            }
+            if (!String.IsNullOrEmpty(shipment.IncotermsCode))
+            {
+                var parent = await _context.tbl_incoterms.SingleOrDefaultAsync(p => p.tbl_incoterm_code == shipment.IncotermsCode);
+                if (parent != null)
+                {
+                    shipment.tbl_incoterms_id = parent.idtbl_incoterm;
+                }
+            }
             if (shipment.idtbl_shipment > 0)
             {
                 _context.tbl_shipments.Update(shipment);
@@ -211,6 +232,180 @@ namespace BTAS.API.Repository
             await _context.SaveChangesAsync();
 
             return _mapper.Map<tbl_shipmentDto>(shipment);
+        }
+
+        /// <summary>
+        /// Creates a shipment record
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public async Task<ResponseDto> CreateAsync(tbl_shipmentDto entity)
+        {
+            try
+            {
+                entity.tbl_shipment_createdDate = DateTime.Now;
+                entity.tbl_shipment_status = "OPEN";
+                var result = _mapper.Map<tbl_shipmentDto, tbl_shipment>(entity);
+
+                if (result.idtbl_shipment > 0)
+                {
+                    return new ResponseDto
+                    {
+                        Result = entity,
+                        DisplayMessage = "Unable to create duplicate shipment record",
+                        IsSuccess = false
+                    };
+                }
+                else
+                {
+                    if (!String.IsNullOrEmpty(result.ReceptacleCode))
+                    {
+                        var parent = await _context.tbl_receptacles.AsNoTracking()
+                            .SingleOrDefaultAsync(p => p.tbl_receptacle_code == result.ReceptacleCode);
+                        if (parent != null)
+                        {
+                            result.tbl_receptacle_id = parent.idtbl_receptacle;
+                        }
+                        else
+                        {
+                            return new ResponseDto
+                            {
+                                Result = entity,
+                                DisplayMessage = "Unable to link to receptacle. Provided receptacle reference was not found.",
+                                IsSuccess = false
+                            };
+                        }
+
+                    }
+                    if (!String.IsNullOrEmpty(result.IncotermsCode))
+                    {
+                        var parent = await _context.tbl_incoterms.AsNoTracking()
+                            .SingleOrDefaultAsync(p => p.tbl_incoterm_code == result.IncotermsCode);
+                        if (parent != null)
+                        {
+                            result.tbl_incoterms_id = parent.idtbl_incoterm;
+                        }
+                        else
+                        {
+                            return new ResponseDto
+                            {
+                                DisplayMessage = "Unable to link to incoterm. Provided incoterm reference was not found.",
+                                IsSuccess = false
+                            };
+                        }
+                    }
+
+                    await _context.tbl_shipments.AddAsync(result);
+                    await _context.SaveChangesAsync();
+                    return new ResponseDto
+                    {
+                        DisplayMessage = "Shipment Item successfully added.",
+                        IsSuccess = true,
+                        ReferenceNumber = result.tbl_shipment_code
+                    };
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto
+                {
+                    IsSuccess = false,
+                    DisplayMessage = ex.Message.ToString()
+                };
+            }
+        }
+
+
+            /// <summary>
+            /// Updates a shipment record
+            /// </summary>
+            /// <param name="entity"></param>
+            /// <returns></returns>
+            public async Task<ResponseDto> UpdateAsync(tbl_shipmentDto entity)
+        {
+            try
+            {
+                var result = await _context.tbl_shipments
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync(x => x.tbl_shipment_code == entity.tbl_shipment_code);
+                if (result != null)
+                {
+                    _mapper.Map(entity, result);
+                    if (!String.IsNullOrEmpty(entity.ReceptacleCode))
+                    {
+                        var parent = await _context.tbl_receptacles
+                        .FirstOrDefaultAsync(x => x.tbl_receptacle_code == entity.ReceptacleCode);
+
+                        if (parent != null)
+                        {
+                            result.tbl_receptacle_id = parent.idtbl_receptacle;
+                        }
+                        else
+                        {
+                            return new ResponseDto
+                            {
+                                DisplayMessage = "Unable to link to Shipment. Invalid shipment id or code.",
+                                IsSuccess = false
+                            };
+                        }
+                    }
+                    if (!String.IsNullOrEmpty(entity.IncotermsCode))
+                    {
+                        var parent = await _context.tbl_incoterms.AsNoTracking()
+                            .SingleOrDefaultAsync(p => p.tbl_incoterm_code == entity.IncotermsCode);
+                        if (parent != null)
+                        {
+                            result.tbl_incoterms_id = parent.idtbl_incoterm;
+                        }
+                        else
+                        {
+                            return new ResponseDto
+                            {
+                                DisplayMessage = "Unable to link to incoterm. Provided incoterm reference was not found.",
+                                IsSuccess = false
+                            };
+                        }
+                    }
+                    _context.ChangeTracker.Clear();
+                    _context.tbl_shipments.Update(result);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    return new ResponseDto
+                    {
+                        DisplayMessage = "Shipment does not exist.",
+                        IsSuccess = false
+                    };
+                }
+
+                return new ResponseDto
+                {
+                    DisplayMessage = "Shipment successfully updated.",
+                    IsSuccess = true,
+                    ReferenceNumber = result.tbl_shipment_code
+                };
+            }
+            catch (Exception ex)
+            {
+                if (ex.GetBaseException().ToString().IndexOf("Duplicate") > -1)
+                {
+                    return new ResponseDto
+                    {
+                        Result = entity,
+                        DisplayMessage = "Unable to save record. Possible duplicate SKU code.",
+                        IsSuccess = false
+                    };
+                }
+                return new ResponseDto
+                {
+                    Result = entity,
+                    DisplayMessage = ex.StackTrace.ToString(),
+                    IsSuccess = false
+                };
+            }
+
         }
 
         /// <summary>

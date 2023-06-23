@@ -23,9 +23,9 @@ namespace BTAS.API.Dto
         [JsonProperty("Type")]
         public string tbl_receptacle_type { get; set; }
         [JsonProperty("Quantity")]
-        public int tbl_receptacle_qty { get; set; }
+        public int? tbl_receptacle_qty { get; set; }
         [JsonProperty("Weight")]
-        public decimal tbl_receptacle_weight { get; set; }
+        public decimal? tbl_receptacle_weight { get; set; }
         [StringLength(50)]
         [JsonProperty("Status")]
         public string tbl_receptacle_status { get; set; }
@@ -36,13 +36,13 @@ namespace BTAS.API.Dto
         [JsonProperty("Destination")]
         public string tbl_receptacle_destination { get; set; }
         [JsonProperty("CreatedDate")]
-        public DateTime tbl_receptacle_createdDate { get; set; }
+        public DateTime? tbl_receptacle_createdDate { get; set; }
         [JsonProperty("Length")]
-        public decimal tbl_receptacle_length { get; set; }
+        public decimal? tbl_receptacle_length { get; set; }
         [JsonProperty("Width")]
-        public decimal tbl_receptacle_width { get; set; }
+        public decimal? tbl_receptacle_width { get; set; }
         [JsonProperty("Height")]
-        public decimal tbl_receptacle_height { get; set; }
+        public decimal? tbl_receptacle_height { get; set; }
 
         [JsonProperty("HouseId")]
         public int? tbl_house_id { get; set; }

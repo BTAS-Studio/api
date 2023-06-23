@@ -57,7 +57,7 @@ namespace BTAS.API.Repository
             try
             {
                 var qList = _context.tbl_shipment_items.Include(hi => hi.shipment)
-                    //.AsNoTracking()
+                    .AsNoTracking()
                     .OrderByDescending(h => h.idtbl_shipment_item).AsQueryable();
                 // excute each filter one by one 
                 if (customFilters.Filters != null)
@@ -115,14 +115,7 @@ namespace BTAS.API.Repository
 
                         if (propertyLambda != null)
                         {
-                            //qList = qList.Where(propertyLambda);
-                            qList = qList.Provider.CreateQuery<tbl_shipment_item>(Expression.Call(
-                                       typeof(Queryable),
-                                       "Where",
-                                       new[] { elementType },
-                                       qList.Expression,
-                                       propertyLambda
-                                   ));
+                            qList = qList.Where(propertyLambda);
                         }
                     }
                 }
@@ -169,7 +162,14 @@ namespace BTAS.API.Repository
                     result = await _context.tbl_shipment_items
                         .FirstOrDefaultAsync(x => x.tbl_shipment_item_code == referenceNumber);
                 }
-
+                if (result == null)
+                {
+                    return new ResponseDto
+                    {
+                        IsSuccess = false,
+                        DisplayMessage = $"Shipment {referenceNumber} not found." 
+                    };
+                }
                 return new ResponseDto
                 {
                     IsSuccess = true,
@@ -198,12 +198,19 @@ namespace BTAS.API.Repository
         {
             try
             {
-                var mapped = _mapper.Map<tbl_shipment_itemDto, tbl_shipment_item>(entity);
+                var result = _mapper.Map<tbl_shipment_itemDto, tbl_shipment_item>(entity);
+                if (!String.IsNullOrEmpty(result.ShipmentCode))
+                {
+                    var parent = await _context.tbl_shipments.FirstOrDefaultAsync(p => p.tbl_shipment_code == result.ShipmentCode);
+                    if (parent != null)
+                    {
+                        result.tbl_shipment_id = parent.idtbl_shipment;
+                    }
+                }
 
-
-                _context.tbl_shipment_items.Add(mapped);
+                _context.tbl_shipment_items.Add(result);
                 await _context.SaveChangesAsync();
-                return _mapper.Map<tbl_shipment_item, tbl_shipment_itemDto>(mapped);
+                return _mapper.Map<tbl_shipment_item, tbl_shipment_itemDto>(result);
             }
             catch (Exception ex)
             {
@@ -233,21 +240,21 @@ namespace BTAS.API.Repository
                 }
                 else
                 {
-                    if ((result.tbl_shipment_item_code != null && result.tbl_shipment_item_code != "") || result.tbl_shipment_id.HasValue)
+                    if (!String.IsNullOrEmpty(result.tbl_shipment_item_code))
                     {
                         var shipment = await _context.tbl_shipments
-                            .FirstOrDefaultAsync(x => x.idtbl_shipment == result.tbl_shipment_id || x.tbl_shipment_code == result.ShipmentCode);
+                            .FirstOrDefaultAsync(p => p.tbl_shipment_code == result.ShipmentCode);
                         if (shipment != null)
                         {
                             result.tbl_shipment_id = shipment.idtbl_shipment;
-                            result.ShipmentCode = shipment.tbl_shipment_code;
+                            //result.ShipmentCode = shipment.tbl_shipment_code;
                         }
                         else
                         {
                             return new ResponseDto
                             {
                                 Result = entity,
-                                DisplayMessage = "Unable to link item. Provided parcel info reference was not found.",
+                                DisplayMessage = "Unable to link to item. Provided parcel info reference was not found.",
                                 IsSuccess = false
                             };
                         }
@@ -296,31 +303,30 @@ namespace BTAS.API.Repository
             {
                 var result = await _context.tbl_shipment_items
                     .AsNoTracking()
-                    .SingleOrDefaultAsync(x => x.idtbl_shipment_item == entity.idtbl_shipment_item);
+                    .SingleOrDefaultAsync(x => x.tbl_shipment_item_code == entity.tbl_shipment_item_code);
                 if (result != null)
                 {
-                    if (entity.tbl_shipment_id.HasValue || (entity.ShipmentCode != "" && entity.ShipmentCode != null))
+                    _mapper.Map(entity, result);
+                    if (!String.IsNullOrEmpty(entity.ShipmentCode))
                     {
                         var shipment = await _context.tbl_shipments
-                        .FirstOrDefaultAsync(x => x.idtbl_shipment == entity.tbl_shipment_id || x.tbl_shipment_code == entity.ShipmentCode);
+                        .FirstOrDefaultAsync(x => x.tbl_shipment_code == entity.ShipmentCode);
 
                         if (shipment != null)
                         {
                             result.tbl_shipment_id = shipment.idtbl_shipment;
-                            result.ShipmentCode = shipment.tbl_shipment_code;
+                            //result.ShipmentCode = shipment.tbl_shipment_code;
                         }
                         else
                         {
                             return new ResponseDto
                             {
-                                Result = entity,
-                                DisplayMessage = "Unable to link. Invalid shipment id or code.",
+                                DisplayMessage = "Unable to link to Shipment. Invalid shipment id or code.",
                                 IsSuccess = false
                             };
                         }
                     }
-
-
+                    _context.ChangeTracker.Clear();
                     _context.tbl_shipment_items.Update(result);
                     await _context.SaveChangesAsync();
                 }
@@ -328,16 +334,14 @@ namespace BTAS.API.Repository
                 {
                     return new ResponseDto
                     {
-                        Result = entity,
-                        DisplayMessage = "Shipment does not exists.",
+                        DisplayMessage = "Shipment Item does not exist.",
                         IsSuccess = false
                     };
                 }
 
                 return new ResponseDto
                 {
-                    Result = entity,
-                    DisplayMessage = "Shipment successfully updated.",
+                    DisplayMessage = "Shipment Item successfully updated.",
                     IsSuccess = true
                 };
             }

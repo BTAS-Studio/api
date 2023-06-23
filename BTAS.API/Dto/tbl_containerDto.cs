@@ -42,13 +42,13 @@ namespace BTAS.API.Dto
         public string tbl_container_sealNumber { get; set; }
         [JsonProperty("Quantity")]
         [Description("Container quantity")]
-        public int tbl_container_qty { get; set; }
+        public int? tbl_container_qty { get; set; }
         [JsonProperty("GrossWeight")]
         [Description("Container gross weight")]
-        public decimal tbl_container_grossWeight { get; set; }
+        public decimal? tbl_container_grossWeight { get; set; }
         [JsonProperty("CreatedDate")]
         //[DoNotInclude]
-        public DateTime tbl_container_createdDate { get; set; }
+        public DateTime? tbl_container_createdDate { get; set; }
         [StringLength(30)]
         [JsonProperty("SealedBy")]
         [Description("Person who sealed the container")]

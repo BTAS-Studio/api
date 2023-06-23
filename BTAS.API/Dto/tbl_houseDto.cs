@@ -42,26 +42,26 @@ namespace BTAS.API.Dto
         public string tbl_house_airJobReference { get; set; }
         [JsonProperty("Quantity")]
         [Description("Total quantity")]
-        public int tbl_house_qty { get; set; }
+        public int? tbl_house_qty { get; set; }
         [JsonProperty("Weight")]
         [Description("Total weight")]
-        public decimal tbl_house_weight { get; set; }
+        public decimal? tbl_house_weight { get; set; }
         [JsonProperty("WeightUnit")]
         [StringLength(50)]
         [Description("Weight Unit")]
         public string tbl_house_weightUnit { get; set; }
         [JsonProperty("Length")]
         [Description("Total length")]
-        public decimal tbl_house_length { get; set; }
+        public decimal? tbl_house_length { get; set; }
         [JsonProperty("Width")]
         [Description("Total width")]
-        public decimal tbl_house_width { get; set; }
+        public decimal? tbl_house_width { get; set; }
         [JsonProperty("Height")]
         [Description("Total height")]
-        public decimal tbl_house_height { get; set; }
+        public decimal? tbl_house_height { get; set; }
         [JsonProperty("Volume")]
         [Description("Total volume")]
-        public decimal tbl_house_volume { get; set; }
+        public decimal? tbl_house_volume { get; set; }
         [JsonProperty("VolumeUnit")]
         [StringLength(50)]
         [Description("Volume Unit")]
@@ -76,7 +76,7 @@ namespace BTAS.API.Dto
         public string tbl_house_destinationAirport { get; set; }
         [JsonProperty("Value")]
         [Description("Total value")]
-        public decimal tbl_house_value { get; set; }
+        public decimal? tbl_house_value { get; set; }
         [StringLength(150)]
         [JsonProperty("Description")]
         [Description("HOUSE description")]
@@ -86,7 +86,7 @@ namespace BTAS.API.Dto
         [Description("HOUSE native description")]
         public string tbl_house_native_description { get; set; }
         [JsonProperty("FTA")]
-        public byte tbl_house_FTA { get; set; }
+        public byte? tbl_house_FTA { get; set; }
         [StringLength(50)]
         [JsonProperty("ShipperCode")]
         [Description("Shipper Code")]
@@ -118,13 +118,13 @@ namespace BTAS.API.Dto
         [Description("Date cleared")]
         public DateTime? tbl_house_clearanceDate { get; set; }
         [JsonProperty("COO")]
-        public byte tbl_house_coo { get; set; }
+        public byte? tbl_house_coo { get; set; }
         [JsonProperty("TailLiftOrigin")]
-        public byte tbl_house_tailLiftO { get; set; }
+        public byte? tbl_house_tailLiftO { get; set; }
         [JsonProperty("TailLiftDestination")]
-        public byte tbl_house_tailLiftD { get; set; }
+        public byte? tbl_house_tailLiftD { get; set; }
         [JsonProperty("DangerousGoods")]
-        public byte tbl_house_DG { get; set; }
+        public byte? tbl_house_DG { get; set; }
         [JsonProperty("UN")]
         public string tbl_house_UN { get; set; }
         [StringLength(50)]
@@ -158,6 +158,17 @@ namespace BTAS.API.Dto
         [Description("Linked container code")]
         public string ContainerCode { get; set; }
         public virtual tbl_containerDto container { get; set; }
+
+        //Added by HS on 13/06/2023
+        [JsonProperty("VoyageId")]
+        [DoNotInclude]
+        public int? tbl_voyage_id { get; set; }
+        [JsonProperty("VoyageCode")]
+        [StringLength(30)]
+        [Optional]
+        [Description("Linked voyage code")]
+        public string VoyageCode { get; set; }
+        public virtual tbl_voyageDto voyage { get; set; }
 
         [JsonProperty("ConsigneeId")]
         [DoNotInclude]
@@ -194,5 +205,8 @@ namespace BTAS.API.Dto
         public virtual ICollection<tbl_house_itemDto> houseItems { get; set; } = new Collection<tbl_house_itemDto>();
         public virtual ICollection<tbl_receptacleDto> receptacles { get; set; } = new Collection<tbl_receptacleDto>();
         public virtual ICollection<tbl_noteDto> notes { get; set; } = new Collection<tbl_noteDto>();
+        public virtual ICollection<tbl_milestone_linkDto> milestoneLinks { get; set; } = new Collection<tbl_milestone_linkDto>();
+
+
     }
 }
