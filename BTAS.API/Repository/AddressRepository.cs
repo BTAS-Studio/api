@@ -28,23 +28,36 @@ namespace BTAS.API.Repository
         {
             try
             {
-
-                tbl_address result = _mapper.Map<tbl_addressDto, tbl_address>(entity);
-                //Duplication check
-                var duplicateAddress = await _context.tbl_addresses.FirstOrDefaultAsync(
-                    x => (x.tbl_address_address1 == result.tbl_address_address1 && x.tbl_address_postcode == result.tbl_address_postcode));
-                if (duplicateAddress != null)
+                //ClientHeaderCode is mandatory
+                if (entity.ClientHeaderCode == null)
                 {
                     return new ResponseDto
                     {
                         IsSuccess = false,
-                        ReferenceNumber = duplicateAddress.tbl_address_postcode,
-                        DisplayMessage = "Address existed, address code:" + duplicateAddress.tbl_address_postcode
+                        DisplayMessage = "Fail to create Address. Client Header Code must be provided."
                     };
+                }
+                tbl_address result = _mapper.Map<tbl_addressDto, tbl_address>(entity);
+                //Duplication check
+                var duplicateAddresses = _context.tbl_addresses.OrderBy(p => p.tbl_address_address1).AsNoTracking().Where(
+                    x => x.tbl_address_address1 == result.tbl_address_address1 && x.tbl_address_postcode == result.tbl_address_postcode);
+                if (duplicateAddresses != null)
+                {
+                    var duplicateAddress = await duplicateAddresses.SingleOrDefaultAsync(p => p.ClientHeaderCode == result.ClientHeaderCode);
+                    if (duplicateAddress != null)
+                    {
+                        return new ResponseDto
+                        {
+                            IsSuccess = true,
+                            ReferenceNumber = duplicateAddress.tbl_address_code,
+                            DisplayMessage = "Address existed, address code:" + duplicateAddress.tbl_address_code
+                        };
+                    }
+                    //else create a new one
                 }
 
                 string referenceNumber = await GetNextId();
-                entity.tbl_address_code = referenceNumber;
+                result.tbl_address_code = referenceNumber;
                 await _context.tbl_addresses.AddAsync(result);
                 await _context.SaveChangesAsync();
                 return new ResponseDto
@@ -114,10 +127,7 @@ namespace BTAS.API.Repository
         {
             IEnumerable<tbl_address> _list = await _context.tbl_addresses
                 .OrderByDescending(p => p.idtbl_address)
-                .Include(p => p.billingClients)
-                .Include(p => p.deliveryClients)
-                .Include(p => p.pickupClients)
-                .Include(p => p.contactDetails)
+                //.Include(p => p.contactDetails)
                 .ToListAsync();
             return _mapper.Map<List<tbl_addressDto>>(_list);
         }
@@ -136,10 +146,7 @@ namespace BTAS.API.Repository
                 if (includeChild)
                 {
                     result = await _context.tbl_addresses
-                        .Include(p => p.billingClients)
-                        .Include(p => p.deliveryClients)
-                        .Include(p => p.pickupClients)
-                        .Include(p => p.contactDetails)
+                        //.Include(p => p.contactDetails)
                         .FirstOrDefaultAsync(v => v.tbl_address_code == referenceNumber);
                 }
                 else

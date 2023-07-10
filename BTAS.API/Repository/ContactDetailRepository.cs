@@ -115,24 +115,7 @@ namespace BTAS.API.Repository
                             };
                         }
                     }
-                    if (!String.IsNullOrEmpty(result.AddressCode))
-                    {
-                        var parent = await _context.tbl_addresses
-                            .FirstOrDefaultAsync(p => p.tbl_address_code == result.AddressCode);
-                        if(parent != null)
-                        {
-                            result.tbl_address_id = parent.idtbl_address;
-                        }
-                        else
-                        {
-                            return new ResponseDto
-                            {
-                                Result = entity,
-                                DisplayMessage = "Unable to link to Address. Provided Contact Detail reference was not found.",
-                                IsSuccess = false
-                            };
-                        }
-                    }
+
                     await _context.tbl_client_contact_details.AddAsync(result);
                     await _context.SaveChangesAsync();
                 }
@@ -195,23 +178,7 @@ namespace BTAS.API.Repository
                             };
                         }
                     }
-                    if (!String.IsNullOrEmpty(entity.AddressCode))
-                    {
-                        var parent = await _context.tbl_addresses.AsNoTracking()
-                            .SingleOrDefaultAsync(p => p.tbl_address_code == entity.AddressCode);
-                        if (parent != null)
-                        {
-                            result.tbl_address_id = parent.idtbl_address;
-                        }
-                        else
-                        {
-                            return new ResponseDto
-                            {
-                                DisplayMessage = "Unable to link to Address. Provided Contact Detail reference was not found.",
-                                IsSuccess = false
-                            };
-                        }
-                    }
+
                     _context.ChangeTracker.Clear();
                     _context.tbl_client_contact_details.Update(result);
                     await _context.SaveChangesAsync();

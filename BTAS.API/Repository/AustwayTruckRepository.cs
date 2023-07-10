@@ -25,7 +25,7 @@ namespace BTAS.API.Repository
             _mapper = mapper;
             this.repo = repo;
         }
-
+        /*
         public async Task<CreateLabelResponse> CreateLabelAsync(List<LabelItem> items, tbl_client_headerDto recipient, tbl_client_headerDto shipper = null)
         {
             try
@@ -83,5 +83,7 @@ namespace BTAS.API.Repository
             }
 
         }
+    
+    */
     }
 }

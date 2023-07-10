@@ -28,14 +28,17 @@ namespace BTAS.API.Areas.Waybill.Controllers
         private readonly ItemSkuRepository _skuRepository;
         //private ClientHeaderRepository _addressRepository;
         private readonly IAuthenticationRepository _authRepo;
+        private readonly IncotermRepository _incotermRepository;
         
-        public ShipmentController(ShipmentRepository repository, ReceptacleRepository receptacleRepository, ApgRepository apg, ItemSkuRepository sku, IAuthenticationRepository authRepo) : base(repository)
+        public ShipmentController(ShipmentRepository repository, ReceptacleRepository receptacleRepository, ApgRepository apg, ItemSkuRepository sku, 
+            IAuthenticationRepository authRepo, IncotermRepository incotermRepository) : base(repository)
         {
             _repository = repository;
             _receptacleRepository = receptacleRepository;
             _apgRepository = apg;
             _skuRepository = sku;
             _authRepo = authRepo;
+            _incotermRepository = incotermRepository;
         }
 
         [HttpGet("getfiltered")]
@@ -147,13 +150,15 @@ namespace BTAS.API.Areas.Waybill.Controllers
                         }
 
                         totalVolume = (totalLength / 100) * (totalWidth / 100) * (totalHeight / 100);
-
+                        var incotermRsp = await _incotermRepository.GetByReference(request.IncotermCode);
                         CreateShippingRequest createshippingrequest = new CreateShippingRequest()
                         {
                             referenceNo = result.ReferenceNumber,
                             trackingNo = "",
                             serviceCode = request.tbl_shipment_serviceCode,
-                            incoterm = request.tbl_shipment_incoterm,
+                            //Edited by HS on 29/06/2023
+                            //incoterm = request.tbl_shipment_incoterm,
+                            incoterm = incotermRsp.ReferenceNumber,
                             description = request.tbl_shipment_description,
                             nativeDescription = request.tbl_shipment_nativeDescription,
                             weight = (decimal)totalWeight,

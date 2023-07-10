@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using BTAS.Data.Models;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
@@ -13,9 +15,18 @@ namespace BTAS.API.Dto
         [StringLength(50)]
         [JsonProperty("Code")]
         public string tbl_address_code { get; set; }
-        [StringLength(50)]
-        [JsonProperty("Type")]
-        public string tbl_address_type { get; set; }
+        //[StringLength(50)]
+        //[JsonProperty("Type")]
+        //public string tbl_address_type { get; set; }
+
+        [JsonProperty("IsLegalEntity")]
+        public bool? tbl_address_isLegalEntity { get; set; }
+        [JsonProperty("IsPickup")]
+        public bool? tbl_address_isPickup { get; set; }
+        [JsonProperty("IsDelivery")]
+        public bool? tbl_address_isDelivery { get; set; }
+        [JsonProperty("IsBilling")]
+        public bool? tbl_address_isBilling { get; set; }
         [StringLength(150)]
         [JsonProperty("Address1")]
         public string tbl_address_address1 { get; set; }
@@ -37,9 +48,33 @@ namespace BTAS.API.Dto
         [StringLength(50)]
         [JsonProperty("Country")]
         public string tbl_address_country { get; set; }
-        public virtual ICollection<tbl_client_headerDto> billingClients { get; set; } = new Collection<tbl_client_headerDto>();
-        public virtual ICollection<tbl_client_headerDto> deliveryClients { get; set; } = new Collection<tbl_client_headerDto>();
-        public virtual ICollection<tbl_client_headerDto> pickupClients { get; set; } = new Collection<tbl_client_headerDto>();
+        [JsonProperty("TailLift")]
+        public bool? tbl_address_tailLift { get; set; }
+        [JsonProperty("ForkLift")]
+        public bool? tbl_address_forkLift { get; set; }
+        [JsonProperty("CustomerUnloading")]
+        public bool? tbl_address_customerUnloading { get; set; }
+        [JsonProperty("HandUnloading")]
+        public bool? tbl_address_handUnloading { get; set; }
+        [JsonProperty("Crane")]
+        public bool? tbl_address_crane { get; set; }
+        [JsonProperty("Commercial")]
+        public bool? tbl_address_commercial { get; set; }
+        [JsonProperty("Description")]
+        public string tbl_address_description { get; set; }
+        [JsonProperty("StartTime")]
+        public TimeOnly? tbl_address_startTime { get; set; }
+        [JsonProperty("EndTime")]
+        public TimeOnly? tbl_address_endTime { get; set; }
+        [JsonProperty("ClientHeaderId")]
+        public int? tbl_client_header_id { get; set; }
+        [StringLength(50)]
+        [JsonProperty("ClientHeaderCode")]
+        public string ClientHeaderCode { get; set; }
+        public virtual tbl_client_header clientHeader { get; set; }
+
+        public virtual ICollection<tbl_houseDto> deliveryAddressHouses { get; set; } = new Collection<tbl_houseDto>();
+        public virtual ICollection<tbl_houseDto> pickupAddressHouses{ get; set; } = new Collection<tbl_houseDto>();
         public virtual ICollection<tbl_client_contact_detailDto> contactDetails { get; set; } = new Collection<tbl_client_contact_detailDto>();
     }
 }

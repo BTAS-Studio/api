@@ -15,6 +15,9 @@ namespace BTAS.API.Dto
         [JsonProperty("Code")]
         public string tbl_note_category_code { get; set; }
 
+        [JsonProperty("Status")]
+        public bool? tbl_note_category_status { get; set; }
+
         [StringLength(50)]
         [JsonProperty("Name")]
         public string tbl_note_category_name { get; set; }

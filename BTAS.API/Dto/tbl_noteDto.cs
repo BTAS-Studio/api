@@ -17,7 +17,6 @@ namespace BTAS.API.Dto
         public string tbl_note_code { get; set; }
 
         [JsonProperty("Status")]
-        [Required]
         public bool? tbl_note_status { get; set; }
 
         [StringLength(50)]

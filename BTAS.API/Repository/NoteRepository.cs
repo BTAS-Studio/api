@@ -230,18 +230,25 @@ namespace BTAS.API.Repository
 
         public async Task<tbl_noteDto> GetByIdAsync(int id)
         {
-            var result = await _context.tbl_notes.FirstOrDefaultAsync(x => x.idtbl_note == id);
+            var result = await _context.tbl_notes.SingleOrDefaultAsync(x => x.idtbl_note == id);
             return _mapper.Map<tbl_noteDto>(result);
         }
 
-        public async Task<ResponseDto> GetByReference(string referenceNumber)
+        public async Task<ResponseDto> GetByReference(string referenceNumber, bool includeChild)
         {
             try
             {
                 tbl_note result = new();
-
-                result = await _context.tbl_notes.FirstOrDefaultAsync(v => v.tbl_note_code == referenceNumber);
-
+                if (includeChild)
+                {
+                    result = await _context.tbl_notes.Include(p => p.documents).SingleOrDefaultAsync(p => p.tbl_note_code == referenceNumber);
+       
+                }
+                else
+                {
+                    result = await _context.tbl_notes.SingleOrDefaultAsync(v => v.tbl_note_code == referenceNumber);
+                }
+                
                 return new ResponseDto
                 {
                     IsSuccess = true,

@@ -257,6 +257,9 @@ namespace BTAS.API.Repository
                         .Include(c => c.receptacles)
                         .Include(c => c.consignee)
                         .Include(c => c.consignor)
+                        .Include(c => c.notes)
+                        .Include(c => c.documents)
+                        .Include(c => c.milestoneLinks)
                         .FirstOrDefaultAsync(x => x.tbl_house_code == referenceNumber);
                 }
                 else
@@ -507,13 +510,13 @@ namespace BTAS.API.Repository
                         }
                     }
 
-                    if (!string.IsNullOrEmpty(entity.IncotermsCode))
+                    if (!string.IsNullOrEmpty(entity.IncotermCode))
                     {
                         var incoterm = await _context.tbl_incoterms
-                            .FirstOrDefaultAsync(p => p.tbl_incoterm_code == entity.IncotermsCode);
+                            .FirstOrDefaultAsync(p => p.tbl_incoterm_code == entity.IncotermCode);
                         if (incoterm != null)
                         {
-                            result.tbl_incoterms_id = incoterm.idtbl_incoterm;
+                            result.tbl_incoterm_id = incoterm.idtbl_incoterm;
                         }
                         else
                         {
@@ -672,13 +675,13 @@ namespace BTAS.API.Repository
                         }
                     }
 
-                    if (!string.IsNullOrEmpty(entity.IncotermsCode))
+                    if (!string.IsNullOrEmpty(entity.IncotermCode))
                     {
                         var incoterm = await _context.tbl_incoterms
-                            .SingleOrDefaultAsync(p => p.tbl_incoterm_code == entity.IncotermsCode);
+                            .SingleOrDefaultAsync(p => p.tbl_incoterm_code == entity.IncotermCode);
                         if (incoterm != null)
                         {
-                            result.tbl_incoterms_id = incoterm.idtbl_incoterm;
+                            result.tbl_incoterm_id = incoterm.idtbl_incoterm;
                         }
                         else
                         {

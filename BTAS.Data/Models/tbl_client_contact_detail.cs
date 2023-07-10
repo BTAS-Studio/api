@@ -9,12 +9,15 @@ namespace BTAS.Data.Models
     {
         public tbl_client_contact_detail()
         {
+            pickupHouses = new HashSet<tbl_house>();
+            deliveryHouses = new HashSet<tbl_house>();
             contactGroups = new HashSet<tbl_client_contact_group>();
         }
 
         public int idtbl_client_contact_detail { get; set; }
         public string tbl_client_contact_details_code { get; set; }
         public bool? tbl_client_contact_details_isActive { get; set; }
+        //this type is different from client header type
         public string tbl_client_contact_details_type { get; set; }
         public string tbl_client_contact_details_companyName { get; set; }
         public string tbl_client_contact_details_contactName { get; set; }
@@ -25,10 +28,12 @@ namespace BTAS.Data.Models
         public string ClientHeaderCode { get; set; }
         public virtual tbl_client_header clientHeader { get; set; }
 
-        public int? tbl_address_id { get; set; }
-        public string AddressCode { get; set; }
+        //public int? tbl_address_id { get; set; }
+        //public string AddressCode { get; set; }
         public virtual tbl_address address { get; set; }
 
+        public virtual ICollection<tbl_house> pickupHouses { get; set; }
+        public virtual ICollection<tbl_house> deliveryHouses { get; set; }
         public virtual ICollection<tbl_client_contact_group> contactGroups { get; set; }
     }
 }

@@ -81,13 +81,7 @@ namespace BTAS.API.Dto
 		public virtual tbl_client_headerDto clientHeader { get; set; }
         [JsonProperty("AddressId")]
         [Description("Set Client Address Id to link/relate this client")]
-        public int? tbl_address_id { get; set; }
-        [StringLength(50)]
-        [JsonProperty("AddressCode")]
-        [Description("A reference to link this contact to its client")]
-        public string AddressCode { get; set; }
-        [JsonProperty("Address")]
-        [Description("Address linked to this contact")]
+        //one to one relationship
         public virtual tbl_addressDto address{ get; set; }
         public virtual ICollection<tbl_client_contact_groupDto> contactGroups { get; set; } = new Collection<tbl_client_contact_groupDto>();
 	}

@@ -16,7 +16,7 @@ using Wkhtmltopdf.NetCore;
 
 namespace BTAS.API.Repository
 {
-    public class AustwayLabelRepository : IAustwayLabelRepository
+    public class AustwayLabelRepository //: IAustwayLabelRepository
     {
         private IConverter _converter;
 
@@ -24,7 +24,7 @@ namespace BTAS.API.Repository
         {
             _converter = converter;
         }
-
+        /*
         public async Task<CreateLabelResponse> GenerateLabelAsync(string carrier, List<LabelItem> obj, tbl_client_headerDto recipient, tbl_client_headerDto shipper = null)
         {
             
@@ -197,6 +197,7 @@ or incendiary devices. A false declaration is a criminal offence.
             }
         }
 
+        */
         private string Barcode39(string barcode)
         {
             string result;

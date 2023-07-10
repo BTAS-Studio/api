@@ -48,7 +48,9 @@ namespace BTAS.API
 
             services.AddDbContext<MainDbContext>(options =>
             {
-                options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+                //Edited by HS on 28/06/2023
+                //options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+                options.UseLazyLoadingProxies().UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
             });
 
             services.AddSwaggerGenNewtonsoftSupport();
@@ -82,7 +84,10 @@ namespace BTAS.API
             services.AddScoped<IRepository<tbl_milestone_linkDto>, MilestoneLinkRepository>();
             services.AddScoped<IRepository<tbl_documentDto>, DocumentRepository>();
 
-            services.AddScoped<IAustwayLabelRepository, AustwayLabelRepository>();
+
+            //Edited by HS on 29/06/2023 
+            //just to avoid compiling error, when AuswayLableRepository is remodified, please make it back
+            //services.AddScoped<IAustwayLabelRepository, AustwayLabelRepository>();
 
             services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
 

@@ -15,6 +15,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 
 namespace BTAS.API.Repository
 {
@@ -23,13 +24,15 @@ namespace BTAS.API.Repository
         private readonly MainDbContext _context;
         private IMapper _mapper;
         private ContactDetailRepository _contactDetailsRepo;
+        private AddressRepository _addressRepository;
         private int count;
 
-        public ClientHeaderRepository(MainDbContext context, IMapper mapper, ContactDetailRepository contactDetailsRepo)
+        public ClientHeaderRepository(MainDbContext context, IMapper mapper, ContactDetailRepository contactDetailsRepo, AddressRepository addressRepository)
         {
             _context = context;
             _mapper = mapper;
             _contactDetailsRepo = contactDetailsRepo;
+            _addressRepository = addressRepository;
             count = 1;
         }
         
@@ -48,9 +51,7 @@ namespace BTAS.API.Repository
         {
             IEnumerable<tbl_client_header> _list = await _context.tbl_client_headers
                 .OrderByDescending(p => p.idtbl_client_header)
-                .Include(p => p.billingAddress)
-                .Include(p => p.deliveryAddress)
-                .Include(p => p.pickupAddress)
+                .Include(p => p.legalEntityAddress)
                 .Include(p => p.contactDetails)
                 .Include(p => p.notes)
                 .AsNoTracking().ToListAsync();
@@ -85,7 +86,7 @@ namespace BTAS.API.Repository
         public async Task<tbl_client_headerDto> GetByIdAsync(int id)
         {
 
-            tbl_client_header result = await _context.tbl_client_headers.AsNoTracking().FirstOrDefaultAsync(x => x.idtbl_client_header == id);
+            tbl_client_header result = await _context.tbl_client_headers.AsNoTracking().SingleOrDefaultAsync(x => x.idtbl_client_header == id);
             return _mapper.Map<tbl_client_headerDto>(result);
 
         }
@@ -100,9 +101,7 @@ namespace BTAS.API.Repository
             try
             {
                 var qList = _context.tbl_client_headers
-                    .Include(p => p.billingAddress)
-                    .Include(p => p.deliveryAddress)
-                    .Include(p => p.pickupAddress)
+                    .Include(p => p.legalEntityAddress)
                     .AsNoTracking()
                     .OrderByDescending(p => p.idtbl_client_header)
                     .AsQueryable();
@@ -132,32 +131,9 @@ namespace BTAS.API.Repository
                                 GetPropertyInfo<tbl_client_headerDto, tbl_client_header>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
                         }
 
-                        else if (filter.tableName.ToUpper() == "BILLINGADDRESS")
+                        else if (filter.tableName.ToUpper() == "LEGALENTITYADDRESS")
                         {
-                            filter.tableName = "billingAddress";
-                            parent = true;
-                            bool containsDateTime = false;
-                            if (filter.condition.ToUpper() == "CONTAINS")
-                            {
-                                originalValue = jsonObj[filter.fieldName];
-                            }
-                            (propertyInfo, filter.fieldValue, containsDateTime) = GetParentPropertyInfo<tbl_client_header, tbl_address, tbl_addressDto>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
-                        }
-                        else if (filter.tableName.ToUpper() == "DELIVERTYADDRESS")
-                        {
-                            filter.tableName = "deliveryAddress";
-                            parent = true;
-                            bool containsDateTime = false;
-                            if (filter.condition.ToUpper() == "CONTAINS")
-                            {
-                                originalValue = jsonObj[filter.fieldName];
-                            }
-
-                            (propertyInfo, filter.fieldValue, containsDateTime) = GetParentPropertyInfo<tbl_client_header, tbl_address, tbl_addressDto>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
-                        }
-                        else if (filter.tableName.ToUpper() == "PICKUPADDRESS")
-                        {
-                            filter.tableName = "pickupAddress";
+                            filter.tableName = "legalEntityAddress";
                             parent = true;
                             bool containsDateTime = false;
                             if (filter.condition.ToUpper() == "CONTAINS")
@@ -232,10 +208,68 @@ namespace BTAS.API.Repository
         {
             try
             {
+                if (entity.addresses == null)
+                {
+                    return new ResponseDto
+                    {
+                        IsSuccess = false,
+                        DisplayMessage = "Address is needed."
+                    };
+                }
                 entity.tbl_client_header_createdDate = DateTime.Now;
                 entity.tbl_client_header_active = true;
                 tbl_client_header result = _mapper.Map<tbl_client_headerDto, tbl_client_header>(entity);
+                var reqLegalEntityAddr = result.legalEntityAddress;
+                //Added by HS on 26/06/2023
+                ResponseDto addressResult = new();
+
+                //Edited by HS on 30/06/2023
+                //client header duplication check
+                //duplicate if a same company name with the same address(use address code to represent)
+                var duplicateClients = await _context.tbl_client_headers.OrderBy(p => p.tbl_client_header_companyName)
+                    .Include(p => p.legalEntityAddress)
+                    .AsNoTracking().Where(
+                    p => p.tbl_client_header_companyName == result.tbl_client_header_companyName)
+                    .ToListAsync();
+
+
+                //if duplicate companyNames, check their legal entity
+                if (duplicateClients != null)
+                {
+                    foreach (var duplicateClient in duplicateClients)
+                    {
+                        var dupLegalEntityAddress = duplicateClient.legalEntityAddress;
+                        if (dupLegalEntityAddress != null)
+                        {
+                            if (dupLegalEntityAddress.tbl_address_address1 == reqLegalEntityAddr.tbl_address_address1 
+                                && dupLegalEntityAddress.tbl_address_postcode == reqLegalEntityAddr.tbl_address_postcode)
+                            {
+                                //duplicate client header
+                                return new ResponseDto
+                                {
+                                    IsSuccess = true,
+                                    ReferenceNumber = duplicateClient.tbl_client_header_code,
+                                    DisplayMessage = "Client Header existed, client header code:" + duplicateClient.tbl_client_header_code
+                                };
+                            }
+                            //else continue checking other duplicate clients' legal entity adddresses 
+                        }
+                    }
+                    //if all the duplicate clinets' legal entity addresses don't match the request's legal entity address
+                    //=> a new client header with the existing company name, create a new client header
+
+                }
+
                 //Added by HS on 22/03/2023
+                //else it is a new client, create one, and legalEntity address must be provided.
+                if (result.legalEntityAddress == null)
+                {
+                    return new ResponseDto
+                    {
+                        IsSuccess = false,
+                        DisplayMessage = "Legal Entity Address must be provided for a new Client Header."
+                    };
+                }
                 result.tbl_client_header_code = await GetCHCode(result.tbl_client_header_companyName);
 
                 if (result.idtbl_client_header > 0)
@@ -249,63 +283,6 @@ namespace BTAS.API.Repository
                 }
                 else
                 {
-                    if (!String.IsNullOrEmpty(result.BillingAddressCode))
-                    {
-                        var address = await _context.tbl_addresses
-                            .AsNoTracking()
-                            .FirstOrDefaultAsync(x => x.tbl_address_code == result.BillingAddressCode);
-                        if (address != null)
-                        {
-                            result.tbl_billing_address_id = address.idtbl_address;
-                        }
-                        else
-                        {
-                            return new ResponseDto
-                            {
-                                Result = entity,
-                                DisplayMessage = "Unable to link to Address. Provided Client Header code was not found.",
-                                IsSuccess = false
-                            };
-                        }
-                    }
-                    if (!String.IsNullOrEmpty(result.DeliveryAddressCode))
-                    {
-                        var address = await _context.tbl_addresses
-                            .AsNoTracking()
-                            .FirstOrDefaultAsync(x => x.tbl_address_code == result.DeliveryAddressCode);
-                        if (address != null)
-                        {
-                            result.tbl_delivery_address_id = address.idtbl_address;
-                        }
-                        else
-                        {
-                            return new ResponseDto
-                            {
-                                Result = entity,
-                                DisplayMessage = "Unable to link to Address. Provided Client Header code was not found.",
-                                IsSuccess = false
-                            };
-                        }
-                    }
-                    if (!String.IsNullOrEmpty(result.PickupAddressCode))
-                    {
-                        var address = await _context.tbl_addresses
-                            .AsNoTracking()
-                            .FirstOrDefaultAsync(x => x.tbl_address_code == result.PickupAddressCode);
-                        if (address != null)
-                        {
-                            result.tbl_pickup_address_id = address.idtbl_address;
-                        }
-                        else
-                        {
-                            return new ResponseDto
-                            {
-                                Result = entity,
-                                DisplayMessage = "Unable to link to Address. Provided Client Header code was not found.",
-                                IsSuccess = false
-                            };
-                        }
-                    }
                     //Added by HS on 01/02/2023
                     if (result.contactDetails != null)
                     {
@@ -362,62 +339,6 @@ namespace BTAS.API.Repository
                 if (result != null)
                 {
                     _mapper.Map(entity, result);
-
-                    if (!String.IsNullOrEmpty(entity.BillingAddressCode))
-                    {
-                        var address = await _context.tbl_addresses
-                            .AsNoTracking()
-                            .SingleOrDefaultAsync(x => x.tbl_address_code == entity.BillingAddressCode);
-                        if (address != null)
-                        {
-                            result.tbl_billing_address_id = address.idtbl_address;
-                        }
-                        else
-                        {
-                            return new ResponseDto
-                            {
-                                DisplayMessage = "Unable to link to Address. Provided Address code was not found.",
-                                IsSuccess = false
-                            };
-                        }
-                    }
-                    if (!String.IsNullOrEmpty(entity.DeliveryAddressCode))
-                    {
-                        var address = await _context.tbl_addresses
-                            .AsNoTracking()
-                            .SingleOrDefaultAsync(x => x.tbl_address_code == entity.DeliveryAddressCode);
-                        if (address != null)
-                        {
-                            result.tbl_delivery_address_id = address.idtbl_address;
-                        }
-                        else
-                        {
-                            return new ResponseDto
-                            {
-                                DisplayMessage = "Unable to link to Address. Provided Address code was not found.",
-                                IsSuccess = false
-                            };
-                        }
-                    }
-                    if (!String.IsNullOrEmpty(entity.PickupAddressCode))
-                    {
-                        var address = await _context.tbl_addresses
-                            .AsNoTracking()
-                            .SingleOrDefaultAsync(x => x.tbl_address_code == entity.PickupAddressCode);
-                        if (address != null)
-                        {
-                            result.tbl_pickup_address_id = address.idtbl_address;
-                        }
-                        else
-                        {
-                            return new ResponseDto
-                            {
-                                Result = entity,
-                                DisplayMessage = "Unable to link to Address. Provided Address code was not found.",
-                                IsSuccess = false
-                            };
-                        }
-                    }
                     _context.ChangeTracker.Clear();
                     _context.tbl_client_headers.Update(result);
                     await _context.SaveChangesAsync();
@@ -490,9 +411,7 @@ namespace BTAS.API.Repository
                 if (includeChild)
                 {
                     result = await _context.tbl_client_headers
-                        .Include(p => p.billingAddress)
-                        .Include(p => p.deliveryAddress)
-                        .Include(p => p.pickupAddress)
+                        .Include(p => p.addresses)
                         .Include(p => p.contactDetails)
                         .Include(p => p.notes)
                         .FirstOrDefaultAsync(p => p.tbl_client_header_code == reference);
@@ -663,6 +582,18 @@ namespace BTAS.API.Repository
                 return false;
             return true;
         }
+
+        //private async Task<bool> DuplicationCheck(tbl_client_header result, ResponseDto addressResult)
+        //{
+        //    //duplicate if a same company name with the same address(use address code to represent)
+        //    var duplicate = await _context.tbl_client_headers
+        //        .OrderBy(p => p.tbl_client_header_companyName)
+        //        .FirstOrDefaultAsync(
+        //          p => (p.tbl_client_header_companyName == result.tbl_client_header_companyName 
+        //         ));
+        //    if (duplicate == null) return false;
+
+        //}
 
     }
 }

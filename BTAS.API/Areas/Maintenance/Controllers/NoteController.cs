@@ -118,13 +118,13 @@ namespace BTAS.API.Areas.Maintenance.Controllers
 
         [HttpGet]
         [Route("GetByReference")]
-        public async Task<IActionResult> GetByReferenceAsync(string referenceNumber, bool includeChild)
+        public async Task<IActionResult> GetByReferenceAsync(string referenceNumber, bool includeChild = false)
         {
             ResponseDto result = new();
             try
             {
 
-                result = await _repository.GetByReference(referenceNumber);
+                result = await _repository.GetByReference(referenceNumber, includeChild);
                 if (!result.IsSuccess)
                 {
                     return new JsonResult(new GeneralResponse

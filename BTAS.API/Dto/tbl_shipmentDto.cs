@@ -108,11 +108,11 @@ namespace BTAS.API.Dto
         [Description("Does the carrier have authority to leave in safe place?")]
         [JsonProperty("HasAuthorityToLeave")]
         public bool? tbl_shipment_authorityToLeave { get; set; } = false;
-        [StringLength(50)]
-        //[Optional]
-        [Description("Refer to internatioanlly recognised incoterms.")]
-        [JsonProperty("ShipmentIncoterm")]
-        public string tbl_shipment_incoterm { get; set; }
+        //[StringLength(50)]
+        ////[Optional]
+        //[Description("Refer to internatioanlly recognised incoterms.")]
+        //[JsonProperty("ShipmentIncoterm")]
+        //public string tbl_shipment_incoterm { get; set; }
         [StringLength(20000)]
         [Description("Shipment Items")]
         [JsonProperty("ShipmentItems")]
@@ -395,11 +395,11 @@ namespace BTAS.API.Dto
         public string ReceptacleCode { get; set; }
         [JsonProperty("Receptacle")]
         public virtual tbl_receptacleDto receptacle { get; set; }
-        [JsonProperty("IncotermsId")]
-        public int? tbl_incoterms_id { get; set; }
+        [JsonProperty("IncotermId")]
+        public int? tbl_incoterm_id { get; set; }
         [StringLength(30)]
-        [JsonProperty("IncotermsCode")]
-        public string IncotermsCode { get; set; }
+        [JsonProperty("IncotermCode")]
+        public string IncotermCode { get; set; }
         public virtual tbl_incotermDto incoterm { get; set; }
 
         public virtual ICollection<tbl_documentDto> documents { get; set; } = new Collection<tbl_documentDto>();

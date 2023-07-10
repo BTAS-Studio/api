@@ -15,6 +15,7 @@ namespace BTAS.Data.Models
         }
         public int idtbl_note_category { get; set; }
         public string tbl_note_category_code { get; set; }
+        public bool? tbl_note_category_status { get; set; }
         public string tbl_note_category_name { get; set; }
         public string tbl_note_category_color { get; set; }
         public string tbl_note_category_value { get; set; }

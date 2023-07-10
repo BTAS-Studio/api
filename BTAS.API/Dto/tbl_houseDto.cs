@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using BTAS.Data.Models;
 using Newtonsoft.Json;
 
 namespace BTAS.API.Dto
@@ -32,10 +33,10 @@ namespace BTAS.API.Dto
         [JsonProperty("DeliveryAddressCode")]
         [Description("Delivery address number")]
         public string tbl_house_delivery { get; set; }
-        [StringLength(30)]
-        [JsonProperty("HouseIncoterm")]
-        [Description("House Incoterm code")]
-        public string tbl_house_incotermCode { get; set; }
+        //[StringLength(30)]
+        //[JsonProperty("HouseIncoterm")]
+        //[Description("House Incoterm code")]
+        //public string tbl_house_incotermCode { get; set; }
         [StringLength(50)]
         [JsonProperty("AirJobReference")]
         [Description("HOUSE job reference number")]
@@ -190,17 +191,42 @@ namespace BTAS.API.Dto
 
         [JsonProperty("IncotermsId")]
         [DoNotInclude]
-        public int? tbl_incoterms_id { get; set; }
-        [StringLength(30)]
+        public int? tbl_incoterm_id { get; set; }
+        [StringLength(50)]
         [JsonProperty("IncotermsCode")]
         [Description("Linked incoterms code")]
-        public string IncotermsCode { get; set; }
+        public string IncotermCode { get; set; }
         [DoNotInclude]
         public virtual tbl_incotermDto incoterm { get; set; }
 
-        [JsonProperty("Documents")]
-        [Optional]
-        [Description("Json array of linked documents")]
+        [JsonProperty("PickupClientId")]
+        public int? tbl_pickupClient_id { get; set; }
+        [JsonProperty("PickupClientCode")]
+        [StringLength(50)]
+        public string PickupClientCode { get; set; }
+        public virtual tbl_client_headerDto pickupClient { get; set; }
+        
+        [JsonProperty("DeliveryClientId")]
+        public int? tbl_deliveryClient_id { get; set; }
+        [JsonProperty("DeliveryClientCode")]
+        [StringLength(50)]
+        public string DeliveryClientCode { get; set; }
+        public virtual tbl_client_headerDto deliveryClient { get; set; }
+
+        [JsonProperty("DeliveryAddressId")]
+        public int? tbl_deliveryAddress_id { get; set; }
+        [JsonProperty("DeliveryAddressCode")]
+        [StringLength(50)]
+        public string DeliveryAddressCode { get; set; }
+        public virtual tbl_addressDto deliveryAddress { get; set; }
+
+        [JsonProperty("PickupAddressId")]
+        public int? tbl_pickupAddress_id { get; set; }
+        [JsonProperty("PickupAddressCode")]
+        [StringLength(50)]
+        public string PickAddressCode { get; set; }
+        public virtual tbl_addressDto pickupAddress { get; set; }
+
         public virtual ICollection<tbl_documentDto> documents { get; set; } = new Collection<tbl_documentDto>();
         public virtual ICollection<tbl_house_itemDto> houseItems { get; set; } = new Collection<tbl_house_itemDto>();
         public virtual ICollection<tbl_receptacleDto> receptacles { get; set; } = new Collection<tbl_receptacleDto>();

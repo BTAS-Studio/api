@@ -55,6 +55,10 @@ namespace BTAS.Data.Models
         public string tbl_house_class { get; set; }
         public string tbl_house_currency { get; set; }
 
+        public int? tbl_incoterm_id { get; set; }
+        public string IncotermCode { get; set; }
+        public virtual tbl_incoterm incoterm { get; set; }
+
         public int? tbl_voyage_id { get; set; }
         public string VoyageCode { get; set; }
         public virtual tbl_voyage voyage { get; set; }
@@ -75,9 +79,13 @@ namespace BTAS.Data.Models
         public string ConsignorCode { get; set; }
         public virtual tbl_client_header consignor { get; set; }
 
-        public int? tbl_incoterms_id { get; set; }
-        public string IncotermsCode { get; set; }
-        public virtual tbl_incoterm incoterm { get; set; }
+        public int? tbl_pickupClient_id { get; set; }
+        public string PickupClientCode { get; set; }
+        public virtual tbl_client_contact_detail pickupClientDetail { get; set; }
+
+        public int? tbl_deliveryClient_id { get; set; }
+        public string DeliveryClientCode { get; set; }
+        public virtual tbl_client_contact_detail deliveryClientDetail { get; set; }
 
         public virtual ICollection<tbl_document> documents { get; set; }
         public virtual ICollection<tbl_house_item> houseItems { get; set; }

@@ -42,6 +42,10 @@ namespace BTAS.API.Repository
         {
             var result = await _context.tbl_shipments.OrderByDescending(s => s.idtbl_shipment)
                 .Include(s => s.shipmentItems)
+                .Include(p => p.notes)
+                .Include(p => p.documents)
+                .Include(p => p.incoterm)
+                .Include(p => p.milestoneLinks)
                 .ToListAsync();
             return _mapper.Map<IEnumerable<tbl_shipmentDto>>(result);
         }
@@ -155,7 +159,7 @@ namespace BTAS.API.Repository
         public async Task<tbl_shipmentDto> GetByIdAsync(int id)
         {
 
-            var result = await _context.tbl_shipments.FirstOrDefaultAsync(x => x.idtbl_shipment == id);
+            var result = await _context.tbl_shipments.SingleOrDefaultAsync(x => x.idtbl_shipment == id);
 
             return _mapper.Map<tbl_shipmentDto>(result);
 
@@ -170,12 +174,16 @@ namespace BTAS.API.Repository
                 {
                     result = await _context.tbl_shipments
                         .Include(c => c.shipmentItems)
-                        .FirstOrDefaultAsync(x => x.tbl_shipment_code == referenceNumber);
+                        .Include(p => p.notes)
+                        .Include(p => p.documents)
+                        .Include(p => p.incoterm)
+                        .Include(p => p.milestoneLinks)
+                        .SingleOrDefaultAsync(x => x.tbl_shipment_code == referenceNumber);
                 }
                 else
                 {
                     result = await _context.tbl_shipments
-                        .FirstOrDefaultAsync(x => x.tbl_shipment_code == referenceNumber);
+                        .SingleOrDefaultAsync(x => x.tbl_shipment_code == referenceNumber);
                 }
 
                 return new ResponseDto
@@ -350,10 +358,10 @@ namespace BTAS.API.Repository
                             };
                         }
                     }
-                    if (!String.IsNullOrEmpty(entity.IncotermsCode))
+                    if (!String.IsNullOrEmpty(entity.IncotermCode))
                     {
                         var parent = await _context.tbl_incoterms.AsNoTracking()
-                            .SingleOrDefaultAsync(p => p.tbl_incoterm_code == entity.IncotermsCode);
+                            .SingleOrDefaultAsync(p => p.tbl_incoterm_code == entity.IncotermCode);
                         if (parent != null)
                         {
                             result.tbl_incoterms_id = parent.idtbl_incoterm;
