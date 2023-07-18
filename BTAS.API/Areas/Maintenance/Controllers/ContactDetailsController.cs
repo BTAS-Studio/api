@@ -14,7 +14,7 @@ namespace BTAS.API.Areas.Maintenance.Controllers
 {
     [ApiController]
     [Area("Maintenance")]
-    [Route("api/contactdetails")]
+    [Route("api/contactdetail")]
     [Authorize]
     public class ContactDetailsController : GenericController<tbl_client_contact_detailDto>
     {

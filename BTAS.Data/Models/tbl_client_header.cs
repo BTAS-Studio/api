@@ -9,6 +9,7 @@ namespace BTAS.Data.Models
     {
         public tbl_client_header()
         {
+            addresses = new HashSet<tbl_address>();
             contactDetails = new HashSet<tbl_client_contact_detail>();
             consigneeHouses = new HashSet<tbl_house>();
             consignorHouses = new HashSet<tbl_house>();
@@ -41,13 +42,23 @@ namespace BTAS.Data.Models
         public string tbl_client_header_closestPort { get; set; }
         public string tbl_client_header_abn { get; set; }
 
-        public virtual tbl_address legalEntityAddress { get; set; }
+        //Added by HS on 10/07/2023 for legal entity address fields
+        public string tbl_client_header_address1 { get; set; }
+        public string tbl_client_header_address2 { get; set; }
+        public string tbl_client_header_suburb { get; set; }
+        public string tbl_client_header_city { get; set; }
+        public string tbl_client_header_state { get; set; }
+        public string tbl_client_header_postcode { get; set; }
+        public string tbl_client_header_country { get; set; }
+
+        public virtual ICollection<tbl_address> addresses { get; set; }
 
         public virtual ICollection<tbl_client_contact_detail> contactDetails { get; set; }
         public virtual ICollection<tbl_house> consigneeHouses { get; set; }
         public virtual ICollection<tbl_house> consignorHouses { get; set; }
         public virtual ICollection<tbl_house> pickupClientHouses { get; set; }
         public virtual ICollection<tbl_house> deliveryClientHouses { get; set; }
+
         public virtual ICollection<tbl_master> carrierMasters { get; set; }
         public virtual ICollection<tbl_master> creditorMasters { get; set; }
         public virtual ICollection<tbl_master> destinationClientMasters { get; set; }

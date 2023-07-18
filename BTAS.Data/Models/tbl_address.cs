@@ -8,18 +8,22 @@ namespace BTAS.Data.Models
 {
     public partial class tbl_address
     {
-        //public tbl_address() 
-        //{
-        //    pickupAddressHouses = new HashSet<tbl_house>();
-        //    deliveryAddressHouses = new HashSet<tbl_house>();
-        //}
+        public tbl_address() 
+        {
+            clientHeaders = new HashSet<tbl_client_header>();
+        }
         public int idtbl_address { get; set; }
         public string tbl_address_code { get; set; }
-        //public string tbl_address_type { get; set; }
-        public bool? tbl_address_isLegalEntity { get; set; }
+
         public bool? tbl_address_isPickup { get; set; }
         public bool? tbl_address_isDelivery { get; set; }
         public bool? tbl_address_isBilling { get; set; }
+
+        public string tbl_address_companyName { get; set; }
+        public string tbl_address_contactName { get; set; }
+        public string tbl_address_email { get; set; }
+        public string tbl_address_phone { get; set; }
+        public string tbl_address_abn { get; set; }
         public string tbl_address_address1 { get; set; }
         public string tbl_address_address2 { get; set; }
         public string tbl_address_suburb { get; set; }
@@ -37,17 +41,10 @@ namespace BTAS.Data.Models
         public TimeOnly? tbl_address_startTime { get; set; }
         public TimeOnly? tbl_address_endTime { get; set; }
 
-        public int? tbl_client_header_id { get; set; }
-        public string ClientHeaderCode { get; set; }
-        public virtual tbl_client_header clientHeader{ get; set;}
+        public virtual ICollection<tbl_client_header> clientHeaders{ get; set;}
 
-        public int? tbl_client_contact_detail_id { get; set; }
-        public string ClientContactDetailCode { get; set; }
-        public virtual tbl_client_contact_detail contactDetail { get; set; }
-        
-        //public virtual ICollection<tbl_house> pickupAddressHouses { get; set; }
-        //public virtual ICollection<tbl_house> deliveryAddressHouses { get; set; }
-
-        //public virtual ICollection<tbl_client_contact_detail> contactDetails { get; set; }
+        //public int? tbl_client_contact_detail_id { get; set; }
+        //public string ClientContactDetailCode { get; set; }
+        //public virtual tbl_client_contact_detail contactDetail { get; set; }
     }
 }

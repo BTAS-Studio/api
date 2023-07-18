@@ -80,9 +80,9 @@ namespace BTAS.API
                     .ForMember(dest => dest.tbl_consignee_id, opt => opt.Ignore())
                     .ForMember(dest => dest.tbl_consignor_id, opt => opt.Ignore())
                     .ForMember(dest => dest.tbl_pickupClient_id, opt => opt.Ignore())
-                    .ForMember(dest => dest.tbl_deliveryClient_id, opt => opt.Ignore())
-                    .ForMember(dest => dest.tbl_pickupAddress_id, opt => opt.Ignore())
-                    .ForMember(dest => dest.tbl_deliveryAddress_id, opt => opt.Ignore());
+                    .ForMember(dest => dest.tbl_deliveryClient_id, opt => opt.Ignore());
+                    //.ForMember(dest => dest.tbl_pickupAddress_id, opt => opt.Ignore())
+                    //.ForMember(dest => dest.tbl_deliveryAddress_id, opt => opt.Ignore());
                 config.CreateMap<tbl_house, tbl_houseDto>();
 
                 config.CreateMap<tbl_house_itemDto, tbl_house_item>()
@@ -106,7 +106,7 @@ namespace BTAS.API
                     .ForMember(dest => dest.tbl_shipment_status, opt => opt.Condition(src => src.tbl_shipment_status != null))
                     .ForMember(dest => dest.idtbl_shipment, opt => opt.Ignore())
                     .ForMember(dest => dest.tbl_receptacle_id, opt => opt.Ignore())
-                    .ForMember(dest => dest.tbl_incoterms_id, opt => opt.Ignore());
+                    .ForMember(dest => dest.tbl_incoterm_id, opt => opt.Ignore());
                 config.CreateMap<tbl_shipment, tbl_shipmentDto>();
 
                 config.CreateMap<tbl_shipment_itemDto, tbl_shipment_item>()
@@ -129,8 +129,7 @@ namespace BTAS.API
 
 
                 config.CreateMap<tbl_addressDto, tbl_address>()
-                    .ForMember(dest => dest.idtbl_address, opt => opt.Ignore())
-                    .ForMember(dest => dest.tbl_client_header_id, opt => opt.Ignore());
+                    .ForMember(dest => dest.idtbl_address, opt => opt.Ignore());
                 config.CreateMap<tbl_address, tbl_addressDto>();
 
                 config.CreateMap<tbl_client_headerDto, tbl_client_header>()
@@ -150,8 +149,7 @@ namespace BTAS.API
                    //.ForMember(dest => dest.idtbl_client_contact_detail, opt => opt.MapFrom(src => src.idtbl_client_contact_detail))
                    //.ForMember(dest => dest.contactGroups, opt => opt.MapFrom(src => src.contactGroups))
                    .ForMember(dest => dest.idtbl_client_contact_detail, opt => opt.Ignore())
-                   .ForMember(dest => dest.tbl_client_header_id, opt => opt.Ignore())
-                   .ForMember(dest => dest.tbl_address_id, opt => opt.Ignore());
+                   .ForMember(dest => dest.tbl_client_header_id, opt => opt.Ignore());
                 config.CreateMap<tbl_client_contact_detail, tbl_client_contact_detailDto>();
 
 

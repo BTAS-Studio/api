@@ -17,14 +17,16 @@ namespace BTAS.API.Dto
     public class tbl_shipmentDto
     {
         [JsonProperty("Id")]
-        [DoNotInclude]
+        [JsonIgnore]
         public int idtbl_shipment { get; set; }
-        [StringLength(30)]
+
+        [StringLength(50)]
         [Description("Shipment Unique reference, this is system generated on create. Only needed for update and get.")]
         //[Conditional]
         [JsonProperty("Code")]
         public string tbl_shipment_code { get; set; }
-        [StringLength(30)]
+
+        [StringLength(50)]
         //[Optional]
         [Description("Mark shipment as inactive, active or closed")]
         //Edited by HS on 27/01/2023
@@ -36,6 +38,7 @@ namespace BTAS.API.Dto
         [Description("Refer to provided batchId")]
         [JsonProperty("BatchCode")]
         public string tbl_shipment_batchCode { get; set; }
+
         //[StringLength(50)]
         ////[Required]
         //[Description("Refer to provided credentials")]
@@ -46,68 +49,82 @@ namespace BTAS.API.Dto
         [Description("Refer to provided credentials")]
         [JsonProperty("ShipperCode")]
         public string tbl_shipment_shipperCode { get; set; }
+
         [StringLength(50)]
         //[Conditional]
         [Description("Can be provided if shipperCode is not provided")]
         [JsonProperty("TrackingNumber")]
         public string tbl_shipment_trackingNo { get; set; }
+
         [StringLength(50)]
         [Description("")]
         [JsonProperty("ReferenceNumber")]
         public string tbl_shipment_referenceNo { get; set; }
+
         [StringLength(150)]
         //[Required]
         [Description("Shipment Description is required for international shipments")]
         [JsonProperty("Description")]
         public string tbl_shipment_description { get; set; }
+
         [StringLength(150)]
         //[Conditional]
         [Description("Required for shipments from CN, must be mandarin")]
         [JsonProperty("NativeDescription")]
         public string tbl_shipment_nativeDescription { get; set; }
+
         [StringLength(50)]
         //[Conditional]
         [Description("Particular delivery facilty information")]
         [JsonProperty("Facility")]
         public string tbl_shipment_facility { get; set; }
+
         [StringLength(150)]
         //[Optional]
         [Description("Carrier instructions, not seen by the reciever")]
         [JsonProperty("Instruction")]
         public string tbl_shipment_instruction { get; set; }
+
         [StringLength(3)]
         //[Conditional]
         [Description("Needed for international shipments, but recommended for all. Refer to Currency codes.")]
         [JsonProperty("InvoiceCurrency")]
         public string tbl_shipment_invoiceCurrency { get; set; }
+
         [JsonProperty("InvoiceValue")]
         //[Conditional]
         [Description("Needed for international shipments, but recommended for all.")]
         public decimal? tbl_shipment_invoiceValue { get; set; }
+
         [StringLength(45)]
         //[Conditional]
         [Description("Required by some carriers, but recommended for all.")]
         [JsonProperty("Phone")]
         public string tbl_shipment_phone { get; set; }
+
         [StringLength(45)]
         //[Conditional]
         [Description("PlatForm")]
         [JsonProperty("PlatForm")]
         public string tbl_shipment_platform { get; set; }
+
         [StringLength(45)]
         //[Required]
         [Description("Use to create labels on particular carriers.Please refer to Service Code detail for further information")]
         [RegularExpression("no.carrier|APG.EPARCEL.DOM.AU|FW.DOM.COURIER.AU|UBI.CN2UKE2E.ROM")]
         [JsonProperty("ServiceCode")]
         public string tbl_shipment_serviceCode { get; set; }
+
         [StringLength(45)]
         [Description("Service Option")]
         [JsonProperty("ServiceOption")]
         public string tbl_shipment_serviceOption { get; set; }
+
         //[Required]
         [Description("Does the carrier have authority to leave in safe place?")]
         [JsonProperty("HasAuthorityToLeave")]
         public bool? tbl_shipment_authorityToLeave { get; set; } = false;
+
         //[StringLength(50)]
         ////[Optional]
         //[Description("Refer to internatioanlly recognised incoterms.")]
@@ -117,29 +134,35 @@ namespace BTAS.API.Dto
         [Description("Shipment Items")]
         [JsonProperty("ShipmentItems")]
         public string tbl_shipment_shipmentItems { get; set; }
+
         [StringLength(45)]
         ////[Conditional]
         [Description("Provide if required by carrier.")]
         [JsonProperty("VendorId")]
         public string tbl_shipment_vendorId { get; set; }
+
         [JsonProperty("GstExemptionCode")]
         ////[Conditional]
         [Description("Provide if international shipment has any tax exemptions.")]
         public bool? tbl_shipment_gstExemptionCode { get; set; } = false;
+
         [StringLength(45)]
         //[Optional]
         [Description("Company registration number.")]
         [JsonProperty("ABNNumber")]
         public string tbl_shipment_abnNumber { get; set; }
+
         [StringLength(45)]
         //[Optional]
         [Description("Company Sort Code.")]
         [JsonProperty("SortCode")]
         public string tbl_shipment_sortCode { get; set; }
+
         //[Optional]
         [Description("Insurance amount for transit.")]
         [JsonProperty("TransitCoverAmount")]
         public decimal? tbl_shipment_coverAmount { get; set; }
+
         [StringLength(150)]
         [Description("Order Items")]
         [JsonProperty("OrderItems")]
@@ -387,17 +410,20 @@ namespace BTAS.API.Dto
 
         [Description("This is our system PK ref")]
         [JsonProperty("ReceptacleId")]
+        [JsonIgnore]
         public int? tbl_receptacle_id { get; set; }
-        [StringLength(30)]
+        [StringLength(50)]
         //[Optional]
         [Description("Receptacle Reference - Use this to link this Shipment/Lower to a particular receptacle")]
         [JsonProperty("ReceptacleCode")]
         public string ReceptacleCode { get; set; }
         [JsonProperty("Receptacle")]
         public virtual tbl_receptacleDto receptacle { get; set; }
+
         [JsonProperty("IncotermId")]
+        [JsonIgnore]
         public int? tbl_incoterm_id { get; set; }
-        [StringLength(30)]
+        [StringLength(50)]
         [JsonProperty("IncotermCode")]
         public string IncotermCode { get; set; }
         public virtual tbl_incotermDto incoterm { get; set; }

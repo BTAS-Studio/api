@@ -10,23 +10,33 @@ namespace BTAS.API.Dto
     public class tbl_addressDto
     {
         [JsonProperty("Id")]
-        [DoNotInclude]
+        [JsonIgnore]
         public int idtbl_address { get; set; }
         [StringLength(50)]
         [JsonProperty("Code")]
         public string tbl_address_code { get; set; }
-        //[StringLength(50)]
-        //[JsonProperty("Type")]
-        //public string tbl_address_type { get; set; }
 
-        [JsonProperty("IsLegalEntity")]
-        public bool? tbl_address_isLegalEntity { get; set; }
         [JsonProperty("IsPickup")]
         public bool? tbl_address_isPickup { get; set; }
         [JsonProperty("IsDelivery")]
         public bool? tbl_address_isDelivery { get; set; }
         [JsonProperty("IsBilling")]
         public bool? tbl_address_isBilling { get; set; }
+        [StringLength(150)]
+        [JsonProperty("CompanyName")]
+        public string tbl_address_companyName { get; set; }
+        [StringLength(50)]
+        [JsonProperty("ContactName")]
+        public string tbl_address_contactName { get; set; }
+        [StringLength(50)]
+        [JsonProperty("Email")]
+        public string tbl_address_email { get; set; }
+        [StringLength(50)]
+        [JsonProperty("Phone")]
+        public string tbl_address_phone { get; set; }
+        [StringLength(50)]
+        [JsonProperty("ABN")]
+        public string tbl_address_abn { get; set; }
         [StringLength(150)]
         [JsonProperty("Address1")]
         public string tbl_address_address1 { get; set; }
@@ -66,15 +76,8 @@ namespace BTAS.API.Dto
         public TimeOnly? tbl_address_startTime { get; set; }
         [JsonProperty("EndTime")]
         public TimeOnly? tbl_address_endTime { get; set; }
-        [JsonProperty("ClientHeaderId")]
-        public int? tbl_client_header_id { get; set; }
-        [StringLength(50)]
-        [JsonProperty("ClientHeaderCode")]
-        public string ClientHeaderCode { get; set; }
-        public virtual tbl_client_header clientHeader { get; set; }
 
-        public virtual ICollection<tbl_houseDto> deliveryAddressHouses { get; set; } = new Collection<tbl_houseDto>();
-        public virtual ICollection<tbl_houseDto> pickupAddressHouses{ get; set; } = new Collection<tbl_houseDto>();
-        public virtual ICollection<tbl_client_contact_detailDto> contactDetails { get; set; } = new Collection<tbl_client_contact_detailDto>();
+        public virtual ICollection<tbl_client_headerDto> clientHeaders { get; set; }
+
     }
 }

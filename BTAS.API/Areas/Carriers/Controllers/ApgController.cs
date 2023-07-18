@@ -62,142 +62,142 @@ namespace BTAS.API.Areas.Carriers.Controllers
             return new JsonResult(response);
         }
 
-        //[HttpPost("QueryShipment")]
-        //public async Task<IActionResult> QueryShippingAsync([FromBody] List<string> request)
-        //{
-        //    var client = CallApg("POST", "/services/shipper/queryorders");
+        [HttpPost("QueryShipment")]
+        public async Task<IActionResult> QueryShippingAsync([FromBody] List<string> request)
+        {
+            var client = CallApg("POST", "/services/shipper/queryorders");
 
-        //    byte[] data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(request));
-        //    client.ContentLength = data.Length;
+            byte[] data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(request));
+            client.ContentLength = data.Length;
 
-        //    using (Stream requestStream = await client.GetRequestStreamAsync())
-        //    {
-        //        requestStream.Write(data, 0, data.Length);
-        //    }
+            using (Stream requestStream = await client.GetRequestStreamAsync())
+            {
+                requestStream.Write(data, 0, data.Length);
+            }
 
-        //    using (WebResponse response = await client.GetResponseAsync())
-        //    {
-        //        var result = PrintWebResponse(response);
-        //        if (result.IndexOf("Failure") > -1)
-        //        {
-        //            return new JsonResult(JsonConvert.DeserializeObject<GenericResponseError>(result));
-        //        }
-        //        else
-        //        {
-        //            if (result.IndexOf("Partial") > -1)
-        //            {
-        //                return new JsonResult(JsonConvert.DeserializeObject<GenericResponsePartial>(result));
-        //            }
-        //            else
-        //            {
-        //                return new JsonResult(JsonConvert.DeserializeObject<CloseShipmentResponseSuccess>(result));
-        //            }
-        //        }
-        //    }
-        //}
+            using (WebResponse response = await client.GetResponseAsync())
+            {
+                var result = PrintWebResponse(response);
+                if (result.IndexOf("Failure") > -1)
+                {
+                    return new JsonResult(JsonConvert.DeserializeObject<GenericResponseError>(result));
+                }
+                else
+                {
+                    if (result.IndexOf("Partial") > -1)
+                    {
+                        return new JsonResult(JsonConvert.DeserializeObject<GenericResponsePartial>(result));
+                    }
+                    else
+                    {
+                        return new JsonResult(JsonConvert.DeserializeObject<CloseShipmentResponseSuccess>(result));
+                    }
+                }
+            }
+        }
 
-        //[HttpPost("GainTracking")]
-        //public async Task<IActionResult> GainTrackingAsync([FromBody] List<string> request)
-        //{
-        //    var client = CallApg("POST", "/services/shipper/trackingNumbers");
+        [HttpPost("GainTracking")]
+        public async Task<IActionResult> GainTrackingAsync([FromBody] List<string> request)
+        {
+            var client = CallApg("POST", "/services/shipper/trackingNumbers");
 
-        //    byte[] data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(request));
-        //    client.ContentLength = data.Length;
+            byte[] data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(request));
+            client.ContentLength = data.Length;
 
-        //    using (Stream requestStream = await client.GetRequestStreamAsync())
-        //    {
-        //        requestStream.Write(data, 0, data.Length);
-        //    }
+            using (Stream requestStream = await client.GetRequestStreamAsync())
+            {
+                requestStream.Write(data, 0, data.Length);
+            }
 
-        //    using (WebResponse response = await client.GetResponseAsync())
-        //    {
-        //        var result = PrintWebResponse(response);
-        //        if (result.IndexOf("Failure") > -1)
-        //        {
-        //            return new JsonResult(JsonConvert.DeserializeObject<GenericResponseError>(result));
-        //        }
-        //        else
-        //        {
-        //            if (result.IndexOf("Partial") > -1)
-        //            {
-        //                return new JsonResult(JsonConvert.DeserializeObject<GenericResponsePartial>(result));
-        //            }
-        //            else
-        //            {
-        //                return new JsonResult(JsonConvert.DeserializeObject<CloseShipmentResponseSuccess>(result));
-        //            }
-        //        }
-        //    }
-        //}
+            using (WebResponse response = await client.GetResponseAsync())
+            {
+                var result = PrintWebResponse(response);
+                if (result.IndexOf("Failure") > -1)
+                {
+                    return new JsonResult(JsonConvert.DeserializeObject<GenericResponseError>(result));
+                }
+                else
+                {
+                    if (result.IndexOf("Partial") > -1)
+                    {
+                        return new JsonResult(JsonConvert.DeserializeObject<GenericResponsePartial>(result));
+                    }
+                    else
+                    {
+                        return new JsonResult(JsonConvert.DeserializeObject<CloseShipmentResponseSuccess>(result));
+                    }
+                }
+            }
+        }
 
-        //[HttpPost("CreateOrder")]
-        //[ApiExplorerSettings(IgnoreApi = true)]
-        //public async Task<IActionResult> CreateOrderAsync([FromBody] List<CreateShippingRequest> request)
-        //{
-        //    var client = CallApg("POST", "/services/shipper/orders");
+        [HttpPost("CreateOrder")]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task<IActionResult> CreateOrderAsync([FromBody] List<CreateShippingRequest> request)
+        {
+            var client = CallApg("POST", "/services/shipper/orders");
 
-        //    byte[] data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(request));
-        //    client.ContentLength = data.Length;
+            byte[] data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(request));
+            client.ContentLength = data.Length;
 
-        //    using (Stream requestStream = await client.GetRequestStreamAsync())
-        //    {
-        //        requestStream.Write(data, 0, data.Length);
-        //    }
+            using (Stream requestStream = await client.GetRequestStreamAsync())
+            {
+                requestStream.Write(data, 0, data.Length);
+            }
 
-        //    using (WebResponse response = await client.GetResponseAsync())
-        //    {
-        //        var result = PrintWebResponse(response);
-        //        if (result.IndexOf("Failure") > -1)
-        //        {
-        //            return new JsonResult(JsonConvert.DeserializeObject<CreateShippingResponseError>(result));
-        //        }
-        //        else
-        //        {
-        //            if (result.IndexOf("Partial") > -1)
-        //            {
-        //                return new JsonResult(JsonConvert.DeserializeObject<GenericResponsePartial>(result));
-        //            }
-        //            else
-        //            {
-        //                return new JsonResult(JsonConvert.DeserializeObject<CreateShippingResponseSuccess>(result));
-        //            }
-        //        }
-        //    }
-        //}
+            using (WebResponse response = await client.GetResponseAsync())
+            {
+                var result = PrintWebResponse(response);
+                if (result.IndexOf("Failure") > -1)
+                {
+                    return new JsonResult(JsonConvert.DeserializeObject<CreateShippingResponseError>(result));
+                }
+                else
+                {
+                    if (result.IndexOf("Partial") > -1)
+                    {
+                        return new JsonResult(JsonConvert.DeserializeObject<GenericResponsePartial>(result));
+                    }
+                    else
+                    {
+                        return new JsonResult(JsonConvert.DeserializeObject<CreateShippingResponseSuccess>(result));
+                    }
+                }
+            }
+        }
 
-        //[HttpPost("CloseShipment")]
-        //public async Task<IActionResult> CloseOrderAsync([FromBody] List<string> request)
-        //{
-        //    var client = CallApg("POST", "/services/shipper/manifests");
+        [HttpPost("CloseShipment")]
+        public async Task<IActionResult> CloseOrderAsync([FromBody] List<string> request)
+        {
+            var client = CallApg("POST", "/services/shipper/manifests");
 
-        //    byte[] data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(request));
-        //    client.ContentLength = data.Length;
+            byte[] data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(request));
+            client.ContentLength = data.Length;
 
-        //    using (Stream requestStream = await client.GetRequestStreamAsync())
-        //    {
-        //        requestStream.Write(data, 0, data.Length);
-        //    }
+            using (Stream requestStream = await client.GetRequestStreamAsync())
+            {
+                requestStream.Write(data, 0, data.Length);
+            }
 
-        //    using (WebResponse response = await client.GetResponseAsync())
-        //    {
-        //        var result = PrintWebResponse(response);
-        //        if (result.IndexOf("Failure") > -1)
-        //        {
-        //            return new JsonResult(JsonConvert.DeserializeObject<GenericResponseError>(result));
-        //        }
-        //        else
-        //        {
-        //            if (result.IndexOf("Partial") > -1)
-        //            {
-        //                return new JsonResult(JsonConvert.DeserializeObject<GenericResponsePartial>(result));
-        //            }
-        //            else
-        //            {
-        //                return new JsonResult(JsonConvert.DeserializeObject<CloseShipmentResponseSuccess>(result));
-        //            }
-        //        }
-        //    }
-        //}
+            using (WebResponse response = await client.GetResponseAsync())
+            {
+                var result = PrintWebResponse(response);
+                if (result.IndexOf("Failure") > -1)
+                {
+                    return new JsonResult(JsonConvert.DeserializeObject<GenericResponseError>(result));
+                }
+                else
+                {
+                    if (result.IndexOf("Partial") > -1)
+                    {
+                        return new JsonResult(JsonConvert.DeserializeObject<GenericResponsePartial>(result));
+                    }
+                    else
+                    {
+                        return new JsonResult(JsonConvert.DeserializeObject<CloseShipmentResponseSuccess>(result));
+                    }
+                }
+            }
+        }
 
         [HttpPost("CreateLabel")]
         public async Task<IActionResult> CreateLabelAsync([FromBody] CreateLabelRequest request)
@@ -206,113 +206,113 @@ namespace BTAS.API.Areas.Carriers.Controllers
             return new JsonResult(response);
         }
 
-        //[HttpPost("ShippingCost")]
-        //public async Task<IActionResult> ShippingCostAsync([FromBody] List<string> request)
-        //{
-        //    var client = CallApg("POST", "/services/shipper/cost-query");
+        [HttpPost("ShippingCost")]
+        public async Task<IActionResult> ShippingCostAsync([FromBody] List<string> request)
+        {
+            var client = CallApg("POST", "/services/shipper/cost-query");
 
-        //    byte[] data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(request));
-        //    client.ContentLength = data.Length;
+            byte[] data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(request));
+            client.ContentLength = data.Length;
 
-        //    using (Stream requestStream = await client.GetRequestStreamAsync())
-        //    {
-        //        requestStream.Write(data, 0, data.Length);
-        //    }
+            using (Stream requestStream = await client.GetRequestStreamAsync())
+            {
+                requestStream.Write(data, 0, data.Length);
+            }
 
-        //    using (WebResponse response = await client.GetResponseAsync())
-        //    {
-        //        var result = PrintWebResponse(response);
-        //        if (result.IndexOf("Failure") > -1)
-        //        {
-        //            return new JsonResult(JsonConvert.DeserializeObject<ShippingCostResponseError>(result));
-        //        }
-        //        else
-        //        {
-        //            return new JsonResult(JsonConvert.DeserializeObject<ShippingCostResponseSuccess>(result));
-        //        }
-        //    }
-        //}
+            using (WebResponse response = await client.GetResponseAsync())
+            {
+                var result = PrintWebResponse(response);
+                if (result.IndexOf("Failure") > -1)
+                {
+                    return new JsonResult(JsonConvert.DeserializeObject<ShippingCostResponseError>(result));
+                }
+                else
+                {
+                    return new JsonResult(JsonConvert.DeserializeObject<ShippingCostResponseSuccess>(result));
+                }
+            }
+        }
 
-        //[HttpPost("GetTracking")]
-        //public async Task<IActionResult> GetTrackingAsync([FromBody] List<string> request)
-        //{
-        //    var client = CallApg("POST", "/services/shipper/trackingNumbers");
+        [HttpPost("GetTracking")]
+        public async Task<IActionResult> GetTrackingAsync([FromBody] List<string> request)
+        {
+            var client = CallApg("POST", "/services/shipper/trackingNumbers");
 
-        //    byte[] data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(request));
-        //    client.ContentLength = data.Length;
+            byte[] data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(request));
+            client.ContentLength = data.Length;
 
-        //    using (Stream requestStream = await client.GetRequestStreamAsync())
-        //    {
-        //        requestStream.Write(data, 0, data.Length);
-        //    }
+            using (Stream requestStream = await client.GetRequestStreamAsync())
+            {
+                requestStream.Write(data, 0, data.Length);
+            }
 
-        //    using (WebResponse response = await client.GetResponseAsync())
-        //    {
-        //        var result = PrintWebResponse(response);
-        //        if (result.IndexOf("Failure") > -1)
-        //        {
-        //            return new JsonResult(JsonConvert.DeserializeObject<GenericResponseError>(result));
-        //        }
-        //        else
-        //        {
-        //            if (result.IndexOf("Partial") > -1)
-        //            {
-        //                return new JsonResult(JsonConvert.DeserializeObject<GetTrackingResponsePartial>(result));
-        //            }
-        //            else
-        //            {
-        //                return new JsonResult(JsonConvert.DeserializeObject<GetTrackingResponseSuccess>(result));
-        //            }
-        //        }
-        //    }
-        //}
+            using (WebResponse response = await client.GetResponseAsync())
+            {
+                var result = PrintWebResponse(response);
+                if (result.IndexOf("Failure") > -1)
+                {
+                    return new JsonResult(JsonConvert.DeserializeObject<GenericResponseError>(result));
+                }
+                else
+                {
+                    if (result.IndexOf("Partial") > -1)
+                    {
+                        return new JsonResult(JsonConvert.DeserializeObject<GetTrackingResponsePartial>(result));
+                    }
+                    else
+                    {
+                        return new JsonResult(JsonConvert.DeserializeObject<GetTrackingResponseSuccess>(result));
+                    }
+                }
+            }
+        }
 
-        //private HttpWebRequest CallApg(string method, string route)
-        //{
-        //    string uri = "http://qa.etowertech.com";
-        //    string path = uri + route;
-        //    string wallTechDate = String.Format("{0:R}", DateTime.UtcNow);
-        //    string auth = method + '\n' + wallTechDate + '\n' + path;
-        //    string hash = EncodeAuth(auth, configuration["ETowerCredentials:Secret"]);
+        private HttpWebRequest CallApg(string method, string route)
+        {
+            string uri = "http://qa.etowertech.com";
+            string path = uri + route;
+            string wallTechDate = String.Format("{0:R}", DateTime.UtcNow);
+            string auth = method + '\n' + wallTechDate + '\n' + path;
+            string hash = EncodeAuth(auth, configuration["ETowerCredentials:Secret"]);
 
-        //    HttpWebRequest client = (HttpWebRequest)WebRequest.Create(path);
+            HttpWebRequest client = (HttpWebRequest)WebRequest.Create(path);
 
-        //    client.ContentType = "application/json";
-        //    client.Accept = "application/json";
-        //    client.Headers.Add("X-WallTech-Date", wallTechDate);
-        //    client.Headers.Add("Authorization", "WallTech " + configuration["ETowerCredentials:Token"] + ':' + hash);
-        //    client.Method = method;
+            client.ContentType = "application/json";
+            client.Accept = "application/json";
+            client.Headers.Add("X-WallTech-Date", wallTechDate);
+            client.Headers.Add("Authorization", "WallTech " + configuration["ETowerCredentials:Token"] + ':' + hash);
+            client.Method = method;
 
-        //    return client;
-        //}
+            return client;
+        }
 
 
-        //static string PrintWebResponse(WebResponse response)
-        //{
-        //    using (StreamReader reader = new StreamReader(response.GetResponseStream()))
-        //    {
-        //        string text = reader.ReadToEnd();
-        //        return text;
-        //    }
-        //}
+        static string PrintWebResponse(WebResponse response)
+        {
+            using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+            {
+                string text = reader.ReadToEnd();
+                return text;
+            }
+        }
 
-        //static string EncodeAuth(string data, string key)
-        //{
-        //    string rtn = null;
-        //    if (null != data && null != key)
-        //    {
-        //        byte[] byteData = Encoding.UTF8.GetBytes(data);
-        //        byte[] byteKey = Encoding.UTF8.GetBytes(key);
-        //        using (HMACSHA1 myhmacsha1 = new HMACSHA1(Encoding.UTF8.GetBytes(key)))
-        //        {
-        //            using (MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(data)))
-        //            {
-        //                byte[] hashValue = myhmacsha1.ComputeHash(stream);
-        //                rtn = Convert.ToBase64String(hashValue);
-        //            }
-        //        }
-        //    }
-        //    return rtn;
-        //}
+        static string EncodeAuth(string data, string key)
+        {
+            string rtn = null;
+            if (null != data && null != key)
+            {
+                byte[] byteData = Encoding.UTF8.GetBytes(data);
+                byte[] byteKey = Encoding.UTF8.GetBytes(key);
+                using (HMACSHA1 myhmacsha1 = new HMACSHA1(Encoding.UTF8.GetBytes(key)))
+                {
+                    using (MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(data)))
+                    {
+                        byte[] hashValue = myhmacsha1.ComputeHash(stream);
+                        rtn = Convert.ToBase64String(hashValue);
+                    }
+                }
+            }
+            return rtn;
+        }
     }
 }

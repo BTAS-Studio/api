@@ -28,33 +28,7 @@ namespace BTAS.API.Repository
         {
             try
             {
-                //ClientHeaderCode is mandatory
-                if (entity.ClientHeaderCode == null)
-                {
-                    return new ResponseDto
-                    {
-                        IsSuccess = false,
-                        DisplayMessage = "Fail to create Address. Client Header Code must be provided."
-                    };
-                }
                 tbl_address result = _mapper.Map<tbl_addressDto, tbl_address>(entity);
-                //Duplication check
-                var duplicateAddresses = _context.tbl_addresses.OrderBy(p => p.tbl_address_address1).AsNoTracking().Where(
-                    x => x.tbl_address_address1 == result.tbl_address_address1 && x.tbl_address_postcode == result.tbl_address_postcode);
-                if (duplicateAddresses != null)
-                {
-                    var duplicateAddress = await duplicateAddresses.SingleOrDefaultAsync(p => p.ClientHeaderCode == result.ClientHeaderCode);
-                    if (duplicateAddress != null)
-                    {
-                        return new ResponseDto
-                        {
-                            IsSuccess = true,
-                            ReferenceNumber = duplicateAddress.tbl_address_code,
-                            DisplayMessage = "Address existed, address code:" + duplicateAddress.tbl_address_code
-                        };
-                    }
-                    //else create a new one
-                }
 
                 string referenceNumber = await GetNextId();
                 result.tbl_address_code = referenceNumber;
@@ -127,7 +101,8 @@ namespace BTAS.API.Repository
         {
             IEnumerable<tbl_address> _list = await _context.tbl_addresses
                 .OrderByDescending(p => p.idtbl_address)
-                //.Include(p => p.contactDetails)
+                .Include(p => p.clientHeaders)
+                .AsNoTracking()
                 .ToListAsync();
             return _mapper.Map<List<tbl_addressDto>>(_list);
         }

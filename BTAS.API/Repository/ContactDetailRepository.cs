@@ -31,10 +31,18 @@ namespace BTAS.API.Repository
         /// <returns></returns>
         public async Task<IEnumerable<tbl_client_contact_detailDto>> GetAllAsync()
         {
-            var _list = await _context.tbl_client_contact_details.ToListAsync();
+            var _list = await _context.tbl_client_contact_details.OrderByDescending(p => p.idtbl_client_contact_detail)
+                .AsNoTracking().ToListAsync();
             return _mapper.Map<List<tbl_client_contact_detailDto>>(_list);
         }
 
+        public async Task<IEnumerable<tbl_client_contact_detailDto>> GetAllAsyncWithChildren()
+        {
+            var _list = await _context.tbl_client_contact_details
+                .OrderByDescending(p => p.idtbl_client_contact_detail)
+                .AsNoTracking().ToListAsync();
+            return _mapper.Map<List<tbl_client_contact_detailDto>>(_list);
+        }
         /// <summary>
         /// Retrieves a single Contact Details based on id
         /// </summary>
@@ -82,7 +90,7 @@ namespace BTAS.API.Repository
                 entity.tbl_client_contact_detail_isActive = true;
                 //Edited by HS on 01/02/2023
                 var result = _mapper.Map<tbl_client_contact_detailDto, tbl_client_contact_detail>(entity);
-                result.tbl_client_contact_details_code = await GetNextId();
+                result.tbl_client_contact_detail_code = await GetNextId();
      
                 if (result.idtbl_client_contact_detail > 0)
                 {
@@ -124,9 +132,8 @@ namespace BTAS.API.Repository
                 {
                     //Edited by HS on 01/02/2023
                     //Result = _mapper.Map<tbl_client_contact_detailDto>(result),
-                    Result = entity,
-                    Id = entity.idtbl_client_contact_detail,
-                    ReferenceNumber = entity.tbl_client_contact_detail_code,
+                    Result = result,
+                    ReferenceNumber = result.tbl_client_contact_detail_code,
                     DisplayMessage = "Contact Detail successfully added.",
                     IsSuccess = true
                 };
@@ -253,21 +260,6 @@ namespace BTAS.API.Repository
             string referenceCode = "CD" + String.Format("{0:0000000}", (result != null ? result.idtbl_client_contact_detail + count : 1));
             count++;
             return referenceCode;
-        }
-
-        public Task<IEnumerable<tbl_client_contact_detailDto>> GetAllAsyncWithChildren()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<tbl_client_contact_detailDto>> GetAllAsyncWithChildren(searchFilter filter = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<tbl_client_contact_detailDto>> GetAllAsyncWithChildren(searchFilter<tbl_client_contact_detailDto> filter = null)
-        {
-            throw new NotImplementedException();
         }
     }
 }

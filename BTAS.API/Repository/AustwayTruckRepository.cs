@@ -25,13 +25,13 @@ namespace BTAS.API.Repository
             _mapper = mapper;
             this.repo = repo;
         }
-        /*
-        public async Task<CreateLabelResponse> CreateLabelAsync(List<LabelItem> items, tbl_client_headerDto recipient, tbl_client_headerDto shipper = null)
+        
+        public async Task<CreateLabelResponse> CreateLabelAsync(List<LabelItem> items, tbl_addressDto recipient, tbl_client_headerDto shipper = null)
         {
             try
             {
                 var routing = _context.tbl_austway_routings
-                .Where(x => x.tbl_routings_states == recipient.deliveryAddress.tbl_address_state && x.tbl_routings_suburbs == recipient.deliveryAddress.tbl_address_postcode)
+                .Where(x => x.tbl_routings_states == recipient.tbl_address_state && x.tbl_routings_suburbs == recipient.tbl_address_postcode)
                 .FirstOrDefault();
                 if (routing is null)
                 {
@@ -84,6 +84,6 @@ namespace BTAS.API.Repository
 
         }
     
-    */
+    
     }
 }

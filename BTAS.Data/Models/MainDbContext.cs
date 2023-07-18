@@ -112,19 +112,29 @@ namespace BTAS.Data.Models
 
                 entity.ToTable("tbl_address");
 
-                entity.HasIndex(e => e.tbl_client_header_id, "IX_tbl_address_tbl_client_header_id");
+                entity.HasIndex(e => e.tbl_address_code).IsUnique();
+
+                entity.HasIndex(p => new { p.tbl_address_companyName, p.tbl_address_postcode, p.tbl_address_address1 });
 
                 entity.Property(e => e.idtbl_address).HasColumnType("int(11)");
 
                 entity.Property(e => e.tbl_address_code).HasMaxLength(50);
-
-                entity.Property(e => e.tbl_address_isLegalEntity).HasColumnType("tinyint(1) unsigned");
 
                 entity.Property(e => e.tbl_address_isPickup).HasColumnType("tinyint(1) unsigned");
 
                 entity.Property(e => e.tbl_address_isDelivery).HasColumnType("tinyint(1) unsigned");
 
                 entity.Property(e => e.tbl_address_isBilling).HasColumnType("tinyint(1) unsigned");
+
+                entity.Property(e => e.tbl_address_companyName).HasMaxLength(150);
+
+                entity.Property(e => e.tbl_address_contactName).HasMaxLength(50);
+
+                entity.Property(e => e.tbl_address_email).HasMaxLength(50);
+
+                entity.Property(e => e.tbl_address_phone).HasMaxLength(50);
+
+                entity.Property(e => e.tbl_address_abn).HasMaxLength(50);
 
                 entity.Property(e => e.tbl_address_address1).HasMaxLength(150);
 
@@ -153,22 +163,11 @@ namespace BTAS.Data.Models
                 entity.Property(e => e.tbl_address_commercial).HasColumnType("tinyint(1) unsigned");
 
                 entity.Property(e => e.tbl_address_description).HasMaxLength(50);
-                //??
+                
                 entity.Property(e => e.tbl_address_startTime).HasColumnType("time");
 
                 entity.Property(e => e.tbl_address_endTime).HasColumnType("time");
 
-
-                entity.Property(e => e.tbl_client_header_id).HasColumnType("int(11)");
-
-                entity.Property(e => e.ClientHeaderCode).HasMaxLength(50);
-
-                //entity.HasOne(d => d.clientHeader)
-                //    .WithOne(p => p.legalEntityAddress)
-                //    .HasForeignKey<tbl_address>(d => d.tbl_client_header_id)
-                //    .HasConstraintName("FK_tbl_address_tlb_client_header");
-
-                //entity.Property(e => e.tbl_address_type).HasMaxLength(50);
             });
 
             modelBuilder.Entity<tbl_amazon_routing>(entity =>
@@ -210,7 +209,7 @@ namespace BTAS.Data.Models
                     .IsRequired()
                     .HasMaxLength(5);
             });
-
+            
             modelBuilder.Entity<tbl_barcode>(entity =>
             {
                 entity.HasKey(e => e.tbl_barcodes_id)
@@ -316,42 +315,48 @@ namespace BTAS.Data.Models
                 entity.HasKey(e => e.idtbl_client_contact_detail)
                     .HasName("PRIMARY");
 
-                entity.HasIndex(e => e.tbl_address_id, "FK_tbl_client_contact_details_tbl_address_tbl_address_id_idx");
+                //entity.HasAlternateKey(e => e.tbl_client_contact_detail_code);
+                
+                entity.ToTable("tbl_client_contact_detail");
 
-                entity.HasIndex(e => e.tbl_client_header_id, "IX_tbl_client_contact_details_tbl_client_header_id");
+                entity.HasIndex(e => e.tbl_client_contact_detail_code).IsUnique();
+
+                entity.HasIndex(e => e.tbl_client_header_id, "IX_contactDetail_clientHeader_id");
+                //entity.HasIndex(e => e.ClientHeaderCode, "IX_contactDetail_clientHeader_code");
 
                 entity.Property(e => e.idtbl_client_contact_detail).HasColumnType("int(11)");
 
-                entity.Property(e => e.AddressCode).HasMaxLength(50);
+                entity.Property(e => e.tbl_client_contact_detail_code).HasMaxLength(50);
 
-                entity.Property(e => e.ClientHeaderCode).HasMaxLength(50);
+                entity.Property(e => e.tbl_client_contact_detail_companyName).HasMaxLength(50);
 
-                entity.Property(e => e.tbl_address_id).HasColumnType("int(11)");
+                entity.Property(e => e.tbl_client_contact_detail_contactName).HasMaxLength(50);
 
-                entity.Property(e => e.tbl_client_contact_details_code).HasMaxLength(50);
+                entity.Property(e => e.tbl_client_contact_detail_email).HasMaxLength(50);
 
-                entity.Property(e => e.tbl_client_contact_details_companyName).HasMaxLength(50);
+                entity.Property(e => e.tbl_client_contact_detail_isActive).HasDefaultValueSql("'0'");
 
-                entity.Property(e => e.tbl_client_contact_details_contactName).HasMaxLength(50);
+                entity.Property(e => e.tbl_client_contact_detail_phone).HasMaxLength(50);
 
-                entity.Property(e => e.tbl_client_contact_details_email).HasMaxLength(50);
-
-                entity.Property(e => e.tbl_client_contact_details_isActive).HasDefaultValueSql("'0'");
-
-                entity.Property(e => e.tbl_client_contact_details_phone).HasMaxLength(50);
-
-                entity.Property(e => e.tbl_client_contact_details_type).HasMaxLength(50);
+                entity.Property(e => e.tbl_client_contact_detail_type).HasMaxLength(50);
+                
 
                 entity.Property(e => e.tbl_client_header_id).HasColumnType("int(11)");
 
-                entity.HasOne(d => d.address)
-                    .WithMany(p => p.contactDetails)
-                    .HasForeignKey(d => d.tbl_address_id);
+                entity.Property(e => e.ClientHeaderCode).HasMaxLength(50);
 
                 entity.HasOne(d => d.clientHeader)
                     .WithMany(p => p.contactDetails)
                     .HasForeignKey(d => d.tbl_client_header_id)
-                    .HasConstraintName("FK_tbl_client_contact_details_tlb_client_header");
+                    .HasPrincipalKey(p => p.idtbl_client_header)
+                    .HasConstraintName("FK_contactDetail_clientHeader_id");
+
+                //entity.HasOne(d => d.clientHeader)
+                //    .WithMany(p => p.contactDetails)
+                //    .HasForeignKey(d => d.ClientHeaderCode)
+                //    .HasPrincipalKey(p => p.tbl_client_header_code)
+                //    .HasConstraintName("FK_contactDetail_clientHeader_code");
+
             });
 
             modelBuilder.Entity<tbl_client_contact_group>(entity =>
@@ -365,6 +370,8 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.tbl_client_contact_group_code).HasColumnType("int(11)");
 
+                entity.Property(e => e.tbl_client_contact_group_name).HasMaxLength(50);
+
                 entity.Property(e => e.tbl_client_contact_group_isActive).HasColumnType("tinyint(3) unsigned");
 
                 entity.Property(e => e.tbl_client_contact_group_isDefault).HasColumnType("tinyint(3) unsigned");
@@ -375,13 +382,20 @@ namespace BTAS.Data.Models
                 entity.HasKey(e => e.idtbl_client_header)
                     .HasName("PRIMARY");
 
+                //entity.HasAlternateKey(p => p.tbl_client_header_code);
+
                 entity.ToTable("tbl_client_header");
 
+                entity.HasIndex(e => e.tbl_client_header_code).IsUnique();
+                //unique constraint for client header where same companyName has different addresses
+                entity.HasIndex(p => new { p.tbl_client_header_companyName, p.tbl_client_header_postcode, p.tbl_client_header_address1 });
+                
+                
                 entity.Property(e => e.idtbl_client_header).HasColumnType("int(11)");
 
                 entity.Property(e => e.tbl_client_header_code).HasMaxLength(50);
                 
-                entity.Property(e => e.tbl_client_header_createdDate).HasMaxLength(6);
+                entity.Property(e => e.tbl_client_header_createdDate).HasColumnType("datetime");
 
                 entity.Property(e => e.tbl_client_header_createdBy).IsRequired().HasMaxLength(50);
 
@@ -397,10 +411,19 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.tbl_client_header_closestPort).HasMaxLength(50);
 
-                entity.HasOne<tbl_address>(d => d.legalEntityAddress)
-                    .WithOne(p => p.clientHeader)
-                    .HasForeignKey<tbl_address>(d => d.tbl_client_header_id)
-                    .HasConstraintName("fk_tbl_address_tlb_client_header");
+                entity.Property(e => e.tbl_client_header_address1).HasMaxLength(150);
+
+                entity.Property(e => e.tbl_client_header_address2).HasMaxLength(150);
+
+                entity.Property(e => e.tbl_client_header_suburb).HasMaxLength(50);
+
+                entity.Property(e => e.tbl_client_header_city).HasMaxLength(50);
+
+                entity.Property(e => e.tbl_client_header_state).HasMaxLength(50);
+
+                entity.Property(e => e.tbl_client_header_postcode).HasMaxLength(50);
+
+                entity.Property(e => e.tbl_client_header_country).HasMaxLength(50);
 
             });
 
@@ -411,29 +434,33 @@ namespace BTAS.Data.Models
 
                 entity.ToTable("tbl_container");
 
-                entity.HasIndex(e => e.tbl_master_id, "FK_tbl_container_tbl_master_tbl_master_id_idx");
+                entity.HasIndex(e => e.tbl_container_code).IsUnique();
+                //unique constrain for duplicate check.
+                entity.HasIndex(e => new { e.tbl_container_number, e.tbl_container_sealNumber });
+
+                entity.HasIndex(e => e.tbl_master_id, "IX_container_master_id");
 
                 entity.Property(e => e.idtbl_container).HasColumnType("int(11)");
 
                 entity.Property(e => e.MasterCode).HasMaxLength(30);
 
-                entity.Property(e => e.tbl_container_cargoType).HasMaxLength(30);
+                entity.Property(e => e.tbl_container_cargoType).HasMaxLength(50);
 
                 entity.Property(e => e.tbl_container_code).HasMaxLength(50);
 
-                entity.Property(e => e.tbl_container_createdDate).HasMaxLength(6);
+                entity.Property(e => e.tbl_container_createdDate).HasColumnType("datetime");
 
                 entity.Property(e => e.tbl_container_grossWeight).HasPrecision(12, 3);
 
-                entity.Property(e => e.tbl_container_isoType).HasMaxLength(30);
+                entity.Property(e => e.tbl_container_isoType).HasMaxLength(50);
 
-                entity.Property(e => e.tbl_container_number).HasMaxLength(30);
+                entity.Property(e => e.tbl_container_number).HasMaxLength(50);
 
                 entity.Property(e => e.tbl_container_qty).HasColumnType("int(11)");
 
-                entity.Property(e => e.tbl_container_sealNumber).HasMaxLength(30);
+                entity.Property(e => e.tbl_container_sealNumber).HasMaxLength(50);
 
-                entity.Property(e => e.tbl_container_sealedBy).HasMaxLength(30);
+                entity.Property(e => e.tbl_container_sealedBy).HasMaxLength(50);
 
                 entity.Property(e => e.tbl_container_status).HasMaxLength(50);
 
@@ -441,7 +468,8 @@ namespace BTAS.Data.Models
 
                 entity.HasOne(d => d.master)
                     .WithMany(p => p.containers)
-                    .HasForeignKey(d => d.tbl_master_id);
+                    .HasForeignKey(d => d.tbl_master_id)
+                    .HasConstraintName("FK_container_master_id");
             });
 
             modelBuilder.Entity<tbl_containerType>(entity =>
@@ -463,7 +491,7 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.AddedBy).HasMaxLength(30);
 
-                entity.Property(e => e.DateAdded).HasMaxLength(6);
+                entity.Property(e => e.DateAdded).HasColumnType("datetime");
 
                 entity.Property(e => e.tbl_address_type).HasMaxLength(30);
 
@@ -477,15 +505,19 @@ namespace BTAS.Data.Models
                 entity.HasKey(e => e.idtbl_document)
                     .HasName("PRIMARY");
 
-                entity.HasIndex(e => e.tbl_house_id, "idx_document_house_link_idx");
-                entity.HasIndex(e => e.tbl_shipment_id, "idx_document_shipment_link_idx");
-                entity.HasIndex(e => e.tbl_master_id, "idx_document_master_link_idx");
-                entity.HasIndex(e => e.tbl_note_id, "idx_document_note_link_idx");
+                entity.ToTable("tbl_document");
+
+                entity.HasIndex(e => e.tbl_document_code).IsUnique();
+
+                entity.HasIndex(e => e.tbl_house_id, "IX_document_house_id");
+                entity.HasIndex(e => e.tbl_shipment_id, "IX_document_shipment_id");
+                entity.HasIndex(e => e.tbl_master_id, "IX_document_master_id");
+                entity.HasIndex(e => e.tbl_note_id, "IX_document_note_id");
 
                 entity.Property(e => e.idtbl_document).HasColumnType("int(11)");
                 entity.Property(e => e.tbl_document_code).HasMaxLength(50);
                 entity.Property(e => e.tbl_document_status).HasColumnType("tinyint(1) unsigned");
-                entity.Property(e => e.tbl_document_createdDate).HasMaxLength(6);
+                entity.Property(e => e.tbl_document_createdDate).HasColumnType("datetime");
                 entity.Property(e => e.tbl_document_name).HasMaxLength(50);
                 entity.Property(e => e.tbl_document_extension).HasMaxLength(50);
                 entity.Property(e => e.tbl_document_group).HasMaxLength(50);
@@ -509,25 +541,21 @@ namespace BTAS.Data.Models
                 entity.HasOne(d => d.house)
                     .WithMany(p => p.documents)
                     .HasForeignKey(d => d.tbl_house_id)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("document_house_link");
+                    .HasConstraintName("FK_document_house_id");
 
                 entity.HasOne(d => d.shipment)
                     .WithMany(p => p.documents)
                     .HasForeignKey(d => d.tbl_shipment_id)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("document_shipment_link");
+                    .HasConstraintName("FK_document_shipment_id");
 
                 entity.HasOne(d => d.master)
                     .WithMany(p => p.documents)
                     .HasForeignKey(d => d.tbl_master_id)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("document_master_link");
+                    .HasConstraintName("FK_document_master_id");
                 entity.HasOne(d => d.note)
                     .WithMany(p => p.documents)
                     .HasForeignKey(d => d.tbl_note_id)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("document_note_link");
+                    .HasConstraintName("FK_document_note_id");
             });
 
             modelBuilder.Entity<tbl_dynamic_filter>(entity =>
@@ -574,25 +602,27 @@ namespace BTAS.Data.Models
 
                 entity.ToTable("tbl_house");
 
-                entity.HasIndex(e => e.tbl_consignee_id, "FK_tbl_house_tbl_client_header_tbl_consignee_id_idx");
+                entity.HasIndex(e => e.tbl_house_code).IsUnique();
 
-                entity.HasIndex(e => e.tbl_consignor_id, "FK_tbl_house_tbl_client_header_tbl_consignor_id_idx");
+                //unique constrain for duplicate check.
+                entity.HasIndex(e => new { e.tbl_house_billNumber, e.tbl_house_value });
 
-                entity.HasIndex(e => e.tbl_incoterm_id, "FK_tbl_house_tbl_incoterm_tbl_incoterm_id_idx");
+                entity.HasIndex(e => e.tbl_consignee_id, "IX_house_clientHeader_consignee_id");
 
-                entity.HasIndex(e => e.tbl_container_id, "IX_tbl_house_tbl_container_id");
+                entity.HasIndex(e => e.tbl_consignor_id, "IX_house_clientHeader_consignor_id");
 
-                entity.HasIndex(e => e.tbl_master_id, "IX_tbl_house_tbl_master_id");
+                entity.HasIndex(e => e.tbl_incoterm_id, "IX_house_incoterm_id");
 
-                entity.HasIndex(e => e.tbl_voyage_id, "IX_tbl_house_tbl_voyage_id");
+                entity.HasIndex(e => e.tbl_container_id, "IX_house_container_id");
 
-                entity.HasIndex(e => e.tbl_pickupClient_id, "IX_tbl_house_tbl_client_header_tbl_pickClient_id");
+                entity.HasIndex(e => e.tbl_master_id, "IX_house_master_id");
 
-                entity.HasIndex(e => e.tbl_deliveryClient_id, "IX_tbl_house_tbl_client_header_tbl_deliveryClient_id");
+                entity.HasIndex(e => e.tbl_voyage_id, "IX_house_voyage_id");
 
-                entity.HasIndex(e => e.tbl_pickupAddress_id, "IX_tbl_house_tbl_address_tbl_pickAddress_id");
+                entity.HasIndex(e => e.tbl_pickupClient_id, "IX_house_clientheader_pickClient_id");
 
-                entity.HasIndex(e => e.tbl_deliveryAddress_id, "IX_tbl_house_tbl_address_tbl_deliveryAddress_id");
+                entity.HasIndex(e => e.tbl_deliveryClient_id, "IX_house_clientHeader_deliveryClient_id");
+
 
                 entity.Property(e => e.idtbl_house).HasColumnType("int(11)");
 
@@ -602,11 +632,11 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.tbl_house_airJobReference).HasMaxLength(50);
 
-                entity.Property(e => e.tbl_house_billNumber).HasMaxLength(30);
+                entity.Property(e => e.tbl_house_billNumber).HasMaxLength(50);
 
                 entity.Property(e => e.tbl_house_class).HasMaxLength(50);
 
-                entity.Property(e => e.tbl_house_clearanceDate).HasMaxLength(6);
+                entity.Property(e => e.tbl_house_clearanceDate).HasColumnType("datetime");
 
                 entity.Property(e => e.tbl_house_code).HasMaxLength(30);
 
@@ -614,13 +644,13 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.tbl_house_coo).HasColumnType("tinyint(1) unsigned");
 
-                entity.Property(e => e.tbl_house_createdDate).HasMaxLength(6);
+                entity.Property(e => e.tbl_house_createdDate).HasColumnType("datetime");
 
                 entity.Property(e => e.tbl_house_currency).HasMaxLength(50);
 
                 entity.Property(e => e.tbl_house_delivery).HasMaxLength(50);
 
-                entity.Property(e => e.tbl_house_deliveryDate).HasMaxLength(6);
+                entity.Property(e => e.tbl_house_deliveryDate).HasColumnType("datetime");
 
                 entity.Property(e => e.tbl_house_deliveryInstructions).HasMaxLength(150);
 
@@ -650,9 +680,11 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.tbl_house_status).HasMaxLength(50);
 
-                entity.Property(e => e.tbl_house_tailLiftD).HasColumnType("tinyint(3) unsigned");
+                entity.Property(e => e.tbl_house_tailLiftD).HasColumnType("tinyint(1) unsigned");
 
-                entity.Property(e => e.tbl_house_tailLiftO).HasColumnType("tinyint(3) unsigned");
+                entity.Property(e => e.tbl_house_tailLiftO).HasColumnType("tinyint(1) unsigned");
+
+                entity.Property(e => e.tbl_house_UN).HasMaxLength(50);
 
                 entity.Property(e => e.tbl_house_type).HasMaxLength(50);
 
@@ -667,6 +699,7 @@ namespace BTAS.Data.Models
                 entity.Property(e => e.tbl_house_weightUnit).HasMaxLength(50);
 
                 entity.Property(e => e.tbl_house_width).HasPrecision(12, 3);
+
 
                 entity.Property(e => e.ConsigneeCode).HasMaxLength(50);
 
@@ -684,9 +717,6 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.DeliveryClientCode).HasMaxLength(50);
 
-                entity.Property(e => e.PickAddressCode).HasMaxLength(50);
-
-                entity.Property(e => e.DeliveryAddressCode).HasMaxLength(50);
 
                 entity.Property(e => e.tbl_consignee_id).HasColumnType("int(11)");
 
@@ -704,59 +734,46 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.tbl_deliveryClient_id).HasColumnType("int(11)");
 
-                entity.Property(e => e.tbl_pickupAddress_id).HasColumnType("int(11)");
-
-                entity.Property(e => e.tbl_deliveryAddress_id).HasColumnType("int(11)");
 
                 entity.HasOne(d => d.consignee)
                     .WithMany(p => p.consigneeHouses)
                     .HasForeignKey(d => d.tbl_consignee_id)
-                    .HasConstraintName("FK_tbl_house_tbl_client_header_tbl_consignee_id");
+                    .HasConstraintName("FK_house_clientHeader_consignee_id");
 
                 entity.HasOne(d => d.consignor)
                     .WithMany(p => p.consignorHouses)
                     .HasForeignKey(d => d.tbl_consignor_id)
-                    .HasConstraintName("FK_tbl_house_tbl_client_header_tbl_consignor_id");
+                    .HasConstraintName("FK_house_clientHeader_consignor_id");
 
                 entity.HasOne(d => d.container)
                     .WithMany(p => p.houses)
                     .HasForeignKey(d => d.tbl_container_id)
-                    .HasConstraintName("FK_tbl_house_tbl_container_tbl_container_id");
+                    .HasConstraintName("FK_house_container_id");
 
                 entity.HasOne(d => d.incoterm)
                     .WithMany(p => p.houses)
                     .HasForeignKey(d => d.tbl_incoterm_id)
-                    .HasConstraintName("FK_tbl_house_tbl_incoterms_tbl_incoterm_id");
+                    .HasConstraintName("FK_house_incoterm_id");
 
                 entity.HasOne(d => d.master)
                     .WithMany(p => p.houses)
                     .HasForeignKey(d => d.tbl_master_id)
-                    .HasConstraintName("FK_tbl_house_tbl_master_tbl_master_id");
+                    .HasConstraintName("FK_house_master_id");
 
                 entity.HasOne(d => d.voyage)
-                .WithMany(p => p.houses)
-                .HasForeignKey(d => d.tbl_voyage_id)
-                .HasConstraintName("FK_tbl_house_tbl_voyage_tbl_voyage_id");
+                    .WithMany(p => p.houses)
+                    .HasForeignKey(d => d.tbl_voyage_id)
+                    .HasConstraintName("FK_house_voyage_id");
 
-                entity.HasOne(d => d.pickupClient)
-                .WithMany(p => p.pickupClientHouses)
-                .HasForeignKey(d => d.tbl_pickupClient_id)
-                .HasConstraintName("FK_tbl_house_tbl_client_header_tbl_pickClient_id");
+                entity.HasOne(d => d.pickupClientDetail)
+                    .WithMany(p => p.pickupClientHouses)
+                    .HasForeignKey(d => d.tbl_pickupClient_id)
+                    .HasConstraintName("FK_house_clientHeader_pickupClient_id");
 
-                entity.HasOne(d => d.deliveryClient)
-                .WithMany(p => p.deliveryClientHouses)
-                .HasForeignKey(d => d.tbl_deliveryClient_id)
-                .HasConstraintName("FK_tbl_house_tbl_client_header_tbl_deliveryClient_id");
-
-                entity.HasOne(d => d.pickupAddress)
-                .WithMany(p => p.pickupAddressHouses)
-                .HasForeignKey(d => d.tbl_pickupAddress_id)
-                .HasConstraintName("FK_tbl_house_tbl_address_tbl_pickupAddress_id");
-
-                entity.HasOne(d => d.deliveryAddress)
-                .WithMany(p => p.deliveryAddressHouses)
-                .HasForeignKey(d => d.tbl_deliveryAddress_id)
-                .HasConstraintName("FK_tbl_house_tbl_address_tbl_deliveryAddress_id");
+                entity.HasOne(d => d.deliveryClientDetail)
+                    .WithMany(p => p.deliveryClientHouses)
+                    .HasForeignKey(d => d.tbl_deliveryClient_id)
+                    .HasConstraintName("FK_house_clientHeader_deliveryClient_id");
             });
 
             modelBuilder.Entity<tbl_house_item>(entity =>
@@ -764,11 +781,16 @@ namespace BTAS.Data.Models
                 entity.HasKey(e => e.idtbl_house_item)
                     .HasName("PRIMARY");
 
-                entity.HasIndex(e => e.tbl_house_id, "FK_tbl_house_items_tbl_house_tbl_house_id_idx");
+                entity.ToTable("tbl_house_item");
+
+                entity.HasIndex(e => e.tbl_house_item_code).IsUnique();
+
+                entity.HasIndex(e => e.tbl_house_id, "IX_houseItem_house_id");
+
 
                 entity.Property(e => e.idtbl_house_item).HasColumnType("int(11)");
 
-                entity.Property(e => e.HouseCode).HasMaxLength(30);
+                entity.Property(e => e.HouseCode).HasMaxLength(50);
 
                 entity.Property(e => e.tbl_house_id).HasColumnType("int(11)");
 
@@ -776,7 +798,7 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.tbl_house_item_description).HasMaxLength(150);
 
-                entity.Property(e => e.tbl_house_item_dg).HasColumnType("tinyint(3) unsigned");
+                entity.Property(e => e.tbl_house_item_dg).HasColumnType("tinyint(1) unsigned");
 
                 entity.Property(e => e.tbl_house_item_height).HasPrecision(12, 3);
 
@@ -796,7 +818,8 @@ namespace BTAS.Data.Models
 
                 entity.HasOne(d => d.house)
                     .WithMany(p => p.houseItems)
-                    .HasForeignKey(d => d.tbl_house_id);
+                    .HasForeignKey(d => d.tbl_house_id)
+                    .HasConstraintName("FK_houseItem_house_id");
             });
 
             modelBuilder.Entity<tbl_hunterrate>(entity =>
@@ -839,7 +862,10 @@ namespace BTAS.Data.Models
             {
                 entity.HasKey(e => e.idtbl_incoterm)
                     .HasName("PRIMARY");
+
                 entity.ToTable("tbl_incoterm");
+
+
 
                 entity.Property(e => e.idtbl_incoterm).HasColumnType("int(11)");
 
@@ -903,27 +929,41 @@ namespace BTAS.Data.Models
 
                 entity.ToTable("tbl_master");
 
-                entity.HasIndex(e => e.tbl_client_header_carrier_id, "IX_tbl_master_tbl_client_header_carrier_id");
+                entity.HasIndex(e => e.tbl_master_code).IsUnique();
 
-                entity.HasIndex(e => e.tbl_client_header_creditor_id, "IX_tbl_master_tbl_client_header_creditor_id");
+                //unique constrain for duplicate check.
+                entity.HasIndex(e => new { e.tbl_master_billNumber, e.tbl_master_status });
 
-                entity.HasIndex(e => e.tbl_client_header_destination_id, "IX_tbl_master_tbl_client_header_destination_id");
+                entity.HasIndex(e => e.tbl_client_header_carrier_id, "IX_master_clientHeader_carrier_id");
 
-                entity.HasIndex(e => e.tbl_client_header_origin_id, "IX_tbl_master_tbl_client_header_origin_id");
+                entity.HasIndex(e => e.tbl_client_header_creditor_id, "IX_master_clientHeader_creditor_id");
 
-                entity.HasIndex(e => e.tbl_voyage_id, "IX_tbl_master_tbl_voyage_id");
+                entity.HasIndex(e => e.tbl_client_header_destination_id, "IX_master_clientHeader_destination_id");
+
+                entity.HasIndex(e => e.tbl_client_header_origin_id, "IX_master_clientHeader_origin_id");
+
+                entity.HasIndex(e => e.tbl_voyage_id, "IX_master_voyage_id");
+
 
                 entity.Property(e => e.idtbl_master).HasColumnType("int(11)");
 
-                entity.Property(e => e.VoyageCode).HasMaxLength(30);
+                entity.Property(e => e.tbl_master_billNumber).HasMaxLength(50);
 
-                entity.Property(e => e.carrierAgentCode).HasMaxLength(30);
+                entity.Property(e => e.tbl_master_bookingNumber).HasMaxLength(50);
 
-                entity.Property(e => e.creditorAgentCode).HasMaxLength(30);
+                entity.Property(e => e.tbl_master_code).HasMaxLength(50);
 
-                entity.Property(e => e.destinationAgentCode).HasMaxLength(30);
+                entity.Property(e => e.tbl_master_containerMode).HasMaxLength(50);
 
-                entity.Property(e => e.originAgentCode).HasMaxLength(30);
+                entity.Property(e => e.tbl_master_createdDate).HasColumnType("datetime");
+
+                entity.Property(e => e.tbl_master_status).HasMaxLength(50);
+
+                entity.Property(e => e.tbl_master_transportType).HasMaxLength(50);
+
+                entity.Property(e => e.tbl_master_type).HasMaxLength(50);
+
+                entity.Property(e => e.tbl_voyage_id).HasColumnType("int(11)");
 
                 entity.Property(e => e.tbl_client_header_carrier_id).HasColumnType("int(11)");
 
@@ -933,48 +973,41 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.tbl_client_header_origin_id).HasColumnType("int(11)");
 
-                entity.Property(e => e.tbl_master_billNumber).HasMaxLength(50);
+                entity.Property(e => e.VoyageCode).HasMaxLength(50);
 
-                entity.Property(e => e.tbl_master_bookingNumber).HasMaxLength(50);
+                entity.Property(e => e.carrierAgentCode).HasMaxLength(50);
 
-                entity.Property(e => e.tbl_master_code).HasMaxLength(30);
+                entity.Property(e => e.creditorAgentCode).HasMaxLength(50);
 
-                entity.Property(e => e.tbl_master_containerMode).HasMaxLength(30);
+                entity.Property(e => e.destinationAgentCode).HasMaxLength(50);
 
-                entity.Property(e => e.tbl_master_createdDate).HasColumnType("datetime");
+                entity.Property(e => e.originAgentCode).HasMaxLength(50);
 
-                entity.Property(e => e.tbl_master_status).HasMaxLength(50);
-
-                entity.Property(e => e.tbl_master_transportType).HasMaxLength(30);
-
-                entity.Property(e => e.tbl_master_type).HasMaxLength(30);
-
-                entity.Property(e => e.tbl_voyage_id).HasColumnType("int(11)");
 
                 entity.HasOne(d => d.carrierAgent)
                     .WithMany(p => p.carrierMasters)
                     .HasForeignKey(d => d.tbl_client_header_carrier_id)
-                    .HasConstraintName("FK_tbl_master_tbl_client_header_tbl_client_header_carrier_id");
+                    .HasConstraintName("FK_master_clientHeader_carrier_id");
 
                 entity.HasOne(d => d.creditorAgent)
                     .WithMany(p => p.creditorMasters)
                     .HasForeignKey(d => d.tbl_client_header_creditor_id)
-                    .HasConstraintName("FK_tbl_master_tbl_client_header_tbl_client_header_creditor_id");
+                    .HasConstraintName("FK_master_clientHeader_creditor_id");
 
                 entity.HasOne(d => d.destinationAgent)
                     .WithMany(p => p.destinationClientMasters)
                     .HasForeignKey(d => d.tbl_client_header_destination_id)
-                    .HasConstraintName("FK_tbl_master_tbl_client_header_tbl_client_header_destination_id");
+                    .HasConstraintName("FK_master_clientHeader_destination_id");
 
                 entity.HasOne(d => d.originAgent)
                     .WithMany(p => p.originClientMasters)
                     .HasForeignKey(d => d.tbl_client_header_origin_id)
-                    .HasConstraintName("FK_tbl_master_tbl_client_header_tbl_client_header_origin_id");
+                    .HasConstraintName("FK_master_clientHeader_origin_id");
 
                 entity.HasOne(d => d.voyage)
                     .WithMany(p => p.masters)
                     .HasForeignKey(d => d.tbl_voyage_id)
-                    .HasConstraintName("FK_tbl_master_tbl_voyage_tbl_voyage_id");
+                    .HasConstraintName("FK_master_voyage_id");
             });
 
             modelBuilder.Entity<tbl_milestone_header>(entity =>
@@ -984,12 +1017,19 @@ namespace BTAS.Data.Models
 
                 entity.ToTable("tbl_milestone_header");
 
+                entity.HasIndex(e => e.tbl_milestone_header_code).IsUnique();
+
                 entity.Property(e => e.idtbl_milestone_header).HasColumnType("int(11)");
+
                 entity.Property(e => e.tbl_milestone_header_code).HasMaxLength(50);
+
                 entity.Property(e => e.tbl_milestone_header_name).HasMaxLength(50);
+
                 entity.Property(e => e.tbl_milestone_header_description).HasMaxLength(50);
+
                 entity.Property(e => e.tbl_milestone_header_createdBy).HasMaxLength(50);
-                entity.Property(e => e.tbl_milestone_header_createdDate).HasMaxLength(6);
+
+                entity.Property(e => e.tbl_milestone_header_createdDate).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<tbl_milestone_link>(entity =>
@@ -999,15 +1039,18 @@ namespace BTAS.Data.Models
 
                 entity.ToTable("tbl_milestone_link");
 
-                entity.HasIndex(e => e.tbl_house_id, "idx_mslink_house_link_idx");
-                entity.HasIndex(e => e.tbl_shipment_id, "idx_mslink_shipment_link_idx");
-                entity.HasIndex(e => e.tbl_master_id, "idx_mslink_master_link_idx");
+                entity.HasIndex(e => e.tbl_milestone_link_code).IsUnique();
+
+                entity.HasIndex(e => e.tbl_house_id, "IX_milestonLink_house_id");
+                entity.HasIndex(e => e.tbl_shipment_id, "IX_milestonLink_shipment_id");
+                entity.HasIndex(e => e.tbl_master_id, "IX_milestonLink_master_id");
+                entity.HasIndex(e => e.tbl_milestone_header_id, "IX_milestoneLink_msHeader_id");
 
                 entity.Property(e => e.idtbl_milestone_link).HasColumnType("int(11)");
                 entity.Property(e => e.tbl_milestone_link_code).HasMaxLength(50);
-                entity.Property(e => e.tbl_milestone_link_value).HasMaxLength(6);
+                entity.Property(e => e.tbl_milestone_link_value).HasColumnType("datetime");
                 entity.Property(e => e.tbl_milestone_link_createdBy).HasMaxLength(50);
-                entity.Property(e => e.tbl_milestone_link_createdDate).HasMaxLength(6);
+                entity.Property(e => e.tbl_milestone_link_createdDate).HasColumnType("datetime");
 
                 entity.Property(e => e.tbl_house_id).HasColumnType("int(11)");
                 entity.Property(e => e.tbl_shipment_id).HasColumnType("int(11)");
@@ -1023,25 +1066,22 @@ namespace BTAS.Data.Models
                 entity.HasOne(d => d.house)
                    .WithMany(p => p.milestoneLinks)
                    .HasForeignKey(d => d.tbl_house_id)
-                   .OnDelete(DeleteBehavior.ClientSetNull)
-                   .HasConstraintName("msLink_house_link");
+                   .HasConstraintName("FK_msLink_house_id");
 
                 entity.HasOne(d => d.shipment)
                     .WithMany(p => p.milestoneLinks)
                     .HasForeignKey(d => d.tbl_shipment_id)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("msLink_shipment_link");
+                    .HasConstraintName("FK_msLink_shipment_id");
 
                 entity.HasOne(d => d.master)
                     .WithMany(p => p.milestoneLinks)
                     .HasForeignKey(d => d.tbl_master_id)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("msLink_master_link");
+                    .HasConstraintName("FK_msLink_master_id");
+
                 entity.HasOne(d => d.milestoneHeader)
                     .WithMany(p => p.milestoneLinks)
                     .HasForeignKey(d => d.tbl_milestone_header_id)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("msLink_msHeader_link");
+                    .HasConstraintName("FK_msLink_msHeader_id");
             });
 
             modelBuilder.Entity<tbl_note_category>(entity =>
@@ -1049,7 +1089,10 @@ namespace BTAS.Data.Models
                 entity.HasKey(e => e.idtbl_note_category)
                     .HasName("PRIMARY");
 
-                entity.ToTable("tbl_note_category");
+                entity.ToTable("tbl_tbl_note_category");
+
+                entity.HasIndex(e => e.tbl_note_category_code).IsUnique();
+
                 entity.Property(e => e.idtbl_note_category).HasColumnType("int(11)");
                 entity.Property(e => e.tbl_note_category_code).HasMaxLength(50);
                 entity.Property(e => e.tbl_note_category_status).HasColumnType("tinyint(1)");
@@ -1065,16 +1108,19 @@ namespace BTAS.Data.Models
                     .HasName("PRIMARY");
 
                 entity.ToTable("tbl_note");
-                entity.HasIndex(e => e.tbl_house_id, "idx_note_house_link_idx");
-                entity.HasIndex(e => e.tbl_shipment_id, "idx_note_shipment_link_idx");
-                entity.HasIndex(e => e.tbl_master_id, "idx_note_master_link_idx");
-                entity.HasIndex(e => e.tbl_client_header_id, "idx_note_client_header_link_idx");
-                entity.HasIndex(e => e.tbl_note_category_id, "idx_note_note_category_link_idx");
+
+                entity.HasIndex(e => e.tbl_note_code) .IsUnique();
+
+                entity.HasIndex(e => e.tbl_house_id, "IX_note_house_id");
+                entity.HasIndex(e => e.tbl_shipment_id, "IX_note_shipment_id");
+                entity.HasIndex(e => e.tbl_master_id, "IX_note_master_id");
+                entity.HasIndex(e => e.tbl_client_header_id, "IX_note_clientHeader_id");
+                entity.HasIndex(e => e.tbl_note_category_id, "IX_note_noteCategory_id");
 
                 entity.Property(e => e.idtbl_note).HasColumnType("int(11)");
                 entity.Property(e => e.tbl_note_code).HasMaxLength(50);
-                entity.Property(e => e.tbl_note_status).HasColumnType("tinyint(3) unsigned");
-                entity.Property(e => e.tbl_note_createdDate).HasMaxLength(6);
+                entity.Property(e => e.tbl_note_status).HasColumnType("tinyint(1) unsigned");
+                entity.Property(e => e.tbl_note_createdDate).HasColumnType("datetime");
                 entity.Property(e => e.tbl_note_title).HasMaxLength(50);
                 entity.Property(e => e.tbl_note_description).HasMaxLength(150);
 
@@ -1093,30 +1139,29 @@ namespace BTAS.Data.Models
                 entity.HasOne(d => d.house)
                     .WithMany(p => p.notes)
                     .HasForeignKey(d => d.tbl_house_id)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("note_house_link");
+                    .HasConstraintName("FK_note_house_id");
 
                 entity.HasOne(d => d.shipment)
                     .WithMany(p => p.notes)
                     .HasForeignKey(d => d.tbl_shipment_id)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("note_shipment_link");
+                    .HasConstraintName("FK_note_shipment_id");
 
                 entity.HasOne(d => d.master)
                     .WithMany(p => p.notes)
                     .HasForeignKey(d => d.tbl_master_id)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("note_master_link");
+                    .HasConstraintName("FK_note_master_id");
+
                 entity.HasOne(d => d.clientHeader)
                     .WithMany(p => p.notes)
                     .HasForeignKey(d => d.tbl_client_header_id)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("note_client_header_link");
+                    .HasConstraintName("FK_note_clientHeader_id");
+
                 entity.HasOne(d => d.noteCategory)
                     .WithMany(p => p.notes)
                     .HasForeignKey(d => d.tbl_note_category_id)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("note_note_category_link");
+                    .HasPrincipalKey(p => p.idtbl_note_category)
+                    .HasConstraintName("FK_note_noteCategory_id");
+
             });
 
             modelBuilder.Entity<tbl_nz_routing>(entity =>
@@ -1196,17 +1241,16 @@ namespace BTAS.Data.Models
 
                 entity.ToTable("tbl_receptacle");
 
-                entity.HasIndex(e => e.tbl_house_id, "IX_tbl_receptacle_tbl_house_id");
+                entity.HasIndex(e => e.tbl_receptacle_code).IsUnique();
+
+                entity.HasIndex(e => e.tbl_house_id, "IX_receptacle_house_id");
+
 
                 entity.Property(e => e.idtbl_receptacle).HasColumnType("int(11)");
 
-                entity.Property(e => e.HouseCode).HasMaxLength(30);
-
-                entity.Property(e => e.tbl_house_id).HasColumnType("int(11)");
-
                 entity.Property(e => e.tbl_receptacle_code).HasMaxLength(50);
 
-                entity.Property(e => e.tbl_receptacle_createdDate).HasMaxLength(6);
+                entity.Property(e => e.tbl_receptacle_createdDate).HasColumnType("datetime");
 
                 entity.Property(e => e.tbl_receptacle_destination).HasMaxLength(50);
 
@@ -1232,9 +1276,13 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.tbl_house_id).HasColumnType("int(11)");
 
+                entity.Property(e => e.HouseCode).HasMaxLength(30);
+
+
                 entity.HasOne(d => d.house)
                     .WithMany(p => p.receptacles)
-                    .HasForeignKey(d => d.tbl_house_id);
+                    .HasForeignKey(d => d.tbl_house_id)
+                    .HasConstraintName("FK_receptacle_house_id");
             });
 
             modelBuilder.Entity<tbl_return>(entity =>
@@ -1308,17 +1356,17 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.VoyageNumber).HasMaxLength(30);
 
-                entity.Property(e => e.tbl_routing_cutoffDate).HasMaxLength(6);
+                entity.Property(e => e.tbl_routing_cutoffDate).HasColumnType("datetime");
 
-                entity.Property(e => e.tbl_voyage_ata).HasMaxLength(6);
+                entity.Property(e => e.tbl_voyage_ata).HasColumnType("datetime");
 
-                entity.Property(e => e.tbl_voyage_atd).HasMaxLength(6);
+                entity.Property(e => e.tbl_voyage_atd).HasColumnType("datetime");
 
                 entity.Property(e => e.tbl_voyage_dischargePort).HasMaxLength(50);
 
-                entity.Property(e => e.tbl_voyage_eta).HasMaxLength(6);
+                entity.Property(e => e.tbl_voyage_eta).HasColumnType("datetime");
 
-                entity.Property(e => e.tbl_voyage_etd).HasMaxLength(6);
+                entity.Property(e => e.tbl_voyage_etd).HasColumnType("datetime");
 
                 entity.Property(e => e.tbl_voyage_id).HasColumnType("int(11)");
 
@@ -1344,7 +1392,7 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.tbl_sea_shipment_FTA).HasColumnType("tinyint(4)");
 
-                entity.Property(e => e.tbl_sea_shipment_UN).HasPrecision(10);
+                entity.Property(e => e.tbl_sea_shipment_UN).HasPrecision(12, 3);
 
                 entity.Property(e => e.tbl_sea_shipment_ata).HasColumnType("datetime");
 
@@ -1454,11 +1502,11 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.tbl_sea_shipment_type).HasMaxLength(45);
 
-                entity.Property(e => e.tbl_sea_shipment_value).HasPrecision(10);
+                entity.Property(e => e.tbl_sea_shipment_value).HasPrecision(12, 2);
 
-                entity.Property(e => e.tbl_sea_shipment_volume).HasPrecision(10);
+                entity.Property(e => e.tbl_sea_shipment_volume).HasPrecision(12, 3);
 
-                entity.Property(e => e.tbl_sea_shipment_weight).HasPrecision(10);
+                entity.Property(e => e.tbl_sea_shipment_weight).HasPrecision(12, 3);
             });
 
             modelBuilder.Entity<tbl_service>(entity =>
@@ -1494,20 +1542,23 @@ namespace BTAS.Data.Models
 
                 entity.ToTable("tbl_shipment");
 
-                entity.HasIndex(e => e.tbl_incoterms_id, "FK_tbl_shipment_tbl_incoterms_tbl_incoterms_id_idx");
-                //Edit by HS on 25/05/2023
-                //entity.HasIndex(e => e.tbl_receptable_id, "FK_tbl_shipment_tbl_receptacle_tbl_receptacle_id_idx");
-                entity.HasIndex(e => e.tbl_receptacle_id, "FK_tbl_shipment_tbl_receptacle_tbl_receptacle_id_idx");
+                entity.HasIndex(e => e.tbl_shipment_code).IsUnique();
+
+                //unique constrain for duplicate check.
+                entity.HasIndex(e => new { e.tbl_shipment_trackingNo, e.tbl_shipment_referenceNo });
+
+                entity.HasIndex(e => e.tbl_incoterm_id, "IX_shipment_incoterm_id");
+
+                entity.HasIndex(e => e.tbl_receptacle_id, "IX_shipment_receptacle_id");
 
                 entity.Property(e => e.idtbl_shipment).HasColumnType("int(11)");
 
-                entity.Property(e => e.IncotermsCode).HasMaxLength(30);
+                entity.Property(e => e.IncotermCode).HasMaxLength(30);
 
                 entity.Property(e => e.ReceptacleCode).HasMaxLength(30);
 
-                entity.Property(e => e.tbl_incoterms_id).HasColumnType("int(11)");
-                //Edit by HS on 25/05/2023
-                //entity.Property(e => e.tbl_receptable_id).HasColumnType("int(11)");
+                entity.Property(e => e.tbl_incoterm_id).HasColumnType("int(11)");
+
                 entity.Property(e => e.tbl_receptacle_id).HasColumnType("int(11)");
 
                 entity.Property(e => e.tbl_shipment_abnNumber).HasMaxLength(45);
@@ -1572,7 +1623,7 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.tbl_shipment_hasLockerService).HasDefaultValueSql("'0'");
 
-                entity.Property(e => e.tbl_shipment_incoterm).HasMaxLength(5);
+                //entity.Property(e => e.tbl_shipment_incoterm).HasMaxLength(5);
 
                 entity.Property(e => e.tbl_shipment_instruction).HasMaxLength(150);
 
@@ -1662,17 +1713,13 @@ namespace BTAS.Data.Models
 
                 entity.HasOne(d => d.incoterm)
                     .WithMany(p => p.shipments)
-                    .HasForeignKey(d => d.tbl_incoterms_id);
+                    .HasForeignKey(d => d.tbl_incoterm_id)
+                    .HasConstraintName("FK_shipment_incoterm_id");
 
-                //Edit by HS on 25/05/2023
-                //entity.HasOne(d => d.receptable)
-                //    .WithMany(p => p.shipments)
-                //    .HasForeignKey(d => d.tbl_receptable_id)
-                //    .HasConstraintName("FK_tbl_shipment_tbl_receptacle_tbl_receptacle_id");
                 entity.HasOne(d => d.receptacle)
                     .WithMany(p => p.shipments)
                     .HasForeignKey(d => d.tbl_receptacle_id)
-                    .HasConstraintName("FK_tbl_shipment_tbl_receptacle_tbl_receptacle_id");
+                    .HasConstraintName("FK_shipment_receptacle_id");
             });
 
             modelBuilder.Entity<tbl_shipment_item>(entity =>
@@ -1680,11 +1727,14 @@ namespace BTAS.Data.Models
                 entity.HasKey(e => e.idtbl_shipment_item)
                     .HasName("PRIMARY");
 
-                entity.HasIndex(e => e.tbl_shipment_id, "FK_tbl_shipmentl_items_tbl_shipment_tbl_shipment_id_idx");
+                entity.ToTable("tbl_shipment_item");
+
+                entity.HasIndex(e => e.tbl_shipment_item_code).IsUnique();
+                entity.HasIndex(e => e.tbl_shipment_id, "IX_shipmentItem_shipment_id");
 
                 entity.Property(e => e.idtbl_shipment_item).HasColumnType("int(11)");
 
-                entity.Property(e => e.ShipmentCode).HasMaxLength(30);
+                entity.Property(e => e.ShipmentCode).HasMaxLength(50);
 
                 entity.Property(e => e.tbl_shipment_id).HasColumnType("int(11)");
 
@@ -1696,7 +1746,7 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.tbl_shipment_item_length).HasPrecision(12, 3);
 
-                entity.Property(e => e.tbl_shipment_item_qty).HasColumnType("int(3)");
+                entity.Property(e => e.tbl_shipment_item_qty).HasColumnType("int(11)");
 
                 entity.Property(e => e.tbl_shipment_item_type).HasMaxLength(5);
 
@@ -1706,14 +1756,14 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.tbl_shipment_item_width).HasPrecision(12, 3);
 
-                entity.Property(e => e.tbl_shipment_item_dangerousGoods).HasColumnType("tinyint(4)");
+                entity.Property(e => e.tbl_shipment_item_dangerousGoods).HasColumnType("tinyint(1)");
 
                 entity.Property(e => e.tbl_shipment_item_weightUnit).HasMaxLength(50);
 
                 entity.HasOne(d => d.shipment)
                     .WithMany(p => p.shipmentItems)
                     .HasForeignKey(d => d.tbl_shipment_id)
-                    .HasConstraintName("FK_tbl_shipment_item_tbl_shipment_tbl_shipment_id");
+                    .HasConstraintName("IX_shipmentItem_shipment_id");
             });
 
             modelBuilder.Entity<tbl_shipper>(entity =>
@@ -1793,7 +1843,7 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.tbl_shipment_id).HasColumnType("int(11)");
 
-                entity.Property(e => e.tbl_shipping_billing_dateAdded).HasMaxLength(6);
+                entity.Property(e => e.tbl_shipping_billing_dateAdded).HasColumnType("datetime");
 
                 entity.Property(e => e.tbl_shipping_billing_orderId).HasMaxLength(30);
 
@@ -1840,7 +1890,7 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.tbl_tracking_id).HasColumnType("int(11)");
 
-                entity.Property(e => e.tbl_tracking_createDate).HasMaxLength(6);
+                entity.Property(e => e.tbl_tracking_createDate).HasColumnType("datetime");
 
                 entity.Property(e => e.tbl_tracking_shipmentID).HasColumnType("int(11)");
             });
@@ -1854,7 +1904,7 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.tbl_tracking_id).HasColumnType("int(11)");
 
-                entity.Property(e => e.tbl_tracking_createDate).HasMaxLength(6);
+                entity.Property(e => e.tbl_tracking_createDate).HasColumnType("datetime");
 
                 entity.Property(e => e.tbl_tracking_shipmentID).HasColumnType("int(11)");
             });
@@ -1868,7 +1918,7 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.tbl_tracking_id).HasColumnType("int(11)");
 
-                entity.Property(e => e.tbl_tracking_createDate).HasMaxLength(6);
+                entity.Property(e => e.tbl_tracking_createDate).HasColumnType("datetime");
 
                 entity.Property(e => e.tbl_tracking_shipmentID).HasColumnType("int(11)");
             });
@@ -1900,7 +1950,7 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.tbl_tracking_id).HasColumnType("int(11)");
 
-                entity.Property(e => e.tbl_tracking_createDate).HasMaxLength(6);
+                entity.Property(e => e.tbl_tracking_createDate).HasColumnType("datetime");
 
                 entity.Property(e => e.tbl_tracking_shipmentID).HasColumnType("int(11)");
             });
@@ -1930,11 +1980,16 @@ namespace BTAS.Data.Models
 
                 entity.ToTable("tbl_voyage");
 
+                entity.HasIndex(e => e.tbl_voyage_code).IsUnique();
+
+                //unique constrain for duplicate check.
+                entity.HasIndex(e => new { e.tbl_voyage_number, e.tbl_voyage_carrierCode, e.tbl_voyage_etd });
+
                 entity.Property(e => e.idtbl_voyage).HasColumnType("int(11)");
 
-                entity.Property(e => e.tbl_voyage_ata).HasMaxLength(6);
+                entity.Property(e => e.tbl_voyage_ata).HasColumnType("datetime");
 
-                entity.Property(e => e.tbl_voyage_atd).HasMaxLength(6);
+                entity.Property(e => e.tbl_voyage_atd).HasColumnType("datetime");
 
                 entity.Property(e => e.tbl_voyage_carrierCode).HasMaxLength(30);
 
@@ -1944,11 +1999,11 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.tbl_voyage_dischargePort).HasMaxLength(30);
 
-                entity.Property(e => e.tbl_voyage_eta).HasMaxLength(6);
+                entity.Property(e => e.tbl_voyage_eta).HasColumnType("datetime");
 
-                entity.Property(e => e.tbl_voyage_etaDischarge).HasMaxLength(6);
+                entity.Property(e => e.tbl_voyage_etaDischarge).HasColumnType("datetime");
 
-                entity.Property(e => e.tbl_voyage_etd).HasMaxLength(6);
+                entity.Property(e => e.tbl_voyage_etd).HasColumnType("datetime");
 
                 entity.Property(e => e.tbl_voyage_loadPort).HasMaxLength(30);
 

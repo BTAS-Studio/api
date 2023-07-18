@@ -3,6 +3,7 @@ using System;
 using BTAS.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BTAS.Data.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230714010019_noteFKTest1")]
+    partial class noteFKTest1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1915,8 +1918,6 @@ namespace BTAS.Data.Migrations
                     b.HasKey("idtbl_note")
                         .HasName("PRIMARY");
 
-                    b.HasIndex("NoteCategoryCode");
-
                     b.HasIndex(new[] { "tbl_client_header_id" }, "idx_note_client_header_link_idx");
 
                     b.HasIndex(new[] { "tbl_house_id" }, "idx_note_house_link_idx");
@@ -1958,6 +1959,8 @@ namespace BTAS.Data.Migrations
 
                     b.HasKey("idtbl_note_category")
                         .HasName("PRIMARY");
+
+                    b.HasAlternateKey("tbl_note_category_code");
 
                     b.ToTable("tbl_note_category", (string)null);
                 });
@@ -3745,12 +3748,6 @@ namespace BTAS.Data.Migrations
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_note", b =>
                 {
-                    b.HasOne("BTAS.Data.Models.tbl_note_category", "noteCategory")
-                        .WithMany("notes")
-                        .HasForeignKey("NoteCategoryCode")
-                        .HasPrincipalKey("tbl_note_category_code")
-                        .HasConstraintName("note_note_category_link_code");
-
                     b.HasOne("BTAS.Data.Models.tbl_client_header", "clientHeader")
                         .WithMany("notes")
                         .HasForeignKey("tbl_client_header_id")
@@ -3765,6 +3762,11 @@ namespace BTAS.Data.Migrations
                         .WithMany("notes")
                         .HasForeignKey("tbl_master_id")
                         .HasConstraintName("note_master_link");
+
+                    b.HasOne("BTAS.Data.Models.tbl_note_category", "noteCategory")
+                        .WithMany("notes")
+                        .HasForeignKey("tbl_note_category_id")
+                        .HasConstraintName("note_note_category_link");
 
                     b.HasOne("BTAS.Data.Models.tbl_shipment", "shipment")
                         .WithMany("notes")

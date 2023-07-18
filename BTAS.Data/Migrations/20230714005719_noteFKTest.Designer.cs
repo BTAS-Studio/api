@@ -3,6 +3,7 @@ using System;
 using BTAS.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BTAS.Data.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230714005719_noteFKTest")]
+    partial class noteFKTest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -3749,7 +3752,7 @@ namespace BTAS.Data.Migrations
                         .WithMany("notes")
                         .HasForeignKey("NoteCategoryCode")
                         .HasPrincipalKey("tbl_note_category_code")
-                        .HasConstraintName("note_note_category_link_code");
+                        .HasConstraintName("note_note_category_link");
 
                     b.HasOne("BTAS.Data.Models.tbl_client_header", "clientHeader")
                         .WithMany("notes")

@@ -51,7 +51,7 @@ namespace BTAS.API.Repository
         {
             IEnumerable<tbl_client_header> _list = await _context.tbl_client_headers
                 .OrderByDescending(p => p.idtbl_client_header)
-                .Include(p => p.legalEntityAddress)
+                //.Include(p => p.address)
                 .Include(p => p.contactDetails)
                 .Include(p => p.notes)
                 .AsNoTracking().ToListAsync();
@@ -101,7 +101,7 @@ namespace BTAS.API.Repository
             try
             {
                 var qList = _context.tbl_client_headers
-                    .Include(p => p.legalEntityAddress)
+                    .Include(p => p.addresses)
                     .AsNoTracking()
                     .OrderByDescending(p => p.idtbl_client_header)
                     .AsQueryable();
@@ -208,68 +208,11 @@ namespace BTAS.API.Repository
         {
             try
             {
-                if (entity.addresses == null)
-                {
-                    return new ResponseDto
-                    {
-                        IsSuccess = false,
-                        DisplayMessage = "Address is needed."
-                    };
-                }
+             
                 entity.tbl_client_header_createdDate = DateTime.Now;
                 entity.tbl_client_header_active = true;
-                tbl_client_header result = _mapper.Map<tbl_client_headerDto, tbl_client_header>(entity);
-                var reqLegalEntityAddr = result.legalEntityAddress;
-                //Added by HS on 26/06/2023
-                ResponseDto addressResult = new();
 
-                //Edited by HS on 30/06/2023
-                //client header duplication check
-                //duplicate if a same company name with the same address(use address code to represent)
-                var duplicateClients = await _context.tbl_client_headers.OrderBy(p => p.tbl_client_header_companyName)
-                    .Include(p => p.legalEntityAddress)
-                    .AsNoTracking().Where(
-                    p => p.tbl_client_header_companyName == result.tbl_client_header_companyName)
-                    .ToListAsync();
-
-
-                //if duplicate companyNames, check their legal entity
-                if (duplicateClients != null)
-                {
-                    foreach (var duplicateClient in duplicateClients)
-                    {
-                        var dupLegalEntityAddress = duplicateClient.legalEntityAddress;
-                        if (dupLegalEntityAddress != null)
-                        {
-                            if (dupLegalEntityAddress.tbl_address_address1 == reqLegalEntityAddr.tbl_address_address1 
-                                && dupLegalEntityAddress.tbl_address_postcode == reqLegalEntityAddr.tbl_address_postcode)
-                            {
-                                //duplicate client header
-                                return new ResponseDto
-                                {
-                                    IsSuccess = true,
-                                    ReferenceNumber = duplicateClient.tbl_client_header_code,
-                                    DisplayMessage = "Client Header existed, client header code:" + duplicateClient.tbl_client_header_code
-                                };
-                            }
-                            //else continue checking other duplicate clients' legal entity adddresses 
-                        }
-                    }
-                    //if all the duplicate clinets' legal entity addresses don't match the request's legal entity address
-                    //=> a new client header with the existing company name, create a new client header
-
-                }
-
-                //Added by HS on 22/03/2023
-                //else it is a new client, create one, and legalEntity address must be provided.
-                if (result.legalEntityAddress == null)
-                {
-                    return new ResponseDto
-                    {
-                        IsSuccess = false,
-                        DisplayMessage = "Legal Entity Address must be provided for a new Client Header."
-                    };
-                }
+                tbl_client_header result = _mapper.Map<tbl_client_headerDto, tbl_client_header>(entity); 
                 result.tbl_client_header_code = await GetCHCode(result.tbl_client_header_companyName);
 
                 if (result.idtbl_client_header > 0)
@@ -288,7 +231,7 @@ namespace BTAS.API.Repository
                     {
                         foreach (var ctd in result.contactDetails)
                         {
-                            ctd.tbl_client_contact_details_code = await _contactDetailsRepo.GetNextId();
+                            ctd.tbl_client_contact_detail_code = await _contactDetailsRepo.GetNextId();
                             ctd.tbl_client_header_id = result.idtbl_client_header;
                             ctd.ClientHeaderCode = result.tbl_client_header_code;
                         }
@@ -328,9 +271,6 @@ namespace BTAS.API.Repository
         {
             try
             {
-                //var result = await _context.tbl_client_header
-                //.FirstOrDefaultAsync(x => x.idtbl_client_header == entity.idtbl_client_header || x.tbl_client_header_code == entity.tbl_client_header_code);
-
                 var result = await _context.tbl_client_headers
                     .AsNoTracking()
                     .SingleOrDefaultAsync(x => x.idtbl_client_header == entity.idtbl_client_header 

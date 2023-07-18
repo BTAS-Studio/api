@@ -61,6 +61,7 @@ namespace BTAS.API.Repository
             {
                 var qList = _context.tbl_shipments
                     .Include(x => x.receptacle)
+                    .Include(x => x.incoterm)
                     .AsNoTracking()
                     .OrderByDescending(x => x.idtbl_shipment)
                     .AsQueryable();
@@ -221,12 +222,12 @@ namespace BTAS.API.Repository
                     shipment.tbl_receptacle_id = parent.idtbl_receptacle;
                 }
             }
-            if (!String.IsNullOrEmpty(shipment.IncotermsCode))
+            if (!String.IsNullOrEmpty(shipment.IncotermCode))
             {
-                var parent = await _context.tbl_incoterms.SingleOrDefaultAsync(p => p.tbl_incoterm_code == shipment.IncotermsCode);
+                var parent = await _context.tbl_incoterms.SingleOrDefaultAsync(p => p.tbl_incoterm_code == shipment.IncotermCode);
                 if (parent != null)
                 {
-                    shipment.tbl_incoterms_id = parent.idtbl_incoterm;
+                    shipment.tbl_incoterm_id = parent.idtbl_incoterm;
                 }
             }
             if (shipment.idtbl_shipment > 0)
@@ -285,13 +286,13 @@ namespace BTAS.API.Repository
                         }
 
                     }
-                    if (!String.IsNullOrEmpty(result.IncotermsCode))
+                    if (!String.IsNullOrEmpty(result.IncotermCode))
                     {
                         var parent = await _context.tbl_incoterms.AsNoTracking()
-                            .SingleOrDefaultAsync(p => p.tbl_incoterm_code == result.IncotermsCode);
+                            .SingleOrDefaultAsync(p => p.tbl_incoterm_code == result.IncotermCode);
                         if (parent != null)
                         {
-                            result.tbl_incoterms_id = parent.idtbl_incoterm;
+                            result.tbl_incoterm_id = parent.idtbl_incoterm;
                         }
                         else
                         {
@@ -364,7 +365,7 @@ namespace BTAS.API.Repository
                             .SingleOrDefaultAsync(p => p.tbl_incoterm_code == entity.IncotermCode);
                         if (parent != null)
                         {
-                            result.tbl_incoterms_id = parent.idtbl_incoterm;
+                            result.tbl_incoterm_id = parent.idtbl_incoterm;
                         }
                         else
                         {

@@ -12,10 +12,16 @@ namespace BTAS.API.Dto
 		[DoNotInclude]
 		public int idtbl_client_contact_group { get; set; }
 		//public int tbl_client_header_id { get; set; }
+		[StringLength(50)]
 		[JsonProperty("GroupCode")]
 		[Description("Contact group reference code")]
-		public int tbl_client_contact_group_code { get; set; }
-		[JsonProperty("IsDefault")]
+		public string tbl_client_contact_group_code { get; set; }
+
+        [StringLength(50)]
+        [JsonProperty("GroupName")]
+        [Description("Contact group name")]
+        public string tbl_client_contact_group_name { get; set; }
+        [JsonProperty("IsDefault")]
 		[Description("Indicate if contact group is the default")]
 		public bool? tbl_client_contact_group_isDefault { get; set; }
 		[JsonProperty("IsActive")]

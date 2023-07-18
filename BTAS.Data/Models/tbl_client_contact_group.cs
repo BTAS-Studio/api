@@ -13,9 +13,10 @@ namespace BTAS.Data.Models
         }
 
         public int idtbl_client_contact_group { get; set; }
-        public int? tbl_client_contact_group_code { get; set; }
-        public byte tbl_client_contact_group_isDefault { get; set; }
-        public byte tbl_client_contact_group_isActive { get; set; }
+        public string tbl_client_contact_group_code { get; set; }
+        public string tbl_client_contact_group_name { get; set; }
+        public bool? tbl_client_contact_group_isDefault { get; set; }
+        public bool? tbl_client_contact_group_isActive { get; set; }
 
         public virtual ICollection<tbl_client_contact_detail> contactDetails { get; set; }
     }

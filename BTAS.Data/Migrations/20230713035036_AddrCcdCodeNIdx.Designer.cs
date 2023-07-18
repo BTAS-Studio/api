@@ -3,6 +3,7 @@ using System;
 using BTAS.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BTAS.Data.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230713035036_AddrCcdCodeNIdx")]
+    partial class AddrCcdCodeNIdx
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -516,9 +519,6 @@ namespace BTAS.Data.Migrations
 
                     b.HasAlternateKey("tbl_address_code");
 
-                    b.HasIndex("ClientHeaderCode")
-                        .IsUnique();
-
                     b.HasIndex(new[] { "ClientContactDetailCode" }, "IX_address_contactDetail_code")
                         .IsUnique();
 
@@ -752,33 +752,33 @@ namespace BTAS.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<string>("tbl_client_contact_detail_code")
+                    b.Property<string>("tbl_client_contact_details_code")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<string>("tbl_client_contact_detail_companyName")
+                    b.Property<string>("tbl_client_contact_details_companyName")
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<string>("tbl_client_contact_detail_contactName")
+                    b.Property<string>("tbl_client_contact_details_contactName")
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<string>("tbl_client_contact_detail_email")
+                    b.Property<string>("tbl_client_contact_details_email")
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<bool?>("tbl_client_contact_detail_isActive")
+                    b.Property<bool?>("tbl_client_contact_details_isActive")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValueSql("'0'");
 
-                    b.Property<string>("tbl_client_contact_detail_phone")
+                    b.Property<string>("tbl_client_contact_details_phone")
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<string>("tbl_client_contact_detail_type")
+                    b.Property<string>("tbl_client_contact_details_type")
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
@@ -788,11 +788,12 @@ namespace BTAS.Data.Migrations
                     b.HasKey("idtbl_client_contact_detail")
                         .HasName("PRIMARY");
 
-                    b.HasIndex(new[] { "ClientHeaderCode" }, "IX_contactDetail_clientHeader_code");
+                    b.HasIndex("tbl_client_contact_details_code")
+                        .IsUnique();
 
-                    b.HasIndex(new[] { "tbl_client_header_id" }, "IX_contactDetail_clientHeader_id");
+                    b.HasIndex(new[] { "tbl_client_header_id" }, "IX_tbl_client_contact_detail_tbl_client_header_id");
 
-                    b.ToTable("tbl_client_contact_detail", (string)null);
+                    b.ToTable("tbl_client_contact_details");
                 });
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_client_contact_group", b =>
@@ -846,7 +847,6 @@ namespace BTAS.Data.Migrations
                         .HasColumnType("varchar(50)");
 
                     b.Property<string>("tbl_client_header_code")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
@@ -917,6 +917,9 @@ namespace BTAS.Data.Migrations
 
                     b.HasKey("idtbl_client_header")
                         .HasName("PRIMARY");
+
+                    b.HasIndex("tbl_client_header_code")
+                        .IsUnique();
 
                     b.HasIndex("tbl_client_header_companyName", "tbl_client_header_address1", "tbl_client_header_postcode");
 
@@ -1915,8 +1918,6 @@ namespace BTAS.Data.Migrations
                     b.HasKey("idtbl_note")
                         .HasName("PRIMARY");
 
-                    b.HasIndex("NoteCategoryCode");
-
                     b.HasIndex(new[] { "tbl_client_header_id" }, "idx_note_client_header_link_idx");
 
                     b.HasIndex(new[] { "tbl_house_id" }, "idx_note_house_link_idx");
@@ -1937,7 +1938,6 @@ namespace BTAS.Data.Migrations
                         .HasColumnType("int(11)");
 
                     b.Property<string>("tbl_note_category_code")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
@@ -3541,14 +3541,13 @@ namespace BTAS.Data.Migrations
                     b.HasOne("BTAS.Data.Models.tbl_client_contact_detail", "contactDetail")
                         .WithOne("address")
                         .HasForeignKey("BTAS.Data.Models.tbl_address", "ClientContactDetailCode")
-                        .HasPrincipalKey("BTAS.Data.Models.tbl_client_contact_detail", "tbl_client_contact_detail_code")
+                        .HasPrincipalKey("BTAS.Data.Models.tbl_client_contact_detail", "tbl_client_contact_details_code")
                         .HasConstraintName("FK_address_contact_detail_code");
 
                     b.HasOne("BTAS.Data.Models.tbl_client_header", "clientHeader")
                         .WithOne("address")
-                        .HasForeignKey("BTAS.Data.Models.tbl_address", "ClientHeaderCode")
-                        .HasPrincipalKey("BTAS.Data.Models.tbl_client_header", "tbl_client_header_code")
-                        .HasConstraintName("FK_address_client_header_code");
+                        .HasForeignKey("BTAS.Data.Models.tbl_address", "tbl_client_header_id")
+                        .HasConstraintName("FK_address_client_header_id");
 
                     b.Navigation("clientHeader");
 
@@ -3559,9 +3558,8 @@ namespace BTAS.Data.Migrations
                 {
                     b.HasOne("BTAS.Data.Models.tbl_client_header", "clientHeader")
                         .WithMany("contactDetails")
-                        .HasForeignKey("ClientHeaderCode")
-                        .HasPrincipalKey("tbl_client_header_code")
-                        .HasConstraintName("FK_contactDetail_clientHeader_code");
+                        .HasForeignKey("tbl_client_header_id")
+                        .HasConstraintName("FK_contact_details_client_header_id");
 
                     b.Navigation("clientHeader");
                 });
@@ -3745,12 +3743,6 @@ namespace BTAS.Data.Migrations
 
             modelBuilder.Entity("BTAS.Data.Models.tbl_note", b =>
                 {
-                    b.HasOne("BTAS.Data.Models.tbl_note_category", "noteCategory")
-                        .WithMany("notes")
-                        .HasForeignKey("NoteCategoryCode")
-                        .HasPrincipalKey("tbl_note_category_code")
-                        .HasConstraintName("note_note_category_link_code");
-
                     b.HasOne("BTAS.Data.Models.tbl_client_header", "clientHeader")
                         .WithMany("notes")
                         .HasForeignKey("tbl_client_header_id")
@@ -3765,6 +3757,11 @@ namespace BTAS.Data.Migrations
                         .WithMany("notes")
                         .HasForeignKey("tbl_master_id")
                         .HasConstraintName("note_master_link");
+
+                    b.HasOne("BTAS.Data.Models.tbl_note_category", "noteCategory")
+                        .WithMany("notes")
+                        .HasForeignKey("tbl_note_category_id")
+                        .HasConstraintName("note_note_category_link");
 
                     b.HasOne("BTAS.Data.Models.tbl_shipment", "shipment")
                         .WithMany("notes")
