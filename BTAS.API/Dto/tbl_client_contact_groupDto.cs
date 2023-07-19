@@ -9,7 +9,7 @@ namespace BTAS.API.Dto
 	public class tbl_client_contact_groupDto
 	{
 		[JsonProperty("Id")]
-		[DoNotInclude]
+		[JsonIgnore]
 		public int idtbl_client_contact_group { get; set; }
 		//public int tbl_client_header_id { get; set; }
 		[StringLength(50)]

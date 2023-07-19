@@ -227,7 +227,7 @@ namespace BTAS.API.Repository
                 else
                 {
                     //Added by HS on 01/02/2023
-                    if (result.contactDetails != null)
+                    if (result.contactDetails.Count != 0)
                     {
                         foreach (var ctd in result.contactDetails)
                         {
@@ -252,12 +252,39 @@ namespace BTAS.API.Repository
             }
             catch (Exception ex)
             {
-                return new ResponseDto
+                if (ex.InnerException.Message == "Column 'tbl_client_header_address1' cannot be null")
                 {
-                    //Result = entity,
-                    DisplayMessage = ex.Message.ToString(),
-                    IsSuccess = false
-                };
+                    return new ResponseDto
+                    {
+                        IsSuccess = false,
+                        DisplayMessage = "Address1 cannot be null"
+                    };
+                }
+                else if (ex.InnerException.Message == "Column 'tbl_client_header_postcode' cannot be null")
+                {
+                    return new ResponseDto
+                    {
+                        IsSuccess = false,
+                        DisplayMessage = "Postcode cannot be null"
+                    };
+                }
+                else if (ex.InnerException.Message == "Column 'tbl_client_header_companyName' cannot be null")
+                {
+                    return new ResponseDto
+                    {
+                        IsSuccess = false,
+                        DisplayMessage = "CompanyName cannot be null"
+                    };
+                }
+                else
+                {
+                    return new ResponseDto
+                    {
+                        //Result = entity,
+                        DisplayMessage = ex.Message.ToString(),
+                        IsSuccess = false
+                    };
+                }
             }
 
         }

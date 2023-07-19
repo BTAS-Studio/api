@@ -9,7 +9,7 @@ namespace BTAS.API.Dto
     public class tbl_milestone_headerDto
     {
         [JsonProperty("Id")]
-        [DoNotInclude]
+        [JsonIgnore]
         public int idtbl_milestone_header { get; set; }
 
         [StringLength(50)]

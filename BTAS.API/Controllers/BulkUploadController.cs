@@ -12,6 +12,7 @@ namespace BTAS.API.Controllers
 
     [ApiController]
     [Route("api/bulkupload")]
+    [ApiVersion("2.0")]
     //[Authorize]
     public class BulkUploadController : ControllerBase
     {

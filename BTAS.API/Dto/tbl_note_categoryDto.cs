@@ -8,7 +8,7 @@ namespace BTAS.API.Dto
     public class tbl_note_categoryDto
     {
         [JsonProperty("Id")]
-        [DoNotInclude]
+        [JsonIgnore]
         public int idtbl_note_category { get; set; }
 
         [StringLength(50)]

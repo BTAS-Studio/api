@@ -219,9 +219,10 @@ namespace BTAS.API.Repository
             return _mapper.Map<List<tbl_documentDto>>(_list);
         }
 
-        public Task<IEnumerable<tbl_documentDto>> GetAllAsyncWithChildren()
+        public async Task<IEnumerable<tbl_documentDto>> GetAllAsyncWithChildren()
         {
-            throw new NotImplementedException();
+            IEnumerable<tbl_document> _list = await _context.tbl_documents.OrderByDescending(p => p.idtbl_document).ToListAsync();
+            return _mapper.Map<List<tbl_documentDto>>(_list);
         }
 
         public async Task<tbl_documentDto> GetByIdAsync(int id)

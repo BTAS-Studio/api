@@ -8,7 +8,7 @@ namespace BTAS.API.Dto
     public class tbl_shipment_itemDto
     {
         [JsonProperty("Id")]
-        [DoNotInclude]
+        [JsonIgnore]
         public int idtbl_shipment_item { get; set; }
         [JsonProperty("Code")]
         [StringLength(50)]
@@ -38,6 +38,7 @@ namespace BTAS.API.Dto
         [JsonProperty("Quantity")]
         public int tbl_shipment_item_qty { get; set; }
         [JsonProperty("ShipmentId")]
+        [JsonIgnore]
         public int? tbl_shipment_id { get; set; }
         [JsonProperty("ShipmentCode")]
         [StringLength(30)]

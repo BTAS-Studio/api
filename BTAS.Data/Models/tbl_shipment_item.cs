@@ -20,7 +20,7 @@ namespace BTAS.Data.Models
         public decimal? tbl_shipment_item_width { get; set; }
         public decimal? tbl_shipment_item_height { get; set; }
         public string tbl_shipment_item_volumeUnit { get; set; }
-        public sbyte? tbl_shipment_item_dangerousGoods { get; set; }
+        public bool? tbl_shipment_item_dangerousGoods { get; set; }
         public string tbl_shipment_item_description { get; set; }
         public string tbl_shipment_item_type { get; set; }
         public int? tbl_shipment_item_qty { get; set; }

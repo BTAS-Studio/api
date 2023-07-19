@@ -8,7 +8,7 @@ namespace BTAS.API.Dto
     public class tbl_milestone_linkDto
     {
         [JsonProperty("Id")]
-        [DoNotInclude]
+        [JsonIgnore]
         public int idtbl_milestone_link { get; set; }
         [StringLength(50)]
         [JsonProperty("Code")]
@@ -25,6 +25,7 @@ namespace BTAS.API.Dto
         public DateTime? tbl_milestone_link_createdDate { get; set; }
 
         [JsonProperty("MilestoneHeaderId")]
+        [JsonIgnore]
         public int? tbl_milestone_header_id { get; set; }
 
         [StringLength(50)]
@@ -32,6 +33,7 @@ namespace BTAS.API.Dto
         public string MilestoneHeaderCode { get; set; }
 
         [JsonProperty("MasterId")]
+        [JsonIgnore]
         public int? tbl_master_id { get; set; }
 
         [StringLength(50)]
@@ -39,6 +41,7 @@ namespace BTAS.API.Dto
         public string MasterCode { get; set; }
 
         [JsonProperty("HouseId")]
+        [JsonIgnore]
         public int? tbl_house_id { get; set; }
 
         [StringLength(50)]
@@ -46,6 +49,7 @@ namespace BTAS.API.Dto
         public string HouseCode { get; set; }
 
         [JsonProperty("ShipmentId")]
+        [JsonIgnore]
         public int? tbl_shipment_id { get; set; }
 
         [StringLength(50)]
@@ -53,8 +57,8 @@ namespace BTAS.API.Dto
         public string ShipmentCode { get; set; }
 
         public virtual tbl_milestone_headerDto milestoneHeader { get; set; }
-        public virtual tbl_master master { get; set; }
-        public virtual tbl_house house { get; set; }
-        public virtual tbl_shipment shipment { get; set; }
+        public virtual tbl_masterDto master { get; set; }
+        public virtual tbl_houseDto house { get; set; }
+        public virtual tbl_shipmentDto shipment { get; set; }
     }
 }

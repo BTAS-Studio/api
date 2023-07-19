@@ -34,7 +34,7 @@ namespace BTAS.Data.Models
         public bool? tbl_client_header_isReceivable { get; set; }
         public bool? tbl_client_header_isWarehouse { get; set; }
         public string tbl_client_header_createdBy { get; set; }
-        public DateTime tbl_client_header_createdDate { get; set; }
+        public DateTime? tbl_client_header_createdDate { get; set; }
         public string tbl_client_header_companyName { get; set; }
         public string tbl_client_header_contactName { get; set; }
         public string tbl_client_header_email { get; set; }

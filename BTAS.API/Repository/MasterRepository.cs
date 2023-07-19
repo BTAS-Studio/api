@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.Internal;
+using Azure.Security.KeyVault.Certificates;
 using BTAS.API.Dto;
 using BTAS.API.Extensions;
 using BTAS.API.Models;
@@ -231,7 +232,7 @@ namespace BTAS.API.Repository
                             {
                                 originalValue = jsonObj[filter.fieldName];
 
-                                (containsDateTime, jsonString) = MakeVoyageJsonString(filter, containsDateTime, jsonString);
+                                (containsDateTime, jsonString) = MakeClientHeaderJsonString(filter, containsDateTime, jsonString);
                             }
                             (propertyInfo, filter.fieldValue, containsDateTime) = GetParentPropertyInfo<tbl_master, tbl_client_header, tbl_client_headerDto>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
                         }
@@ -244,7 +245,7 @@ namespace BTAS.API.Repository
                             {
                                 originalValue = jsonObj[filter.fieldName];
 
-                                (containsDateTime, jsonString) = MakeVoyageJsonString(filter, containsDateTime, jsonString);
+                                (containsDateTime, jsonString) = MakeClientHeaderJsonString(filter, containsDateTime, jsonString);
                             }
                             (propertyInfo, filter.fieldValue, containsDateTime) = GetParentPropertyInfo<tbl_master, tbl_client_header, tbl_client_headerDto>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
                         }
@@ -257,7 +258,7 @@ namespace BTAS.API.Repository
                             {
                                 originalValue = jsonObj[filter.fieldName];
 
-                                (containsDateTime, jsonString) = MakeVoyageJsonString(filter, containsDateTime, jsonString);
+                                (containsDateTime, jsonString) = MakeClientHeaderJsonString(filter, containsDateTime, jsonString);
                             }
                             (propertyInfo, filter.fieldValue, containsDateTime) = GetParentPropertyInfo<tbl_master, tbl_client_header, tbl_client_headerDto>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
                         }
@@ -270,7 +271,7 @@ namespace BTAS.API.Repository
                             {
                                 originalValue = jsonObj[filter.fieldName];
 
-                                (containsDateTime, jsonString) = MakeVoyageJsonString(filter, containsDateTime, jsonString);
+                                (containsDateTime, jsonString) = MakeClientHeaderJsonString(filter, containsDateTime, jsonString);
                             }
                             (propertyInfo, filter.fieldValue, containsDateTime) = GetParentPropertyInfo<tbl_master, tbl_client_header, tbl_client_headerDto>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
                         }
@@ -291,13 +292,14 @@ namespace BTAS.API.Repository
 
                         if (propertyLambda != null)
                         {
-                            qList = qList.Provider.CreateQuery<tbl_master>(Expression.Call(
-                                       typeof(Queryable),
-                                       "Where",
-                                       new[] { elementType },
-                                       qList.Expression,
-                                       propertyLambda
-                                   ));
+                            //qList = qList.Provider.CreateQuery<tbl_master>(Expression.Call(
+                            //           typeof(Queryable),
+                            //           "Where",
+                            //           new[] { elementType },
+                            //           qList.Expression,
+                            //           propertyLambda
+                            //       ));
+                            qList = qList.Where(propertyLambda);
                         }
                     }
                 }
@@ -306,6 +308,10 @@ namespace BTAS.API.Repository
                 {
                     return null;
                 }
+                //if (qList.Count() < customFilters.PageSize)
+                //{
+                //    customFilters.PageSize = qList.Count();
+                //}
                 var filtered = await qList.Skip(customFilters.Page * customFilters.PageSize).Take(customFilters.PageSize).ToListAsync();
                 return _mapper.Map<IEnumerable<tbl_masterDto>>(filtered);
             }

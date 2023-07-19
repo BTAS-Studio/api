@@ -114,7 +114,7 @@ namespace BTAS.Data.Models
 
                 entity.HasIndex(e => e.tbl_address_code).IsUnique();
 
-                entity.HasIndex(p => new { p.tbl_address_companyName, p.tbl_address_postcode, p.tbl_address_address1 });
+                entity.HasIndex(p => new { p.tbl_address_companyName, p.tbl_address_postcode, p.tbl_address_address1 }).IsUnique();
 
                 entity.Property(e => e.idtbl_address).HasColumnType("int(11)");
 
@@ -126,7 +126,7 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.tbl_address_isBilling).HasColumnType("tinyint(1) unsigned");
 
-                entity.Property(e => e.tbl_address_companyName).HasMaxLength(150);
+                entity.Property(e => e.tbl_address_companyName).HasMaxLength(150).IsRequired();
 
                 entity.Property(e => e.tbl_address_contactName).HasMaxLength(50);
 
@@ -136,7 +136,7 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.tbl_address_abn).HasMaxLength(50);
 
-                entity.Property(e => e.tbl_address_address1).HasMaxLength(150);
+                entity.Property(e => e.tbl_address_address1).HasMaxLength(150).IsRequired();
 
                 entity.Property(e => e.tbl_address_address2).HasMaxLength(150);
 
@@ -146,7 +146,7 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.tbl_address_state).HasMaxLength(50);
 
-                entity.Property(e => e.tbl_address_postcode).HasMaxLength(50);
+                entity.Property(e => e.tbl_address_postcode).HasMaxLength(50).IsRequired();
 
                 entity.Property(e => e.tbl_address_country).HasMaxLength(50);
 
@@ -322,7 +322,7 @@ namespace BTAS.Data.Models
                 entity.HasIndex(e => e.tbl_client_contact_detail_code).IsUnique();
 
                 entity.HasIndex(e => e.tbl_client_header_id, "IX_contactDetail_clientHeader_id");
-                //entity.HasIndex(e => e.ClientHeaderCode, "IX_contactDetail_clientHeader_code");
+
 
                 entity.Property(e => e.idtbl_client_contact_detail).HasColumnType("int(11)");
 
@@ -350,13 +350,6 @@ namespace BTAS.Data.Models
                     .HasForeignKey(d => d.tbl_client_header_id)
                     .HasPrincipalKey(p => p.idtbl_client_header)
                     .HasConstraintName("FK_contactDetail_clientHeader_id");
-
-                //entity.HasOne(d => d.clientHeader)
-                //    .WithMany(p => p.contactDetails)
-                //    .HasForeignKey(d => d.ClientHeaderCode)
-                //    .HasPrincipalKey(p => p.tbl_client_header_code)
-                //    .HasConstraintName("FK_contactDetail_clientHeader_code");
-
             });
 
             modelBuilder.Entity<tbl_client_contact_group>(entity =>
@@ -368,7 +361,7 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.idtbl_client_contact_group).HasColumnType("int(11)");
 
-                entity.Property(e => e.tbl_client_contact_group_code).HasColumnType("int(11)");
+                entity.Property(e => e.tbl_client_contact_group_code).HasMaxLength(50);
 
                 entity.Property(e => e.tbl_client_contact_group_name).HasMaxLength(50);
 
@@ -388,7 +381,7 @@ namespace BTAS.Data.Models
 
                 entity.HasIndex(e => e.tbl_client_header_code).IsUnique();
                 //unique constraint for client header where same companyName has different addresses
-                entity.HasIndex(p => new { p.tbl_client_header_companyName, p.tbl_client_header_postcode, p.tbl_client_header_address1 });
+                entity.HasIndex(p => new { p.tbl_client_header_companyName, p.tbl_client_header_postcode, p.tbl_client_header_address1 }).IsUnique();
                 
                 
                 entity.Property(e => e.idtbl_client_header).HasColumnType("int(11)");
@@ -397,9 +390,9 @@ namespace BTAS.Data.Models
                 
                 entity.Property(e => e.tbl_client_header_createdDate).HasColumnType("datetime");
 
-                entity.Property(e => e.tbl_client_header_createdBy).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.tbl_client_header_createdBy).HasMaxLength(50);
 
-                entity.Property(e => e.tbl_client_header_companyName).HasMaxLength(100);
+                entity.Property(e => e.tbl_client_header_companyName).HasMaxLength(150).IsRequired();
 
                 entity.Property(e => e.tbl_client_header_contactName).HasMaxLength(50);
 
@@ -411,7 +404,7 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.tbl_client_header_closestPort).HasMaxLength(50);
 
-                entity.Property(e => e.tbl_client_header_address1).HasMaxLength(150);
+                entity.Property(e => e.tbl_client_header_address1).HasMaxLength(150).IsRequired();
 
                 entity.Property(e => e.tbl_client_header_address2).HasMaxLength(150);
 
@@ -421,7 +414,7 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.tbl_client_header_state).HasMaxLength(50);
 
-                entity.Property(e => e.tbl_client_header_postcode).HasMaxLength(50);
+                entity.Property(e => e.tbl_client_header_postcode).HasMaxLength(50).IsRequired();
 
                 entity.Property(e => e.tbl_client_header_country).HasMaxLength(50);
 
@@ -436,9 +429,10 @@ namespace BTAS.Data.Models
 
                 entity.HasIndex(e => e.tbl_container_code).IsUnique();
                 //unique constrain for duplicate check.
-                entity.HasIndex(e => new { e.tbl_container_number, e.tbl_container_sealNumber });
+                entity.HasIndex(e => new { e.tbl_container_number, e.tbl_container_sealNumber }).IsUnique();
 
                 entity.HasIndex(e => e.tbl_master_id, "IX_container_master_id");
+
 
                 entity.Property(e => e.idtbl_container).HasColumnType("int(11)");
 
@@ -454,11 +448,11 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.tbl_container_isoType).HasMaxLength(50);
 
-                entity.Property(e => e.tbl_container_number).HasMaxLength(50);
+                entity.Property(e => e.tbl_container_number).HasMaxLength(50).IsRequired();
 
                 entity.Property(e => e.tbl_container_qty).HasColumnType("int(11)");
 
-                entity.Property(e => e.tbl_container_sealNumber).HasMaxLength(50);
+                entity.Property(e => e.tbl_container_sealNumber).HasMaxLength(50).IsRequired();
 
                 entity.Property(e => e.tbl_container_sealedBy).HasMaxLength(50);
 
@@ -605,7 +599,7 @@ namespace BTAS.Data.Models
                 entity.HasIndex(e => e.tbl_house_code).IsUnique();
 
                 //unique constrain for duplicate check.
-                entity.HasIndex(e => new { e.tbl_house_billNumber, e.tbl_house_value });
+                entity.HasIndex(e => new { e.tbl_house_billNumber, e.tbl_house_value }).IsUnique();
 
                 entity.HasIndex(e => e.tbl_consignee_id, "IX_house_clientHeader_consignee_id");
 
@@ -632,7 +626,7 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.tbl_house_airJobReference).HasMaxLength(50);
 
-                entity.Property(e => e.tbl_house_billNumber).HasMaxLength(50);
+                entity.Property(e => e.tbl_house_billNumber).HasMaxLength(50).IsRequired();
 
                 entity.Property(e => e.tbl_house_class).HasMaxLength(50);
 
@@ -660,8 +654,6 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.tbl_house_height).HasPrecision(12, 3);
 
-                //entity.Property(e => e.tbl_house_incotermCode).HasMaxLength(50);
-
                 entity.Property(e => e.tbl_house_latestTracking).HasMaxLength(50);
 
                 entity.Property(e => e.tbl_house_length).HasPrecision(12, 3);
@@ -688,7 +680,7 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.tbl_house_type).HasMaxLength(50);
 
-                entity.Property(e => e.tbl_house_value).HasPrecision(12, 2);
+                entity.Property(e => e.tbl_house_value).HasPrecision(12, 2).IsRequired();
 
                 entity.Property(e => e.tbl_house_volume).HasPrecision(12, 3);
 
@@ -865,6 +857,7 @@ namespace BTAS.Data.Models
 
                 entity.ToTable("tbl_incoterm");
 
+                entity.HasIndex(e => e.tbl_incoterm_code).IsUnique();
 
 
                 entity.Property(e => e.idtbl_incoterm).HasColumnType("int(11)");
@@ -880,6 +873,9 @@ namespace BTAS.Data.Models
                     .HasName("PRIMARY");
 
                 entity.ToTable("tbl_item_sku");
+
+                entity.HasIndex(e => e.tbl_item_sku_code).IsUnique();
+
 
                 entity.Property(e => e.idtbl_item_sku).HasColumnType("int(11)");
 
@@ -932,7 +928,7 @@ namespace BTAS.Data.Models
                 entity.HasIndex(e => e.tbl_master_code).IsUnique();
 
                 //unique constrain for duplicate check.
-                entity.HasIndex(e => new { e.tbl_master_billNumber, e.tbl_master_status });
+                entity.HasIndex(e => new { e.tbl_master_billNumber, e.tbl_master_status }).IsUnique();
 
                 entity.HasIndex(e => e.tbl_client_header_carrier_id, "IX_master_clientHeader_carrier_id");
 
@@ -947,7 +943,7 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.idtbl_master).HasColumnType("int(11)");
 
-                entity.Property(e => e.tbl_master_billNumber).HasMaxLength(50);
+                entity.Property(e => e.tbl_master_billNumber).HasMaxLength(50).IsRequired();
 
                 entity.Property(e => e.tbl_master_bookingNumber).HasMaxLength(50);
 
@@ -957,7 +953,7 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.tbl_master_createdDate).HasColumnType("datetime");
 
-                entity.Property(e => e.tbl_master_status).HasMaxLength(50);
+                entity.Property(e => e.tbl_master_status).HasMaxLength(50).IsRequired();
 
                 entity.Property(e => e.tbl_master_transportType).HasMaxLength(50);
 
@@ -1017,13 +1013,16 @@ namespace BTAS.Data.Models
 
                 entity.ToTable("tbl_milestone_header");
 
+                entity.HasIndex(e => e.tbl_milestone_header_name).IsUnique();
+
                 entity.HasIndex(e => e.tbl_milestone_header_code).IsUnique();
+
 
                 entity.Property(e => e.idtbl_milestone_header).HasColumnType("int(11)");
 
                 entity.Property(e => e.tbl_milestone_header_code).HasMaxLength(50);
 
-                entity.Property(e => e.tbl_milestone_header_name).HasMaxLength(50);
+                entity.Property(e => e.tbl_milestone_header_name).HasMaxLength(50).IsRequired();
 
                 entity.Property(e => e.tbl_milestone_header_description).HasMaxLength(50);
 
@@ -1091,12 +1090,14 @@ namespace BTAS.Data.Models
 
                 entity.ToTable("tbl_tbl_note_category");
 
+                entity.HasIndex(e => e.tbl_note_category_name).IsUnique();
+
                 entity.HasIndex(e => e.tbl_note_category_code).IsUnique();
 
                 entity.Property(e => e.idtbl_note_category).HasColumnType("int(11)");
                 entity.Property(e => e.tbl_note_category_code).HasMaxLength(50);
                 entity.Property(e => e.tbl_note_category_status).HasColumnType("tinyint(1)");
-                entity.Property(e => e.tbl_note_category_name).HasMaxLength(50);
+                entity.Property(e => e.tbl_note_category_name).HasMaxLength(50).IsRequired();
                 entity.Property(e => e.tbl_note_category_color).HasMaxLength(50);
                 entity.Property(e => e.tbl_note_category_value).HasMaxLength(50);
 
@@ -1545,11 +1546,12 @@ namespace BTAS.Data.Models
                 entity.HasIndex(e => e.tbl_shipment_code).IsUnique();
 
                 //unique constrain for duplicate check.
-                entity.HasIndex(e => new { e.tbl_shipment_trackingNo, e.tbl_shipment_referenceNo });
+                entity.HasIndex(e => new { e.tbl_shipment_trackingNo, e.tbl_shipment_referenceNo }).IsUnique();
 
                 entity.HasIndex(e => e.tbl_incoterm_id, "IX_shipment_incoterm_id");
 
                 entity.HasIndex(e => e.tbl_receptacle_id, "IX_shipment_receptacle_id");
+
 
                 entity.Property(e => e.idtbl_shipment).HasColumnType("int(11)");
 
@@ -1623,8 +1625,6 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.tbl_shipment_hasLockerService).HasDefaultValueSql("'0'");
 
-                //entity.Property(e => e.tbl_shipment_incoterm).HasMaxLength(5);
-
                 entity.Property(e => e.tbl_shipment_instruction).HasMaxLength(150);
 
                 entity.Property(e => e.tbl_shipment_invoiceCurrency).HasMaxLength(3);
@@ -1641,7 +1641,7 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.tbl_shipment_readyDate).HasColumnType("datetime");
 
-                entity.Property(e => e.tbl_shipment_referenceNo).HasMaxLength(50);
+                entity.Property(e => e.tbl_shipment_referenceNo).HasMaxLength(50).IsRequired();
 
                 entity.Property(e => e.tbl_shipment_returnAddress1).HasMaxLength(150);
 
@@ -1705,7 +1705,7 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.tbl_shipment_tailLiftO).HasDefaultValueSql("'0'");
 
-                entity.Property(e => e.tbl_shipment_trackingNo).HasMaxLength(50);
+                entity.Property(e => e.tbl_shipment_trackingNo).HasMaxLength(50).IsRequired();
 
                 entity.Property(e => e.tbl_shipment_vendorId).HasMaxLength(45);
 
@@ -1983,7 +1983,8 @@ namespace BTAS.Data.Models
                 entity.HasIndex(e => e.tbl_voyage_code).IsUnique();
 
                 //unique constrain for duplicate check.
-                entity.HasIndex(e => new { e.tbl_voyage_number, e.tbl_voyage_carrierCode, e.tbl_voyage_etd });
+                entity.HasIndex(e => new { e.tbl_voyage_number, e.tbl_voyage_carrierCode, e.tbl_voyage_etd }).IsUnique();
+
 
                 entity.Property(e => e.idtbl_voyage).HasColumnType("int(11)");
 
@@ -1991,7 +1992,7 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.tbl_voyage_atd).HasColumnType("datetime");
 
-                entity.Property(e => e.tbl_voyage_carrierCode).HasMaxLength(30);
+                entity.Property(e => e.tbl_voyage_carrierCode).HasMaxLength(30).IsRequired();
 
                 entity.Property(e => e.tbl_voyage_code).HasMaxLength(30);
 
@@ -2003,11 +2004,11 @@ namespace BTAS.Data.Models
 
                 entity.Property(e => e.tbl_voyage_etaDischarge).HasColumnType("datetime");
 
-                entity.Property(e => e.tbl_voyage_etd).HasColumnType("datetime");
+                entity.Property(e => e.tbl_voyage_etd).HasColumnType("datetime").IsRequired();
 
                 entity.Property(e => e.tbl_voyage_loadPort).HasMaxLength(30);
 
-                entity.Property(e => e.tbl_voyage_number).HasMaxLength(30);
+                entity.Property(e => e.tbl_voyage_number).HasMaxLength(30).IsRequired();
 
                 entity.Property(e => e.tbl_voyage_status).HasMaxLength(30);
 

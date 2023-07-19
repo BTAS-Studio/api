@@ -61,15 +61,6 @@ namespace BTAS.API.Repository.Upload
                 result.tbl_voyage_code = referenceNumber;
                 result.tbl_voyage_status = "OPEN";
 
-                if (result.idtbl_voyage > 0)
-                {
-                    return new ResponseDto
-                    {
-                        Result = entity,
-                        DisplayMessage = "Unable to create duplicate voyage record",
-                        IsSuccess = false
-                    };
-                }
 
                 //Added by HS on 26/06/2023
                 if (result.houses.Count > 0)
@@ -85,6 +76,10 @@ namespace BTAS.API.Repository.Upload
                         master.tbl_master_code = await _masterRepository.GetNextId();
                         //link master to voyage
                         master.VoyageCode = referenceNumber;
+                        if (master.originAgent != null)
+                        {
+
+                        }
                         //Master Sea
                         if (master.containers.Count != 0)
                         {
@@ -98,8 +93,6 @@ namespace BTAS.API.Repository.Upload
                                     {
                                         house.tbl_house_code = await _houseRepository.GetNextId();
                                         house.ContainerCode = container.tbl_container_code;
-                                        house.tbl_master_id = container.tbl_master_id;
-                                        house.MasterCode = container.MasterCode;
                                         //if (house.receptacles.Count != 0)
                                         //{
                                         //    foreach (var receptacle in house.receptacles)

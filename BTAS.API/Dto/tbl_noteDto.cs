@@ -9,7 +9,7 @@ namespace BTAS.API.Dto
     public class tbl_noteDto
     {
         [JsonProperty("Id")]
-        [DoNotInclude]
+        [JsonIgnore]
         public int idtbl_note { get; set; }
 
         [StringLength(50)]
@@ -32,6 +32,7 @@ namespace BTAS.API.Dto
 
 
         [JsonProperty("MasterId")]
+        [JsonIgnore]
         public int? tbl_master_id { get; set; }
 
         [StringLength(50)]
@@ -39,6 +40,7 @@ namespace BTAS.API.Dto
         public string MasterCode { get; set; }
 
         [JsonProperty("HouseId")]
+        [JsonIgnore]
         public int? tbl_house_id { get; set; }
 
         [StringLength(50)]
@@ -46,6 +48,7 @@ namespace BTAS.API.Dto
         public string HouseCode { get; set; }
 
         [JsonProperty("ShipmentId")]
+        [JsonIgnore]
         public int? tbl_shipment_id { get; set; }
 
         [StringLength(50)]
@@ -53,6 +56,7 @@ namespace BTAS.API.Dto
         public string ShipmentCode { get; set; }
 
         [JsonProperty("ClientId")]
+        [JsonIgnore]
         public int? tbl_client_header_id { get; set; }
 
         [StringLength(50)]
@@ -65,6 +69,7 @@ namespace BTAS.API.Dto
         public virtual tbl_client_headerDto client_header { get; set; }
 
         [JsonProperty("NoteCategoryId")]
+        [JsonIgnore]
         public int? tbl_note_category_id { get; set; }
 
         [StringLength(50)]

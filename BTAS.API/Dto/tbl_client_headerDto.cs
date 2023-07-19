@@ -55,7 +55,7 @@ namespace BTAS.API.Dto
         [JsonProperty("CreatedDate")]
         //[DoNotInclude]
         public DateTime? tbl_client_header_createdDate { get; set; }
-        [StringLength(100)]
+        [StringLength(150)]
         [JsonProperty("CompanyName")]
         [Description("Client's company name")]
         public string tbl_client_header_companyName { get; set; }
