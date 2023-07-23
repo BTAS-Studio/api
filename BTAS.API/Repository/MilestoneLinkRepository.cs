@@ -262,9 +262,10 @@ namespace BTAS.API.Repository
             return _mapper.Map<List<tbl_milestone_linkDto>>(_list);
         }
 
-        public Task<IEnumerable<tbl_milestone_linkDto>> GetAllAsyncWithChildren()
+        public async Task<IEnumerable<tbl_milestone_linkDto>> GetAllAsyncWithChildren()
         {
-            throw new NotImplementedException();
+            IEnumerable<tbl_milestone_link> _list = await _context.tbl_milestone_links.OrderByDescending(p => p.idtbl_milestone_link).ToListAsync();
+            return _mapper.Map<List<tbl_milestone_linkDto>>(_list);
         }
 
         public async Task<tbl_milestone_linkDto> GetByIdAsync(int id)

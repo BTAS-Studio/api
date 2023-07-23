@@ -46,7 +46,7 @@ namespace BTAS.Data.Migrations
                     tbl_address_isPickup = table.Column<byte>(type: "tinyint(1) unsigned", nullable: true),
                     tbl_address_isDelivery = table.Column<byte>(type: "tinyint(1) unsigned", nullable: true),
                     tbl_address_isBilling = table.Column<byte>(type: "tinyint(1) unsigned", nullable: true),
-                    tbl_address_companyName = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: true, collation: "utf8mb4_general_ci")
+                    tbl_address_companyName = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: false, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     tbl_address_contactName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -56,7 +56,7 @@ namespace BTAS.Data.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     tbl_address_abn = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    tbl_address_address1 = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: true, collation: "utf8mb4_general_ci")
+                    tbl_address_address1 = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: false, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     tbl_address_address2 = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: true, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -66,7 +66,7 @@ namespace BTAS.Data.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     tbl_address_state = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    tbl_address_postcode = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true, collation: "utf8mb4_general_ci")
+                    tbl_address_postcode = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     tbl_address_country = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -270,10 +270,10 @@ namespace BTAS.Data.Migrations
                     tbl_client_header_isPayable = table.Column<bool>(type: "tinyint(1)", nullable: true),
                     tbl_client_header_isReceivable = table.Column<bool>(type: "tinyint(1)", nullable: true),
                     tbl_client_header_isWarehouse = table.Column<bool>(type: "tinyint(1)", nullable: true),
-                    tbl_client_header_createdBy = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false, collation: "utf8mb4_general_ci")
+                    tbl_client_header_createdBy = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    tbl_client_header_createdDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    tbl_client_header_companyName = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true, collation: "utf8mb4_general_ci")
+                    tbl_client_header_createdDate = table.Column<DateTime>(type: "datetime", nullable: true),
+                    tbl_client_header_companyName = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: false, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     tbl_client_header_contactName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -285,7 +285,7 @@ namespace BTAS.Data.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     tbl_client_header_abn = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    tbl_client_header_address1 = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: true, collation: "utf8mb4_general_ci")
+                    tbl_client_header_address1 = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: false, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     tbl_client_header_address2 = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: true, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -295,7 +295,7 @@ namespace BTAS.Data.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     tbl_client_header_state = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    tbl_client_header_postcode = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true, collation: "utf8mb4_general_ci")
+                    tbl_client_header_postcode = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     tbl_client_header_country = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4")
@@ -525,7 +525,7 @@ namespace BTAS.Data.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     tbl_milestone_header_code = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    tbl_milestone_header_name = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true, collation: "utf8mb4_general_ci")
+                    tbl_milestone_header_name = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     tbl_milestone_header_description = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -899,7 +899,7 @@ namespace BTAS.Data.Migrations
                     tbl_note_category_code = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     tbl_note_category_status = table.Column<bool>(type: "tinyint(1)", nullable: true),
-                    tbl_note_category_name = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true, collation: "utf8mb4_general_ci")
+                    tbl_note_category_name = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     tbl_note_category_color = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -1059,9 +1059,9 @@ namespace BTAS.Data.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     tbl_voyage_vesselNumber = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    tbl_voyage_number = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true, collation: "utf8mb4_general_ci")
+                    tbl_voyage_number = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: false, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    tbl_voyage_carrierCode = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true, collation: "utf8mb4_general_ci")
+                    tbl_voyage_carrierCode = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: false, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     tbl_voyage_loadPort = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -1069,7 +1069,7 @@ namespace BTAS.Data.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     tbl_voyage_destinationPort = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    tbl_voyage_etd = table.Column<DateTime>(type: "datetime", nullable: true),
+                    tbl_voyage_etd = table.Column<DateTime>(type: "datetime", nullable: false),
                     tbl_voyage_eta = table.Column<DateTime>(type: "datetime", nullable: true),
                     tbl_voyage_etaDischarge = table.Column<DateTime>(type: "datetime", nullable: true),
                     tbl_voyage_atd = table.Column<DateTime>(type: "datetime", nullable: true),
@@ -1238,9 +1238,9 @@ namespace BTAS.Data.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     tbl_master_bookingNumber = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    tbl_master_billNumber = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true, collation: "utf8mb4_general_ci")
+                    tbl_master_billNumber = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    tbl_master_status = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true, collation: "utf8mb4_general_ci")
+                    tbl_master_status = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     tbl_master_type = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -1364,13 +1364,13 @@ namespace BTAS.Data.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     tbl_container_status = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    tbl_container_number = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true, collation: "utf8mb4_general_ci")
+                    tbl_container_number = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     tbl_container_isoType = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     tbl_container_cargoType = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    tbl_container_sealNumber = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true, collation: "utf8mb4_general_ci")
+                    tbl_container_sealNumber = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     tbl_container_qty = table.Column<int>(type: "int(11)", nullable: false),
                     tbl_container_grossWeight = table.Column<decimal>(type: "decimal(12,3)", precision: 12, scale: 3, nullable: false),
@@ -1401,7 +1401,7 @@ namespace BTAS.Data.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     tbl_house_code = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    tbl_house_billNumber = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true, collation: "utf8mb4_general_ci")
+                    tbl_house_billNumber = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     tbl_house_type = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -1425,7 +1425,7 @@ namespace BTAS.Data.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     tbl_house_destinationAirport = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    tbl_house_value = table.Column<decimal>(type: "decimal(12,2)", precision: 12, scale: 2, nullable: true),
+                    tbl_house_value = table.Column<decimal>(type: "decimal(12,2)", precision: 12, scale: 2, nullable: false),
                     tbl_house_description = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: true, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     tbl_house_native_description = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: true, collation: "utf8mb4_general_ci")
@@ -1648,9 +1648,9 @@ namespace BTAS.Data.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     tbl_shipment_shipperCode = table.Column<string>(type: "varchar(10)", maxLength: 10, nullable: true, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    tbl_shipment_trackingNo = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true, collation: "utf8mb4_general_ci")
+                    tbl_shipment_trackingNo = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    tbl_shipment_referenceNo = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true, collation: "utf8mb4_general_ci")
+                    tbl_shipment_referenceNo = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     tbl_shipment_description = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: true, collation: "utf8mb4_general_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -2085,7 +2085,8 @@ namespace BTAS.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_tbl_address_tbl_address_companyName_tbl_address_postcode_tbl~",
                 table: "tbl_address",
-                columns: new[] { "tbl_address_companyName", "tbl_address_postcode", "tbl_address_address1" });
+                columns: new[] { "tbl_address_companyName", "tbl_address_postcode", "tbl_address_address1" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_tbl_addresstbl_client_header_clientHeadersidtbl_client_header",
@@ -2117,7 +2118,8 @@ namespace BTAS.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_tbl_client_header_tbl_client_header_companyName_tbl_client_h~",
                 table: "tbl_client_header",
-                columns: new[] { "tbl_client_header_companyName", "tbl_client_header_postcode", "tbl_client_header_address1" });
+                columns: new[] { "tbl_client_header_companyName", "tbl_client_header_postcode", "tbl_client_header_address1" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_container_master_id",
@@ -2133,7 +2135,8 @@ namespace BTAS.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_tbl_container_tbl_container_number_tbl_container_sealNumber",
                 table: "tbl_container",
-                columns: new[] { "tbl_container_number", "tbl_container_sealNumber" });
+                columns: new[] { "tbl_container_number", "tbl_container_sealNumber" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_document_house_id",
@@ -2210,7 +2213,8 @@ namespace BTAS.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_tbl_house_tbl_house_billNumber_tbl_house_value",
                 table: "tbl_house",
-                columns: new[] { "tbl_house_billNumber", "tbl_house_value" });
+                columns: new[] { "tbl_house_billNumber", "tbl_house_value" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_tbl_house_tbl_house_code",
@@ -2233,6 +2237,18 @@ namespace BTAS.Data.Migrations
                 name: "IX_tbl_house_itemtbl_item_sku_itemSkusidtbl_item_sku",
                 table: "tbl_house_itemtbl_item_sku",
                 column: "itemSkusidtbl_item_sku");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tbl_incoterm_tbl_incoterm_code",
+                table: "tbl_incoterm",
+                column: "tbl_incoterm_code",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tbl_item_sku_tbl_item_sku_code",
+                table: "tbl_item_sku",
+                column: "tbl_item_sku_code",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_tbl_item_skutbl_shipment_item_shipmentItemsidtbl_shipment_it~",
@@ -2267,7 +2283,8 @@ namespace BTAS.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_tbl_master_tbl_master_billNumber_tbl_master_status",
                 table: "tbl_master",
-                columns: new[] { "tbl_master_billNumber", "tbl_master_status" });
+                columns: new[] { "tbl_master_billNumber", "tbl_master_status" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_tbl_master_tbl_master_code",
@@ -2279,6 +2296,12 @@ namespace BTAS.Data.Migrations
                 name: "IX_tbl_milestone_header_tbl_milestone_header_code",
                 table: "tbl_milestone_header",
                 column: "tbl_milestone_header_code",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tbl_milestone_header_tbl_milestone_header_name",
+                table: "tbl_milestone_header",
+                column: "tbl_milestone_header_name",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -2373,7 +2396,8 @@ namespace BTAS.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_tbl_shipment_tbl_shipment_trackingNo_tbl_shipment_referenceNo",
                 table: "tbl_shipment",
-                columns: new[] { "tbl_shipment_trackingNo", "tbl_shipment_referenceNo" });
+                columns: new[] { "tbl_shipment_trackingNo", "tbl_shipment_referenceNo" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_shipmentItem_shipment_id",
@@ -2398,6 +2422,12 @@ namespace BTAS.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_tbl_tbl_note_category_tbl_note_category_name",
+                table: "tbl_tbl_note_category",
+                column: "tbl_note_category_name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_tbl_voyage_tbl_voyage_code",
                 table: "tbl_voyage",
                 column: "tbl_voyage_code",
@@ -2406,7 +2436,8 @@ namespace BTAS.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_tbl_voyage_tbl_voyage_number_tbl_voyage_carrierCode_tbl_voya~",
                 table: "tbl_voyage",
-                columns: new[] { "tbl_voyage_number", "tbl_voyage_carrierCode", "tbl_voyage_etd" });
+                columns: new[] { "tbl_voyage_number", "tbl_voyage_carrierCode", "tbl_voyage_etd" },
+                unique: true);
         }
 
         /// <inheritdoc />

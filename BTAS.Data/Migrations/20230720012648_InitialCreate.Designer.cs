@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BTAS.Data.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    [Migration("20230718234453_InitialCreate")]
+    [Migration("20230720012648_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -433,6 +433,7 @@ namespace BTAS.Data.Migrations
                         .HasColumnType("varchar(50)");
 
                     b.Property<string>("tbl_address_address1")
+                        .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("varchar(150)");
 
@@ -452,6 +453,7 @@ namespace BTAS.Data.Migrations
                         .HasColumnType("tinyint(1) unsigned");
 
                     b.Property<string>("tbl_address_companyName")
+                        .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("varchar(150)");
 
@@ -500,6 +502,7 @@ namespace BTAS.Data.Migrations
                         .HasColumnType("varchar(50)");
 
                     b.Property<string>("tbl_address_postcode")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
@@ -523,7 +526,8 @@ namespace BTAS.Data.Migrations
                     b.HasIndex("tbl_address_code")
                         .IsUnique();
 
-                    b.HasIndex("tbl_address_companyName", "tbl_address_postcode", "tbl_address_address1");
+                    b.HasIndex("tbl_address_companyName", "tbl_address_postcode", "tbl_address_address1")
+                        .IsUnique();
 
                     b.ToTable("tbl_address", (string)null);
                 });
@@ -832,6 +836,7 @@ namespace BTAS.Data.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("tbl_client_header_address1")
+                        .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("varchar(150)");
 
@@ -852,8 +857,9 @@ namespace BTAS.Data.Migrations
                         .HasColumnType("varchar(50)");
 
                     b.Property<string>("tbl_client_header_companyName")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)");
 
                     b.Property<string>("tbl_client_header_contactName")
                         .HasMaxLength(50)
@@ -864,11 +870,10 @@ namespace BTAS.Data.Migrations
                         .HasColumnType("varchar(50)");
 
                     b.Property<string>("tbl_client_header_createdBy")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<DateTime>("tbl_client_header_createdDate")
+                    b.Property<DateTime?>("tbl_client_header_createdDate")
                         .HasColumnType("datetime");
 
                     b.Property<string>("tbl_client_header_email")
@@ -904,6 +909,7 @@ namespace BTAS.Data.Migrations
                         .HasColumnType("varchar(50)");
 
                     b.Property<string>("tbl_client_header_postcode")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
@@ -921,7 +927,8 @@ namespace BTAS.Data.Migrations
                     b.HasIndex("tbl_client_header_code")
                         .IsUnique();
 
-                    b.HasIndex("tbl_client_header_companyName", "tbl_client_header_postcode", "tbl_client_header_address1");
+                    b.HasIndex("tbl_client_header_companyName", "tbl_client_header_postcode", "tbl_client_header_address1")
+                        .IsUnique();
 
                     b.ToTable("tbl_client_header", (string)null);
                 });
@@ -956,6 +963,7 @@ namespace BTAS.Data.Migrations
                         .HasColumnType("varchar(50)");
 
                     b.Property<string>("tbl_container_number")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
@@ -963,6 +971,7 @@ namespace BTAS.Data.Migrations
                         .HasColumnType("int(11)");
 
                     b.Property<string>("tbl_container_sealNumber")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
@@ -983,7 +992,8 @@ namespace BTAS.Data.Migrations
                     b.HasIndex("tbl_container_code")
                         .IsUnique();
 
-                    b.HasIndex("tbl_container_number", "tbl_container_sealNumber");
+                    b.HasIndex("tbl_container_number", "tbl_container_sealNumber")
+                        .IsUnique();
 
                     b.HasIndex(new[] { "tbl_master_id" }, "IX_container_master_id");
 
@@ -1263,6 +1273,7 @@ namespace BTAS.Data.Migrations
                         .HasColumnType("varchar(50)");
 
                     b.Property<string>("tbl_house_billNumber")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
@@ -1360,6 +1371,7 @@ namespace BTAS.Data.Migrations
                         .HasColumnType("varchar(50)");
 
                     b.Property<decimal?>("tbl_house_value")
+                        .IsRequired()
                         .HasPrecision(12, 2)
                         .HasColumnType("decimal(12,2)");
 
@@ -1401,7 +1413,8 @@ namespace BTAS.Data.Migrations
                     b.HasIndex("tbl_house_code")
                         .IsUnique();
 
-                    b.HasIndex("tbl_house_billNumber", "tbl_house_value");
+                    b.HasIndex("tbl_house_billNumber", "tbl_house_value")
+                        .IsUnique();
 
                     b.HasIndex(new[] { "tbl_consignee_id" }, "IX_house_clientHeader_consignee_id");
 
@@ -1564,6 +1577,9 @@ namespace BTAS.Data.Migrations
                     b.HasKey("idtbl_incoterm")
                         .HasName("PRIMARY");
 
+                    b.HasIndex("tbl_incoterm_code")
+                        .IsUnique();
+
                     b.ToTable("tbl_incoterm", (string)null);
                 });
 
@@ -1650,6 +1666,9 @@ namespace BTAS.Data.Migrations
                     b.HasKey("idtbl_item_sku")
                         .HasName("PRIMARY");
 
+                    b.HasIndex("tbl_item_sku_code")
+                        .IsUnique();
+
                     b.ToTable("tbl_item_sku", (string)null);
                 });
 
@@ -1718,6 +1737,7 @@ namespace BTAS.Data.Migrations
                         .HasColumnType("int(11)");
 
                     b.Property<string>("tbl_master_billNumber")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
@@ -1737,6 +1757,7 @@ namespace BTAS.Data.Migrations
                         .HasColumnType("datetime");
 
                     b.Property<string>("tbl_master_status")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
@@ -1757,7 +1778,8 @@ namespace BTAS.Data.Migrations
                     b.HasIndex("tbl_master_code")
                         .IsUnique();
 
-                    b.HasIndex("tbl_master_billNumber", "tbl_master_status");
+                    b.HasIndex("tbl_master_billNumber", "tbl_master_status")
+                        .IsUnique();
 
                     b.HasIndex(new[] { "tbl_client_header_carrier_id" }, "IX_master_clientHeader_carrier_id");
 
@@ -1794,6 +1816,7 @@ namespace BTAS.Data.Migrations
                         .HasColumnType("varchar(50)");
 
                     b.Property<string>("tbl_milestone_header_name")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
@@ -1801,6 +1824,9 @@ namespace BTAS.Data.Migrations
                         .HasName("PRIMARY");
 
                     b.HasIndex("tbl_milestone_header_code")
+                        .IsUnique();
+
+                    b.HasIndex("tbl_milestone_header_name")
                         .IsUnique();
 
                     b.ToTable("tbl_milestone_header", (string)null);
@@ -1964,6 +1990,7 @@ namespace BTAS.Data.Migrations
                         .HasColumnType("varchar(50)");
 
                     b.Property<string>("tbl_note_category_name")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
@@ -1978,6 +2005,9 @@ namespace BTAS.Data.Migrations
                         .HasName("PRIMARY");
 
                     b.HasIndex("tbl_note_category_code")
+                        .IsUnique();
+
+                    b.HasIndex("tbl_note_category_name")
                         .IsUnique();
 
                     b.ToTable("tbl_tbl_note_category", (string)null);
@@ -2750,6 +2780,7 @@ namespace BTAS.Data.Migrations
                         .HasColumnType("datetime");
 
                     b.Property<string>("tbl_shipment_referenceNo")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
@@ -2880,6 +2911,7 @@ namespace BTAS.Data.Migrations
                         .HasDefaultValueSql("'0'");
 
                     b.Property<string>("tbl_shipment_trackingNo")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
@@ -2897,7 +2929,8 @@ namespace BTAS.Data.Migrations
                     b.HasIndex("tbl_shipment_code")
                         .IsUnique();
 
-                    b.HasIndex("tbl_shipment_trackingNo", "tbl_shipment_referenceNo");
+                    b.HasIndex("tbl_shipment_trackingNo", "tbl_shipment_referenceNo")
+                        .IsUnique();
 
                     b.HasIndex(new[] { "tbl_incoterm_id" }, "IX_shipment_incoterm_id");
 
@@ -3337,6 +3370,7 @@ namespace BTAS.Data.Migrations
                         .HasColumnType("datetime");
 
                     b.Property<string>("tbl_voyage_carrierCode")
+                        .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("varchar(30)");
 
@@ -3359,6 +3393,7 @@ namespace BTAS.Data.Migrations
                         .HasColumnType("datetime");
 
                     b.Property<DateTime?>("tbl_voyage_etd")
+                        .IsRequired()
                         .HasColumnType("datetime");
 
                     b.Property<string>("tbl_voyage_loadPort")
@@ -3366,6 +3401,7 @@ namespace BTAS.Data.Migrations
                         .HasColumnType("varchar(30)");
 
                     b.Property<string>("tbl_voyage_number")
+                        .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("varchar(30)");
 
@@ -3387,7 +3423,8 @@ namespace BTAS.Data.Migrations
                     b.HasIndex("tbl_voyage_code")
                         .IsUnique();
 
-                    b.HasIndex("tbl_voyage_number", "tbl_voyage_carrierCode", "tbl_voyage_etd");
+                    b.HasIndex("tbl_voyage_number", "tbl_voyage_carrierCode", "tbl_voyage_etd")
+                        .IsUnique();
 
                     b.ToTable("tbl_voyage", (string)null);
                 });
