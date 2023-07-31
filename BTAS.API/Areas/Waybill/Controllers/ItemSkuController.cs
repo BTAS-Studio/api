@@ -28,12 +28,12 @@ namespace BTAS.API.Areas.Waybill.Controllers
         }
 
         [HttpGet]
-        [Route("getbycode")]
-        public async Task<object> GetByCodeAsync(string code)
+        [Route("getbyreference")]
+        public async Task<object> GetByReferenceAsync(string referenceNumber, bool includeChild)
         {
             try
             {
-                var response = await _repository.GetByCodeAsync(code);
+                var response = await _repository.GetByReferenceAsync(referenceNumber);
 
                 return Ok(response);
             }

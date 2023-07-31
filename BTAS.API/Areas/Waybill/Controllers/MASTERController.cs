@@ -19,7 +19,7 @@ namespace BTAS.API.Areas.Waybill.Controllers
     [ApiController]
     [Area("Waybill")]
     [Route("api/master")]
-    //[Authorize]
+    [Authorize]
     public class MasterController : GenericController<tbl_masterDto>
     {
         //readonly IConfiguration _configuration;
@@ -70,7 +70,7 @@ namespace BTAS.API.Areas.Waybill.Controllers
                     return new JsonResult(new GeneralResponse
                     {
                         success = false,
-                        response = 404,
+                        response = 500,
                         responseDescription = "No matching result"
                     });
                 }
@@ -115,31 +115,14 @@ namespace BTAS.API.Areas.Waybill.Controllers
                     responseDescription = "Invalid request."
                 });
             }
-            //else
-            //{
-            //    if (await _repository.GetByReference(request.tbl_master_code) != null)
-            //    {
-            //        return new JsonResult(new GeneralResponse
-            //        {
-            //            success = false,
-            //            response = 500,
-            //            responseDescription = "Code already exists."
-            //        });
-            //    }
-            //}
-
             try
             {
                 ResponseDto result = new();
-
-                //if (request.idtbl_master > 0 || request)
-
                 try
                 {
-
                     if ((request.originAgentCode == null || request.originAgentCode == "") && request.originAgent != null)
                     {
-                        var address = await _clientHeaderRepository.CreateAsync(request.originAgent, Request.Headers["shipperId"]);
+                        var address = await _clientHeaderRepository.CreateAsync(request.originAgent);
                         if (!address.IsSuccess)
                         {
                             return new JsonResult(new GeneralResponse
@@ -156,7 +139,7 @@ namespace BTAS.API.Areas.Waybill.Controllers
 
                     if ((request.destinationAgentCode == null || request.destinationAgentCode == "") && request.destinationAgent != null)
                     {
-                        var address = await _clientHeaderRepository.CreateAsync(request.destinationAgent, Request.Headers["shipperId"]);
+                        var address = await _clientHeaderRepository.CreateAsync(request.destinationAgent);
                         if (!address.IsSuccess)
                         {
                             return new JsonResult(new GeneralResponse
@@ -173,7 +156,7 @@ namespace BTAS.API.Areas.Waybill.Controllers
 
                     if ((request.carrierAgentCode == null || request.carrierAgentCode == "") && request.carrierAgent != null)
                     {
-                        var address = await _clientHeaderRepository.CreateAsync(request.carrierAgent, Request.Headers["shipperId"]);
+                        var address = await _clientHeaderRepository.CreateAsync(request.carrierAgent);
                         if (!address.IsSuccess)
                         {
                             return new JsonResult(new GeneralResponse
@@ -190,7 +173,7 @@ namespace BTAS.API.Areas.Waybill.Controllers
 
                     if ((request.creditorAgentCode == null || request.creditorAgentCode == "") && request.creditorAgent != null)
                     {
-                        var address = await _clientHeaderRepository.CreateAsync(request.creditorAgent, Request.Headers["shipperId"]);
+                        var address = await _clientHeaderRepository.CreateAsync(request.creditorAgent);
                         if (!address.IsSuccess)
                         {
                             return new JsonResult(new GeneralResponse
@@ -207,7 +190,7 @@ namespace BTAS.API.Areas.Waybill.Controllers
 
                     request.tbl_master_createdDate = DateTime.Now;
 
-                    result = await _repository.CreateAsync(request, Request.Headers["shipperId"]);
+                    result = await _repository.CreateAsync(request);
                     if (!result.IsSuccess)
                     {
                         return new JsonResult(new GeneralResponse
@@ -218,39 +201,13 @@ namespace BTAS.API.Areas.Waybill.Controllers
                         });
                     }
 
-                    var jsonString = JsonConvert.SerializeObject(result.Result);
-                    var model = JsonConvert.DeserializeObject<tbl_masterDto>(jsonString);
-                    GeneralResponse response = new()
+                    return Ok(new GeneralResponse
                     {
                         success = true,
                         response = 200,
-                        responseDescription = "",
-                        referenceNumber = model.tbl_master_code
-                    };
-
-                    return Ok(response);
-
-                    //if (isWeb == 1)
-                    //{
-                    //    var response = JsonConvert.SerializeObject(result, Formatting.Indented, new JsonSerializerSettings
-                    //    {
-                    //        ReferenceLoopHandling = ReferenceLoopHandling.Serialize
-                    //    });
-                    //    return Ok(response);
-                    //}
-                    //else
-                    //{
-                    //    var jsonString = JsonConvert.SerializeObject(result.Result);
-                    //    var model = JsonConvert.DeserializeObject<tbl_masterDto>(jsonString);
-                    //    GeneralResponse response = new()
-                    //    {
-                    //        success = true,
-                    //        response = 200,
-                    //        responseDescription = model.tbl_master_code
-                    //    };
-
-                    //    return Ok(response);
-                    //}
+                        responseDescription = $"Consol {result.ReferenceNumber} successfully created",
+                        referenceNumber = result.ReferenceNumber
+                    });
                 }
                 catch (Exception ex)
                 {
@@ -281,7 +238,7 @@ namespace BTAS.API.Areas.Waybill.Controllers
         /// <returns></returns>
         [HttpPut]
         [Route("update")]
-        public async Task<IActionResult> UpdateAsync([FromBody] tbl_masterDto request, int isWeb = 0)
+        public async Task<IActionResult> UpdateAsync([FromBody] tbl_masterDto request)
         {
             if (request.idtbl_master <= 0 && String.IsNullOrEmpty(request.tbl_master_code))
             {
@@ -313,7 +270,7 @@ namespace BTAS.API.Areas.Waybill.Controllers
                 {
                     if ((request.originAgentCode == null || request.originAgentCode == "") && request.originAgent != null)
                     {
-                        var address = await _clientHeaderRepository.CreateAsync(request.originAgent, Request.Headers["shipperId"]);
+                        var address = await _clientHeaderRepository.CreateAsync(request.originAgent);
                         if (!address.IsSuccess)
                         {
                             return new JsonResult(new GeneralResponse
@@ -330,7 +287,7 @@ namespace BTAS.API.Areas.Waybill.Controllers
 
                     if ((request.destinationAgentCode == null || request.destinationAgentCode == "") && request.destinationAgent != null)
                     {
-                        var address = await _clientHeaderRepository.CreateAsync(request.destinationAgent, Request.Headers["shipperId"]);
+                        var address = await _clientHeaderRepository.CreateAsync(request.destinationAgent);
                         if (!address.IsSuccess)
                         {
                             return new JsonResult(new GeneralResponse
@@ -347,7 +304,7 @@ namespace BTAS.API.Areas.Waybill.Controllers
 
                     if ((request.carrierAgentCode == null || request.carrierAgentCode == "") && request.carrierAgent != null)
                     {
-                        var address = await _clientHeaderRepository.CreateAsync(request.carrierAgent, Request.Headers["shipperId"]);
+                        var address = await _clientHeaderRepository.CreateAsync(request.carrierAgent);
                         if (!address.IsSuccess)
                         {
                             return new JsonResult(new GeneralResponse
@@ -364,7 +321,7 @@ namespace BTAS.API.Areas.Waybill.Controllers
 
                     if ((request.creditorAgentCode == null || request.creditorAgentCode == "") && request.creditorAgent != null)
                     {
-                        var address = await _clientHeaderRepository.CreateAsync(request.creditorAgent, Request.Headers["shipperId"]);
+                        var address = await _clientHeaderRepository.CreateAsync(request.creditorAgent);
                         if (!address.IsSuccess)
                         {
                             return new JsonResult(new GeneralResponse

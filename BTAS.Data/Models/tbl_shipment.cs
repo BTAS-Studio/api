@@ -10,6 +10,9 @@ namespace BTAS.Data.Models
         public tbl_shipment()
         {
             shipmentItems = new HashSet<tbl_shipment_item>();
+            documents = new HashSet<tbl_document>();
+            notes = new HashSet<tbl_note>();
+            milestoneLinks = new HashSet<tbl_milestone_link>();
             billings = new HashSet<tbl_shipping_billing>();
         }
 
@@ -31,7 +34,7 @@ namespace BTAS.Data.Models
         public string tbl_shipment_serviceCode { get; set; }
         public string tbl_shipment_serviceOption { get; set; }
         public bool? tbl_shipment_authorityToLeave { get; set; }
-        public string tbl_shipment_incoterm { get; set; }
+        //public string tbl_shipment_incoterm { get; set; }
         public string tbl_shipment_shipmentItems { get; set; }
         public string tbl_shipment_vendorId { get; set; }
         public bool? tbl_shipment_gstExemptionCode { get; set; }
@@ -90,16 +93,21 @@ namespace BTAS.Data.Models
         public string tbl_shipment_returnCountry { get; set; }
         public string tbl_shipment_returnOption { get; set; }
 
-        public int? tbl_receptable_id { get; set; }
+        //Edit by HS on 25/05/2023
+        //public int? tbl_receptable_id { get; set; }
+        public int? tbl_receptacle_id { get; set; }
         public string ReceptacleCode { get; set; }
-        public virtual tbl_receptacle receptable { get; set; }
-
-        public int? tbl_incoterms_id { get; set; }
-        public string IncotermsCode { get; set; }
+        //Edit by HS on 25/05/2023
+        //public virtual tbl_receptacle receptable { get; set; }
+        public virtual tbl_receptacle receptacle { get; set; }
+        public int? tbl_incoterm_id { get; set; }
+        public string IncotermCode { get; set; }
         public virtual tbl_incoterm incoterm { get; set; }
 
         public virtual ICollection<tbl_shipment_item> shipmentItems { get; set; }
         public virtual ICollection<tbl_shipping_billing> billings { get; set; }
         public virtual ICollection<tbl_document> documents { get; set; }
+        public virtual ICollection<tbl_note> notes { get; set; }
+        public virtual ICollection<tbl_milestone_link> milestoneLinks { get; set; }
     }
 }

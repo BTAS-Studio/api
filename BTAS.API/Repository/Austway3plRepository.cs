@@ -26,12 +26,12 @@ namespace BTAS.API.Repository
             this.repo = repo;
         }
 
-        public async Task<CreateLabelResponse> CreateLabelAsync(List<LabelItem> items, tbl_client_headerDto recipient, tbl_client_headerDto shipper = null)
+        public async Task<CreateLabelResponse> CreateLabelAsync(List<LabelItem> items, tbl_addressDto recipient, tbl_client_headerDto shipper = null)
         {
             try
             {
                 var routing = _context.tbl_3pl_routings
-                .Where(x => x.tbl_routings_states == recipient.deliveryAddress.tbl_address_state && x.tbl_routings_suburbs == recipient.deliveryAddress.tbl_address_postcode)
+                .Where(x => x.tbl_routings_states == recipient.tbl_address_state && x.tbl_routings_suburbs == recipient.tbl_address_postcode)
                 .FirstOrDefault();
                 if (routing is null)
                 {
@@ -53,7 +53,7 @@ namespace BTAS.API.Repository
                 int i = 0;
                 foreach (var item in items)
                 {
-                    string tracking = "APL" + String.Format("{0:000000000}", consignment.tbl_tracking_id) + String.Format("{0:0000}", i+1);
+                    string tracking = "APL" + String.Format("{0:000000000}", consignment.tbl_tracking_id) + String.Format("{0:0000}", i + 1);
 
                     var barcode = _context.tbl_barcodes.Add(new tbl_barcode
                     {

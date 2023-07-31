@@ -4,7 +4,6 @@ using BTAS.API.Models;
 using BTAS.API.Models.Links;
 using BTAS.API.Repository.Interface;
 using BTAS.API.Repository.SearchRepository;
-using BTAS.Data;
 using BTAS.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -14,7 +13,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace BTAS.API.Repository
@@ -73,7 +71,7 @@ namespace BTAS.API.Repository
             try
             {
                 var qList = _context.tbl_receptacles.Include(r => r.house)
-                    //.AsNoTracking()
+                    .AsNoTracking()
                     .OrderByDescending(r => r.idtbl_receptacle).AsQueryable();
                 // excute each filter one by one 
                 if (customFilters.Filters != null)
@@ -131,14 +129,7 @@ namespace BTAS.API.Repository
 
                         if (propertyLambda != null)
                         {
-                            //qList = qList.Where(propertyLambda);
-                            qList = qList.Provider.CreateQuery<tbl_receptacle>(Expression.Call(
-                                       typeof(Queryable),
-                                       "Where",
-                                       new[] { elementType },
-                                       qList.Expression,
-                                       propertyLambda
-                                   ));
+                            qList = qList.Where(propertyLambda);
                         }
                     }
                 }
@@ -292,14 +283,14 @@ namespace BTAS.API.Repository
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public async Task<ResponseDto> CreateAsync(tbl_receptacleDto entity, string shipperId)
+        public async Task<ResponseDto> CreateAsync(tbl_receptacleDto entity)
         {
             try
             {
 
-                string referenceNumber = await GetNextId(shipperId);
+                string referenceNumber = await GetNextId();
                 entity.tbl_receptacle_code = referenceNumber;
-                entity.tbl_receptacle_status = "OPEN";
+                entity.tbl_receptacle_status = "ACTIVE";
                 entity.tbl_receptacle_createdDate = DateTime.Now;
 
                 tbl_receptacle result = _mapper.Map<tbl_receptacleDto, tbl_receptacle>(entity);
@@ -371,31 +362,29 @@ namespace BTAS.API.Repository
                     .AsNoTracking()
                     .SingleOrDefaultAsync(x => x.tbl_receptacle_code == entity.tbl_receptacle_code);
 
-                _mapper.Map<tbl_receptacleDto, tbl_receptacle>(entity, result);
                 if (result != null)
                 {
+                    _mapper.Map<tbl_receptacleDto, tbl_receptacle>(entity, result);
                     if (entity.HouseCode != "" && entity.HouseCode != null)
                     {
                         var parent = await _context.tbl_houses
-                        .FirstOrDefaultAsync(x => x.tbl_house_code == entity.HouseCode);
+                        .SingleOrDefaultAsync(x => x.tbl_house_code == entity.HouseCode);
 
                         if (parent != null)
                         {
                             result.tbl_house_id = parent.idtbl_house;
-                            result.HouseCode = parent.tbl_house_code;
                         }
                         else
                         {
                             return new ResponseDto
                             {
                                 Result = entity,
-                                DisplayMessage = "Unable to link receptacle. Invalid HOUSE id or code.",
+                                DisplayMessage = "Unable to link to receptacle. Invalid HOUSE id or code.",
                                 IsSuccess = false
                             };
                         }
                     }
-
-
+                    _context.ChangeTracker.Clear();
                     _context.tbl_receptacles.Update(result);
                     await _context.SaveChangesAsync();
                 }
@@ -403,7 +392,6 @@ namespace BTAS.API.Repository
                 {
                     return new ResponseDto
                     {
-                        Result = entity,
                         DisplayMessage = "Receptacle does not exists.",
                         IsSuccess = false
                     };
@@ -411,7 +399,6 @@ namespace BTAS.API.Repository
 
                 return new ResponseDto
                 {
-                    Result = entity,
                     DisplayMessage = "Receptacle successfully updated.",
                     IsSuccess = true,
                     ReferenceNumber = result.tbl_receptacle_code
@@ -421,7 +408,6 @@ namespace BTAS.API.Repository
             {
                 return new ResponseDto
                 {
-                    Result = entity,
                     DisplayMessage = ex.StackTrace.ToString(),
                     IsSuccess = false
                 };
@@ -466,7 +452,7 @@ namespace BTAS.API.Repository
                 {
                     IsSuccess = false,
                     Result = request.ReferencesToLink,
-                    DisplayMessage = "Unable to link receptacle. Invalid HOUSE number."
+                    DisplayMessage = "Unable to link to receptacle. Invalid HOUSE number."
                 };
             }
             catch (Exception ex)
@@ -518,12 +504,12 @@ namespace BTAS.API.Repository
         }
 
   
-        public async Task<string> GetNextId(string shipperId)
+        public async Task<string> GetNextId()
         {
 
             tbl_receptacle result = await _context.tbl_receptacles.OrderByDescending(x => x.idtbl_receptacle).FirstOrDefaultAsync();
 
-            string referenceCode = "RC" + shipperId + String.Format("{0:0000000000}", (result != null ? result.idtbl_receptacle + count : 1));
+            string referenceCode = "RC" + String.Format("{0:000000000}", (result != null ? result.idtbl_receptacle + count : 1));
             count++;
             return referenceCode;
         }

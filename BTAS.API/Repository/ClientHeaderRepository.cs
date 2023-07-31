@@ -3,37 +3,57 @@ using BTAS.API.Dto;
 using BTAS.API.Extensions;
 using BTAS.API.Models;
 using BTAS.API.Repository.Interface;
-using BTAS.Data;
+using BTAS.API.Repository.SearchRepository;
 using BTAS.Data.Models;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace BTAS.API.Repository
 {
-    public class ClientHeaderRepository : IRepository<tbl_client_headerDto>
+    public class ClientHeaderRepository : SRepository , IRepository<tbl_client_headerDto>
     {
         private readonly MainDbContext _context;
         private IMapper _mapper;
         private ContactDetailRepository _contactDetailsRepo;
+        private AddressRepository _addressRepository;
+        private int count;
 
-        public ClientHeaderRepository(MainDbContext context, IMapper mapper, ContactDetailRepository contactDetailsRepo)
+        public ClientHeaderRepository(MainDbContext context, IMapper mapper, ContactDetailRepository contactDetailsRepo, AddressRepository addressRepository)
         {
             _context = context;
             _mapper = mapper;
             _contactDetailsRepo = contactDetailsRepo;
+            _addressRepository = addressRepository;
+            count = 1;
         }
-
+        
         /// <summary>
         /// Retrieves all client header
         /// </summary>
         /// <returns></returns>
         public async Task<IEnumerable<tbl_client_headerDto>> GetAllAsync()
         {
-            IEnumerable<tbl_client_header> _list = await _context.tbl_client_headers.AsNoTracking().ToListAsync();
+            IEnumerable<tbl_client_header> _list = await _context.tbl_client_headers
+                .OrderByDescending(p => p.idtbl_client_header)
+                .AsNoTracking().ToListAsync();
+            return _mapper.Map<List<tbl_client_headerDto>>(_list);
+        }
+        public async Task<IEnumerable<tbl_client_headerDto>> GetAllAsyncWithChildren()
+        {
+            IEnumerable<tbl_client_header> _list = await _context.tbl_client_headers
+                .OrderByDescending(p => p.idtbl_client_header)
+                //.Include(p => p.address)
+                .Include(p => p.contactDetails)
+                .Include(p => p.notes)
+                .AsNoTracking().ToListAsync();
             return _mapper.Map<List<tbl_client_headerDto>>(_list);
         }
 
@@ -65,9 +85,97 @@ namespace BTAS.API.Repository
         public async Task<tbl_client_headerDto> GetByIdAsync(int id)
         {
 
-            tbl_client_header result = await _context.tbl_client_headers.AsNoTracking().FirstOrDefaultAsync(x => x.idtbl_client_header == id);
+            tbl_client_header result = await _context.tbl_client_headers.AsNoTracking().SingleOrDefaultAsync(x => x.idtbl_client_header == id);
             return _mapper.Map<tbl_client_headerDto>(result);
 
+        }
+
+        //Added by HS on 22/06/2023
+        /// <summary>
+        /// Retrieves a specified number of client header according to input conditions(>, >=, <, <=, ==, !=, and contains)
+        /// </summary>
+        /// <returns> A list of client header objects including their linked parent address</returns>
+        public async Task<IEnumerable<tbl_client_headerDto>> GetFilteredAsync(CustomFilters<tbl_client_headerDto> customFilters)
+        {
+            try
+            {
+                var qList = _context.tbl_client_headers
+                    .Include(p => p.addresses)
+                    .AsNoTracking()
+                    .OrderByDescending(p => p.idtbl_client_header)
+                    .AsQueryable();
+                // excute each filter one by one 
+                if (customFilters.Filters != null)
+                {
+                    foreach (var filter in customFilters.Filters)
+                    {
+                        PropertyInfo propertyInfo = null;
+                        bool parent = false;
+                        var jsonString = JsonConvert.SerializeObject(filter.searchField);
+                        var jsonObj = JObject.Parse(jsonString);
+                        JToken originalValue = null;
+
+                        if (filter.tableName.ToUpper() == "CLIENTHEADER")
+                        {
+                            //filter.tableName = "clientHeader";
+                            bool containsDateTime = false;
+                            //used for searching Contains DateTime type's columns
+                            if (filter.condition.ToUpper() == "CONTAINS")
+                            {
+                                originalValue = jsonObj[filter.fieldName];
+                                (containsDateTime, jsonString) = MakeClientHeaderJsonString(filter, containsDateTime, jsonString);
+                            }
+
+                            (propertyInfo, filter.fieldValue, containsDateTime) =
+                                GetPropertyInfo<tbl_client_headerDto, tbl_client_header>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
+                        }
+
+                        else if (filter.tableName.ToUpper() == "LEGALENTITYADDRESS")
+                        {
+                            filter.tableName = "legalEntityAddress";
+                            parent = true;
+                            bool containsDateTime = false;
+                            if (filter.condition.ToUpper() == "CONTAINS")
+                            {
+                                originalValue = jsonObj[filter.fieldName];
+                            }
+
+                            (propertyInfo, filter.fieldValue, containsDateTime) = GetParentPropertyInfo<tbl_client_header, tbl_address, tbl_addressDto>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
+                        }
+
+                        else
+                        {
+                            throw new ArgumentException($"Invalid table name: {filter.tableName}");
+                        }
+
+                        Type elementType = qList.ElementType;
+
+                        if (propertyInfo == null)
+                        {
+                            throw new ArgumentException($"Invalid property name: {propertyInfo.Name}");
+                        }
+
+                        Expression<Func<tbl_client_header, bool>> propertyLambda = null;
+                        propertyLambda = GetPropertyLambda<tbl_client_header>(propertyInfo, filter, parent);
+
+                        if (propertyLambda != null)
+                        {
+                            qList = qList.Where(propertyLambda);
+                        }
+                    }
+                }
+
+                if (qList.Count() == 0)
+                {
+                    return null;
+                }
+                var filtered = await qList.Skip(customFilters.Page * customFilters.PageSize).Take(customFilters.PageSize).ToListAsync();
+                return _mapper.Map<IEnumerable<tbl_client_headerDto>>(filtered);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -75,20 +183,67 @@ namespace BTAS.API.Repository
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public async Task<tbl_client_headerDto> CreateUpdateAsync(tbl_client_headerDto entity)
+        public async Task<ResponseDto> CreateUpdateAsync(tbl_client_headerDto entity)
         {
             try
             {
-                tbl_client_header mapped = _mapper.Map<tbl_client_headerDto, tbl_client_header>(entity);
-
-
-                _context.tbl_client_headers.Add(mapped);
-                await _context.SaveChangesAsync();
-                return _mapper.Map<tbl_client_header, tbl_client_headerDto>(mapped);
+                var checkResult = await DuplicationCheck(entity);
+                //if new
+                if (checkResult.IsSuccess == false && checkResult.DisplayMessage == "1")
+                {
+                    //create this new client header
+                    var createResult = await CreateAsync(entity);
+                    if (createResult.IsSuccess)
+                    {
+                        return new ResponseDto
+                        {
+                            IsSuccess = true,
+                            ReferenceNumber = createResult.ReferenceNumber
+                        };
+                    }
+                    else
+                    {
+                        return new ResponseDto
+                        {
+                            IsSuccess = false,
+                            DisplayMessage = createResult.DisplayMessage
+                        };
+                    }
+                }
+                //if existed
+                else if (checkResult.IsSuccess == true)
+                {
+                    entity.tbl_client_header_code = checkResult.ReferenceNumber;
+                    var updateResult = await UpdateAsync(entity);
+                    if (updateResult.IsSuccess)
+                    {
+                        return new ResponseDto
+                        {
+                            IsSuccess = true,
+                            ReferenceNumber = entity.tbl_client_header_code
+                        };
+                    }
+                    else
+                    {
+                        return new ResponseDto
+                        {
+                            IsSuccess = false,
+                            DisplayMessage = updateResult.DisplayMessage
+                        };
+                    }
+                }
+                else
+                {
+                    return new ResponseDto
+                    {
+                        IsSuccess = false,
+                        DisplayMessage = "Unhandled exception: Failed to get client header code."
+                    };
+                }
             }
             catch (Exception ex)
             {
-                throw new Exception();
+                throw new Exception(ex.Message.ToString());
             }
         }
 
@@ -97,31 +252,35 @@ namespace BTAS.API.Repository
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public async Task<ResponseDto> CreateAsync(tbl_client_headerDto entity, string shipperId)
+        public async Task<ResponseDto> CreateAsync(tbl_client_headerDto entity)
         {
             try
             {
-                tbl_client_header result = _mapper.Map<tbl_client_headerDto, tbl_client_header>(entity);
-                //Added by HS on 22/03/2023
+             
+                entity.tbl_client_header_createdDate = DateTime.Now;
+                entity.tbl_client_header_active = true;
+
+                tbl_client_header result = _mapper.Map<tbl_client_headerDto, tbl_client_header>(entity); 
                 result.tbl_client_header_code = await GetCHCode(result.tbl_client_header_companyName);
 
                 if (result.idtbl_client_header > 0)
                 {
                     return new ResponseDto
                     {
-                        Result = entity,
-                        DisplayMessage = "Unable to create duplicate client header record",
+                        //Result = entity,
+                        DisplayMessage = "Unable to create duplicate client header",
                         IsSuccess = false
                     };
                 }
                 else
                 {
                     //Added by HS on 01/02/2023
-                    if (result.contactDetails != null)
+                    if (result.contactDetails.Count > 0)
                     {
                         foreach (var ctd in result.contactDetails)
                         {
-                            ctd.tbl_client_contact_details_code = await _contactDetailsRepo.GetNextId(shipperId);
+                            ctd.tbl_client_contact_detail_code = await _contactDetailsRepo.GetNextId();
+                            ctd.tbl_client_header_id = result.idtbl_client_header;
                             ctd.ClientHeaderCode = result.tbl_client_header_code;
                         }
                     }
@@ -131,9 +290,6 @@ namespace BTAS.API.Repository
                 }
                 return new ResponseDto
                 {
-                    //Edited by HS on 07/02/2023
-                    //Result = entity,
-                    //Id = entity.idtbl_client_header,
                     ReferenceNumber = result.tbl_client_header_code,
                     DisplayMessage = "client header successfully added.",
                     IsSuccess = true
@@ -141,12 +297,39 @@ namespace BTAS.API.Repository
             }
             catch (Exception ex)
             {
-                return new ResponseDto
+                if (ex.InnerException.Message == "Column 'tbl_client_header_address1' cannot be null")
                 {
-                    Result = entity,
-                    DisplayMessage = ex.Message.ToString(),
-                    IsSuccess = false
-                };
+                    return new ResponseDto
+                    {
+                        IsSuccess = false,
+                        DisplayMessage = "Address1 cannot be null"
+                    };
+                }
+                else if (ex.InnerException.Message == "Column 'tbl_client_header_postcode' cannot be null")
+                {
+                    return new ResponseDto
+                    {
+                        IsSuccess = false,
+                        DisplayMessage = "Postcode cannot be null"
+                    };
+                }
+                else if (ex.InnerException.Message == "Column 'tbl_client_header_companyName' cannot be null")
+                {
+                    return new ResponseDto
+                    {
+                        IsSuccess = false,
+                        DisplayMessage = "CompanyName cannot be null"
+                    };
+                }
+                else
+                {
+                    return new ResponseDto
+                    {
+                        //Result = entity,
+                        DisplayMessage = ex.Message.ToString(),
+                        IsSuccess = false
+                    };
+                }
             }
 
         }
@@ -160,35 +343,28 @@ namespace BTAS.API.Repository
         {
             try
             {
-                //var result = await _context.tbl_client_header
-                //.FirstOrDefaultAsync(x => x.idtbl_client_header == entity.idtbl_client_header || x.tbl_client_header_code == entity.tbl_client_header_code);
-
-                var mapped = _mapper.Map<tbl_client_header>(entity);
-
-                var address = await _context.tbl_client_headers
+                var result = await _context.tbl_client_headers
                     .AsNoTracking()
-                    .FirstOrDefaultAsync(x => x.idtbl_client_header == mapped.idtbl_client_header || x.tbl_client_header_code == mapped.tbl_client_header_code);
+                    .SingleOrDefaultAsync(x => x.idtbl_client_header == entity.idtbl_client_header 
+                    || x.tbl_client_header_code == entity.tbl_client_header_code);
 
-                if (address != null)
+                if (result != null)
                 {
-                    mapped.idtbl_client_header = address.idtbl_client_header;
-                    mapped.tbl_client_header_code = address.tbl_client_header_code;
-
-                    _context.tbl_client_headers.Update(mapped);
+                    _mapper.Map(entity, result);
+                    _context.ChangeTracker.Clear();
+                    _context.tbl_client_headers.Update(result);
                     await _context.SaveChangesAsync();
 
                     return new ResponseDto
                     {
-                        Result = _mapper.Map<tbl_client_headerDto>(mapped),
-                        DisplayMessage = "Address successfully updated.",
+                        DisplayMessage = "Client Header successfully updated.",
                         IsSuccess = true
                     };
                 }
 
                 return new ResponseDto
                 {
-                    Result = entity,
-                    DisplayMessage = "Missing/Invalid address id or code.",
+                    DisplayMessage = "Missing/Invalid Client Header id or code.",
                     IsSuccess = false
                 };
 
@@ -197,14 +373,55 @@ namespace BTAS.API.Repository
             {
                 return new ResponseDto
                 {
-                    Result = entity,
                     DisplayMessage = ex.StackTrace.ToString(),
                     IsSuccess = false
                 };
             }
-
         }
 
+        public async Task <ResponseDto> AddAddressAsync(string clientHeaderCode, string addressCode)
+        {
+            try
+            {
+                var clientHeader = await _context.tbl_client_headers.OrderBy(p => p.tbl_client_header_code)
+                    .SingleOrDefaultAsync(p => p.tbl_client_header_code == clientHeaderCode);
+                if (clientHeader == null)
+                {
+                    return new ResponseDto
+                    {
+                        IsSuccess = false,
+                        DisplayMessage = "Invalid Client Header Code."
+                    };
+                }
+                var address = await _context.tbl_addresses.OrderBy(p => p.tbl_address_code)
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync(p => p.tbl_address_code == addressCode);
+                if (address == null)
+                {
+                    return new ResponseDto
+                    {
+                        IsSuccess = false,
+                        DisplayMessage = "Invalid Address Code."
+                    };
+                }
+
+                clientHeader.addresses.Add(address);
+                await _context.SaveChangesAsync();
+                return new ResponseDto
+                {
+                    IsSuccess = true,
+                    DisplayMessage = "Address successfully added."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto
+                {
+                    DisplayMessage = ex.Message.ToString(),
+                    IsSuccess = false
+                };
+            }
+        }
         public async Task<List<tbl_client_headerDto>> CreateRangeAsync(List<tbl_client_headerDto> entities)
         {
             List<tbl_client_header> result = _mapper.Map<List<tbl_client_headerDto>, List<tbl_client_header>>(entities);
@@ -241,14 +458,23 @@ namespace BTAS.API.Repository
             }
         }
 
-        public async Task<ResponseDto> GetByReference(string reference)
+        public async Task<ResponseDto> GetByReference(string reference, bool includeChild)
         {
             try
             {
                 tbl_client_header result = new();
-
-                result = await _context.tbl_client_headers
-                    .FirstOrDefaultAsync(x => x.tbl_client_header_code == reference);
+                if (includeChild)
+                {
+                    result = await _context.tbl_client_headers
+                        .Include(p => p.addresses)
+                        .Include(p => p.contactDetails)
+                        .Include(p => p.notes)
+                        .FirstOrDefaultAsync(p => p.tbl_client_header_code == reference);
+                }
+                else
+                {
+                    result = await _context.tbl_client_headers.FirstOrDefaultAsync(x => x.tbl_client_header_code == reference);
+                }
 
                 var mapped = _mapper.Map<tbl_client_headerDto>(result);
 
@@ -273,8 +499,8 @@ namespace BTAS.API.Repository
             try
             {
                 var result = await _context.tbl_client_headers
-                    .Where(x => x.tbl_client_header_companyName.Contains(reference))
-                    .ToListAsync();
+                .Where(x => x.tbl_client_header_companyName.Contains(reference))
+                .ToListAsync();
 
                 return new ResponseDto
                 {
@@ -297,24 +523,8 @@ namespace BTAS.API.Repository
             tbl_client_header result = await _context.tbl_client_headers.OrderByDescending(x => x.idtbl_client_header).FirstOrDefaultAsync();
             //Edited by HS on 22/03/2023
             //string referenceCode = "A" + shipperId + String.Format("{0:0000000000}", (result != null ? result.idtbl_client_header + 1 : 1));
-            string referenceCode = "CH" + String.Format("{0:00000}", (result != null ? result.idtbl_client_header + 1 : 1));
+            string referenceCode = "CH" + String.Format("{0:0000000}", (result != null ? result.idtbl_client_header + count : 1));
             return referenceCode;
-        }
-
-        public Task<IEnumerable<tbl_client_headerDto>> GetAllAsyncWithChildren()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<tbl_client_headerDto>> GetAllAsyncWithChildren(searchFilter filter = null)
-        {
-            throw new NotImplementedException();
-        }
-
-
-        public Task<IEnumerable<tbl_client_headerDto>> GetAllAsyncWithChildren(searchFilter<tbl_client_headerDto> filter = null)
-        {
-            throw new NotImplementedException();
         }
 
         //Added by HS on 22/03/2023
@@ -428,5 +638,62 @@ namespace BTAS.API.Repository
             return true;
         }
 
+        internal async Task<ResponseDto> DuplicationCheck(tbl_client_headerDto entity)
+        {
+            try
+            {
+                //unique constrain check
+                if (String.IsNullOrEmpty(entity.tbl_client_header_companyName) 
+                    || String.IsNullOrEmpty(entity.tbl_client_header_postcode)
+                    || String.IsNullOrEmpty(entity.tbl_client_header_address1))
+                {
+                    return new ResponseDto
+                    {
+                        IsSuccess = false,
+                        DisplayMessage = "Missing mandatory fields."
+                    };
+                }
+                //var result = _mapper.Map<tbl_client_headerDto>(entity);
+                //duplicate if a same company name with the same postcode and address1
+                var duplicate = await _context.tbl_client_headers.AsNoTracking()
+                    .OrderBy(p => p.tbl_client_header_companyName)
+                    .SingleOrDefaultAsync(
+                      p => (p.tbl_client_header_companyName == entity.tbl_client_header_companyName
+                      && p.tbl_client_header_postcode == entity.tbl_client_header_postcode
+                      && p.tbl_client_header_address1 == entity.tbl_client_header_address1
+                     ));
+                if (duplicate == null)
+                {
+                    return new ResponseDto
+                    {
+                        IsSuccess = false,
+                        DisplayMessage = "New Client Header",
+                        ReferenceNumber = "1"
+                    };
+                }
+                else
+                {
+                    return new ResponseDto
+                    {
+                        IsSuccess = true,
+                        DisplayMessage = "Duplicate Client Header",
+                        ReferenceNumber = duplicate.tbl_client_header_code
+                    };
+                }
+            }
+            catch(Exception ex)
+            {
+                return new ResponseDto
+                {
+                    IsSuccess = false,
+                    DisplayMessage = ex.Message.ToString()
+                };
+            }
+        }
+
+        Task<tbl_client_headerDto> IRepository<tbl_client_headerDto>.CreateUpdateAsync(tbl_client_headerDto entity)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

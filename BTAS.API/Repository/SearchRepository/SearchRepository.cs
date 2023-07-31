@@ -255,7 +255,7 @@ namespace BTAS.API.Repository.SearchRepository
                 var value = property.GetValue(objFields, null);
                 //not default value, including int, string, datetime, double and byte
                 if (property != null && (value != null && !value.Equals(0) && !value.Equals(new DateTime(0001, 1, 1, 0, 0, 0)))
-                                        && !value.Equals(0m) && !value.Equals((byte)0))
+                                        && !value.Equals(0m) && !value.Equals((byte)0) && !value.Equals(false))
                 {
                     propertyInfo = typeof(T).GetProperty(property.Name);
                     filter.fieldValue = value;

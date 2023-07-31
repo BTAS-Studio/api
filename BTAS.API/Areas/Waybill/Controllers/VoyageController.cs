@@ -55,7 +55,7 @@ namespace BTAS.API.Areas.Waybill.Controllers
                     return new JsonResult(new GeneralResponse
                     {
                         success = false,
-                        response = 404,
+                        response = 500,
                         responseDescription = "No matching result"
                     });
                 }

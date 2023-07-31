@@ -81,9 +81,12 @@ namespace BTAS.API.Repository
             try
             {
                 var qList = _context.tbl_houses
+                    .Include(h => h.voyage)
                     .Include(h => h.master)
                     .Include(h => h.container)
-                    //.AsNoTracking()
+                    .Include(p => p.consignee)
+                    .Include(p => p.consignor)
+                    .AsNoTracking()
                     .OrderByDescending(h => h.idtbl_house)
                     .AsQueryable();
                 // excute each filter one by one 
@@ -137,7 +140,58 @@ namespace BTAS.API.Repository
 
                             (propertyInfo, filter.fieldValue, containsDateTime) = GetParentPropertyInfo<tbl_house, tbl_container, tbl_containerDto>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
                         }
+                        else if (filter.tableName.ToUpper() == "VOYAGE")
+                        {
+                            filter.tableName = "voyage";
+                            parent = true;
+                            bool containsDateTime = false;
+                            if (filter.condition.ToUpper() == "CONTAINS")
+                            {
+                                originalValue = jsonObj[filter.fieldName];
+                                (containsDateTime, jsonString) = MakeVoyageJsonString(filter, containsDateTime, jsonString);
+                            }
 
+                            (propertyInfo, filter.fieldValue, containsDateTime) = GetParentPropertyInfo<tbl_house, tbl_voyage, tbl_voyageDto>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
+                        }
+                        else if (filter.tableName.ToUpper() == "INCOTERM")
+                        {
+                            filter.tableName = "incoterm";
+                            parent = true;
+                            bool containsDateTime = false;
+                            if (filter.condition.ToUpper() == "CONTAINS")
+                            {
+                                originalValue = jsonObj[filter.fieldName];
+                            }
+
+                            (propertyInfo, filter.fieldValue, containsDateTime) =
+                                GetParentPropertyInfo<tbl_shipment, tbl_incoterm, tbl_incotermDto>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
+                        }
+                        else if (filter.tableName.ToUpper() == "CONSIGNEE")
+                        {
+                            filter.tableName = "consignee";
+                            parent = true;
+                            bool containsDateTime = false;
+                            if (filter.condition.ToUpper() == "CONTAINS")
+                            {
+                                originalValue = jsonObj[filter.fieldName];
+                                (containsDateTime, jsonString) = MakeClientHeaderJsonString(filter, containsDateTime, jsonString);
+                            }
+
+                            (propertyInfo, filter.fieldValue, containsDateTime) = GetParentPropertyInfo<tbl_house, tbl_client_header, tbl_client_headerDto>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
+                        }
+                        else if (filter.tableName.ToUpper() == "CONSIGNOR")
+                        {
+                            filter.tableName = "consignor";
+                            parent = true;
+                            bool containsDateTime = false;
+                            if (filter.condition.ToUpper() == "CONTAINS")
+                            {
+                                originalValue = jsonObj[filter.fieldName];
+                                (containsDateTime, jsonString) = MakeClientHeaderJsonString(filter, containsDateTime, jsonString);
+                            }
+
+                            (propertyInfo, filter.fieldValue, containsDateTime) = GetParentPropertyInfo<tbl_house, tbl_client_header, tbl_client_headerDto>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
+                        }
                         else
                         {
                             throw new ArgumentException($"Invalid table name: {filter.tableName}");
@@ -155,13 +209,7 @@ namespace BTAS.API.Repository
 
                         if (propertyLambda != null)
                         {
-                            qList = qList.Provider.CreateQuery<tbl_house>(Expression.Call(
-                                       typeof(Queryable),
-                                       "Where",
-                                       new[] { elementType },
-                                       qList.Expression,
-                                       propertyLambda
-                                   ));
+                            qList = qList.Where(propertyLambda);
                         }
                     }
                 }
@@ -207,6 +255,11 @@ namespace BTAS.API.Repository
                     result = await _context.tbl_houses
                         .Include(c => c.houseItems)
                         .Include(c => c.receptacles)
+                        .Include(c => c.consignee)
+                        .Include(c => c.consignor)
+                        .Include(c => c.notes)
+                        .Include(c => c.documents)
+                        .Include(c => c.milestoneLinks)
                         .FirstOrDefaultAsync(x => x.tbl_house_code == referenceNumber);
                 }
                 else
@@ -332,11 +385,13 @@ namespace BTAS.API.Repository
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public async Task<ResponseDto> CreateAsync(tbl_houseDto entity, string shipperId)
+        public async Task<ResponseDto> CreateAsync(tbl_houseDto entity)
         {
             try
             {
-                string referenceNumber = await GetNextId(shipperId);
+                entity.tbl_house_createdDate = DateTime.Now;
+                entity.tbl_house_status = "OPEN";
+                string referenceNumber = await GetNextId();
                 entity.tbl_house_code = referenceNumber;
 
                 var result = _mapper.Map<tbl_houseDto, tbl_house>(entity);
@@ -352,7 +407,27 @@ namespace BTAS.API.Repository
                 }
                 else
                 {
-                    if (result.MasterCode != "" && result.MasterCode != null)
+                    if (!String.IsNullOrEmpty(result.VoyageCode))
+                    {
+                        var master = await _context.tbl_voyages
+                            .AsNoTracking()
+                            .FirstOrDefaultAsync(x => x.tbl_voyage_code == result.VoyageCode);
+                        if (master != null)
+                        {
+                            result.tbl_master_id = master.idtbl_voyage;
+                            //result.MasterCode = master.tbl_master_code;
+                        }
+                        else
+                        {
+                            return new ResponseDto
+                            {
+                                Result = entity,
+                                DisplayMessage = "Unable to link to HOUSE. Provided Voyage code was not found.",
+                                IsSuccess = false
+                            };
+                        }
+                    }
+                    if (!String.IsNullOrEmpty(result.MasterCode))
                     {
                         var master = await _context.tbl_masters
                             .AsNoTracking()
@@ -360,20 +435,20 @@ namespace BTAS.API.Repository
                         if (master != null)
                         {
                             result.tbl_master_id = master.idtbl_master;
-                            result.MasterCode = master.tbl_master_code;
+                            //result.MasterCode = master.tbl_master_code;
                         }
                         else
                         {
                             return new ResponseDto
                             {
                                 Result = entity,
-                                DisplayMessage = "Unable to link HOUSE. Provided MASTER code was not found.",
+                                DisplayMessage = "Unable to link to HOUSE. Provided MASTER code was not found.",
                                 IsSuccess = false
                             };
                         }
                     }
 
-                    if (entity.ContainerCode != "" && entity.ContainerCode != null)
+                    if (!String.IsNullOrEmpty(result.ContainerCode))
                     {
                         var parent = await _context.tbl_containers
                             .AsNoTracking()
@@ -382,14 +457,73 @@ namespace BTAS.API.Repository
                         if (parent != null)
                         {
                             result.tbl_container_id = parent.idtbl_container;
-                            result.ContainerCode = parent.tbl_container_code;
+                            //result.ContainerCode = parent.tbl_container_code;
                         }
                         else
                         {
                             return new ResponseDto
                             {
                                 Result = entity,
-                                DisplayMessage = "Unable to link HOUSE. Provided container reference was not found.",
+                                DisplayMessage = "Unable to link to HOUSE. Provided container reference was not found.",
+                                IsSuccess = false
+                            };
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(entity.ConsigneeCode))
+                    {
+                        var consignee = await _context.tbl_client_headers
+                            .FirstOrDefaultAsync(p => p.tbl_client_header_code == entity.ConsigneeCode);
+
+                        if (consignee != null)
+                        {
+                            result.tbl_consignee_id = consignee.idtbl_client_header;
+                        }
+                        else
+                        {
+                            return new ResponseDto
+                            {
+                                Result = entity,
+                                DisplayMessage = "Unable to link to HOUSE. Invalid Client Header code.",
+                                IsSuccess = false
+                            };
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(entity.ConsigneeCode))
+                    {
+                        var consignee = await _context.tbl_client_headers
+                            .FirstOrDefaultAsync(p => p.tbl_client_header_code == entity.ConsigneeCode);
+
+                        if (consignee != null)
+                        {
+                            result.tbl_consignee_id = consignee.idtbl_client_header;
+                        }
+                        else
+                        {
+                            return new ResponseDto
+                            {
+                                Result = entity,
+                                DisplayMessage = "Unable to link to HOUSE. Invalid Client Header code.",
+                                IsSuccess = false
+                            };
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(entity.IncotermCode))
+                    {
+                        var incoterm = await _context.tbl_incoterms
+                            .FirstOrDefaultAsync(p => p.tbl_incoterm_code == entity.IncotermCode);
+                        if (incoterm != null)
+                        {
+                            result.tbl_incoterm_id = incoterm.idtbl_incoterm;
+                        }
+                        else
+                        {
+                            return new ResponseDto
+                            {
+                                Result = entity,
+                                DisplayMessage = "Unable to link to HOUSE. Invalid Incoterm code.",
                                 IsSuccess = false
                             };
                         }
@@ -442,26 +576,43 @@ namespace BTAS.API.Repository
                     .AsNoTracking()
                     .SingleOrDefaultAsync(x => x.tbl_house_code == entity.tbl_house_code);
 
-                _mapper.Map<tbl_houseDto, tbl_house>(entity, result);
-
                 if (result != null)
                 {
-                    if (entity.MasterCode != "" && entity.MasterCode != null)
-                    {
-                        var master = await _context.tbl_masters
-                        .FirstOrDefaultAsync(x => x.tbl_master_code == entity.MasterCode);
+                    _mapper.Map(entity, result);
 
-                        if (master != null)
+                    if (!String.IsNullOrEmpty(entity.VoyageCode))
+                    {
+                        var voyage = await _context.tbl_voyages
+                            .AsNoTracking()
+                            .SingleOrDefaultAsync(x => x.tbl_voyage_code == entity.VoyageCode);
+                        if (voyage != null)
                         {
-                            result.tbl_master_id = master.idtbl_master;
-                            result.MasterCode = master.tbl_master_code;
+                            result.tbl_voyage_id = voyage.idtbl_voyage;
                         }
                         else
                         {
                             return new ResponseDto
                             {
-                                Result = entity,
-                                DisplayMessage = "Unable to link HOUSE. Invalid MASTER id or number.",
+                                DisplayMessage = "Unable to link to Voyage. Invalid Voyage code.",
+                                IsSuccess = false
+                            };
+                        }
+                    }
+
+                    if (entity.MasterCode != "" && entity.MasterCode != null)
+                    {
+                        var master = await _context.tbl_masters
+                        .SingleOrDefaultAsync(x => x.tbl_master_code == entity.MasterCode);
+
+                        if (master != null)
+                        {
+                            result.tbl_master_id = master.idtbl_master;
+                        }
+                        else
+                        {
+                            return new ResponseDto
+                            {
+                                DisplayMessage = "Unable to link to Master. Invalid Master code.",
                                 IsSuccess = false
                             };
                         }
@@ -470,23 +621,77 @@ namespace BTAS.API.Repository
                     if (entity.ContainerCode != "" && entity.ContainerCode != null)
                     {
                         var container = await _context.tbl_containers
-                        .FirstOrDefaultAsync(x => x.tbl_container_code == entity.ContainerCode);
+                        .SingleOrDefaultAsync(x => x.tbl_container_code == entity.ContainerCode);
 
                         if (container != null)
                         {
-                            result.ContainerCode = container.tbl_container_code;
+                            result.tbl_container_id = container.idtbl_container;
                         }
                         else
                         {
                             return new ResponseDto
                             {
-                                Result = entity,
-                                DisplayMessage = "Unable to link HOUSE. Invalid container id or number.",
+                                DisplayMessage = "Unable to link to Container. Invalid container code.",
                                 IsSuccess = false
                             };
                         }
                     }
 
+                    if (!string.IsNullOrEmpty(entity.ConsigneeCode)) 
+                    { 
+                        var consignee = await _context.tbl_client_headers
+                            .SingleOrDefaultAsync(p => p.tbl_client_header_code == entity.ConsigneeCode);
+
+                        if (consignee != null)
+                        {
+                            result.tbl_consignee_id = consignee.idtbl_client_header;
+                        }
+                        else
+                        {
+                            return new ResponseDto
+                            {
+                                DisplayMessage = "Unable to link to Client Header. Invalid Client Header code.",
+                                IsSuccess = false
+                            };
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(entity.ConsigneeCode))
+                    {
+                        var consignee = await _context.tbl_client_headers
+                            .SingleOrDefaultAsync(p => p.tbl_client_header_code == entity.ConsigneeCode);
+
+                        if (consignee != null)
+                        {
+                            result.tbl_consignee_id = consignee.idtbl_client_header;
+                        }
+                        else
+                        {
+                            return new ResponseDto
+                            {
+                                DisplayMessage = "Unable to link to HOUSE. Invalid Client Header code.",
+                                IsSuccess = false
+                            };
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(entity.IncotermCode))
+                    {
+                        var incoterm = await _context.tbl_incoterms
+                            .SingleOrDefaultAsync(p => p.tbl_incoterm_code == entity.IncotermCode);
+                        if (incoterm != null)
+                        {
+                            result.tbl_incoterm_id = incoterm.idtbl_incoterm;
+                        }
+                        else
+                        {
+                            return new ResponseDto
+                            {
+                                DisplayMessage = "Unable to link to HOUSE. Invalid Incoterm code.",
+                                IsSuccess = false
+                            };
+                        }
+                    }
                     _context.ChangeTracker.Clear();
                     _context.tbl_houses.Update(result);
                     await _context.SaveChangesAsync();
@@ -495,7 +700,6 @@ namespace BTAS.API.Repository
                 {
                     return new ResponseDto
                     {
-                        Result = entity,
                         DisplayMessage = "HOUSE does not exists.",
                         IsSuccess = false
                     };
@@ -503,17 +707,15 @@ namespace BTAS.API.Repository
 
                 return new ResponseDto
                 {
-                    Result = entity,
                     DisplayMessage = "HOUSE successfully updated.",
                     IsSuccess = true,
-                    ReferenceNumber = result.tbl_house_code
+                    ReferenceNumber = entity.tbl_house_code
                 };
             }
             catch (Exception ex)
             {
                 return new ResponseDto
                 {
-                    Result = entity,
                     DisplayMessage = ex.StackTrace.ToString(),
                     IsSuccess = false
                 };
@@ -660,13 +862,13 @@ namespace BTAS.API.Repository
             }
         }
 
-        public async Task<string> GetNextId(string shipperId)
+        public async Task<string> GetNextId()
         {
             //Edited by HS on 01/02/2023
             
             tbl_house result = await _context.tbl_houses.OrderByDescending(x => x.idtbl_house).FirstOrDefaultAsync();
 
-            string referenceCode = "HS" + shipperId + String.Format("{0:0000000000}", (result != null ? result.idtbl_house + count : 1));
+            string referenceCode = "HS" + String.Format("{0:0000000}", (result != null ? result.idtbl_house + count : 1));
             count++;
             return referenceCode;
         }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.Internal;
+using Azure.Security.KeyVault.Certificates;
 using BTAS.API.Dto;
 using BTAS.API.Extensions;
 using BTAS.API.Models;
@@ -35,13 +36,18 @@ namespace BTAS.API.Repository
     {
         private readonly MainDbContext _context;
         private IMapper _mapper;
-        int count;
-        /*1234*/
-        public MasterRepository(MainDbContext context, IMapper mapper)
+        private int count;
+        private ContainerRepository _containerRepository;
+        private HouseRepository _houseRepository;
+
+        public MasterRepository(MainDbContext context, IMapper mapper, ContainerRepository containerRepository, HouseRepository houseRepository)
         {
             _context = context;
             _mapper = mapper;
             count = 1;
+            _containerRepository = containerRepository;
+            _houseRepository = houseRepository;
+
         }
 
         /// <summary>
@@ -70,8 +76,9 @@ namespace BTAS.API.Repository
                 .Include(x => x.creditorAgent)
                 .Include(x => x.containers)
                 .Include(x => x.houses)
+                .Include(x => x.notes)
+                .Include(x => x.milestoneLinks)
                 .ToListAsync();
-                //_list = _list.Take(20);
                 return _mapper.Map<List<tbl_masterDto>>(_list);
             }
             catch (Exception)
@@ -91,8 +98,15 @@ namespace BTAS.API.Repository
             try
             {               
                 // Achieve the latest record first.
-                var qList = _context.tbl_masters.OrderByDescending(m => m.idtbl_master).AsQueryable();
-                qList = qList.Include(p => p.voyage);
+                var qList = _context.tbl_masters.OrderByDescending(m => m.idtbl_master)
+                    .Include(p => p.voyage)
+                    .Include(p => p.originAgent)
+                    .Include(p => p.destinationAgent)
+                    .Include(p => p.carrierAgent)
+                    .Include(p => p.creditorAgent)
+                    .AsNoTracking()
+                    .AsQueryable();
+
                 // excute each filter one by one 
                 if (customFilters.Filters != null)
                 {
@@ -209,6 +223,58 @@ namespace BTAS.API.Repository
                             //}
                             (propertyInfo, filter.fieldValue, containsDateTime) = GetParentPropertyInfo<tbl_master, tbl_voyage, tbl_voyageDto>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
                         }
+                        else if (filter.tableName.ToUpper() == "ORIGINAGENT")
+                        {
+                            filter.tableName = "originAgent";
+                            parent = true;
+                            bool containsDateTime = false;
+                            if (filter.condition.ToUpper() == "CONTAINS")
+                            {
+                                originalValue = jsonObj[filter.fieldName];
+
+                                (containsDateTime, jsonString) = MakeClientHeaderJsonString(filter, containsDateTime, jsonString);
+                            }
+                            (propertyInfo, filter.fieldValue, containsDateTime) = GetParentPropertyInfo<tbl_master, tbl_client_header, tbl_client_headerDto>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
+                        }
+                        else if (filter.tableName.ToUpper() == "DESTINATIONAGENT")
+                        {
+                            filter.tableName = "destinationAgent";
+                            parent = true;
+                            bool containsDateTime = false;
+                            if (filter.condition.ToUpper() == "CONTAINS")
+                            {
+                                originalValue = jsonObj[filter.fieldName];
+
+                                (containsDateTime, jsonString) = MakeClientHeaderJsonString(filter, containsDateTime, jsonString);
+                            }
+                            (propertyInfo, filter.fieldValue, containsDateTime) = GetParentPropertyInfo<tbl_master, tbl_client_header, tbl_client_headerDto>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
+                        }
+                        else if (filter.tableName.ToUpper() == "CARRIERAGENT")
+                        {
+                            filter.tableName = "carrierAgent";
+                            parent = true;
+                            bool containsDateTime = false;
+                            if (filter.condition.ToUpper() == "CONTAINS")
+                            {
+                                originalValue = jsonObj[filter.fieldName];
+
+                                (containsDateTime, jsonString) = MakeClientHeaderJsonString(filter, containsDateTime, jsonString);
+                            }
+                            (propertyInfo, filter.fieldValue, containsDateTime) = GetParentPropertyInfo<tbl_master, tbl_client_header, tbl_client_headerDto>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
+                        }
+                        else if (filter.tableName.ToUpper() == "CREDITORAGENT")
+                        {
+                            filter.tableName = "creditorAgent";
+                            parent = true;
+                            bool containsDateTime = false;
+                            if (filter.condition.ToUpper() == "CONTAINS")
+                            {
+                                originalValue = jsonObj[filter.fieldName];
+
+                                (containsDateTime, jsonString) = MakeClientHeaderJsonString(filter, containsDateTime, jsonString);
+                            }
+                            (propertyInfo, filter.fieldValue, containsDateTime) = GetParentPropertyInfo<tbl_master, tbl_client_header, tbl_client_headerDto>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
+                        }
                         else
                         {
                             throw new ArgumentException($"Invalid table name: {filter.tableName}");
@@ -226,13 +292,14 @@ namespace BTAS.API.Repository
 
                         if (propertyLambda != null)
                         {
-                            qList = qList.Provider.CreateQuery<tbl_master>(Expression.Call(
-                                       typeof(Queryable),
-                                       "Where",
-                                       new[] { elementType },
-                                       qList.Expression,
-                                       propertyLambda
-                                   ));
+                            //qList = qList.Provider.CreateQuery<tbl_master>(Expression.Call(
+                            //           typeof(Queryable),
+                            //           "Where",
+                            //           new[] { elementType },
+                            //           qList.Expression,
+                            //           propertyLambda
+                            //       ));
+                            qList = qList.Where(propertyLambda);
                         }
                     }
                 }
@@ -241,6 +308,10 @@ namespace BTAS.API.Repository
                 {
                     return null;
                 }
+                //if (qList.Count() < customFilters.PageSize)
+                //{
+                //    customFilters.PageSize = qList.Count();
+                //}
                 var filtered = await qList.Skip(customFilters.Page * customFilters.PageSize).Take(customFilters.PageSize).ToListAsync();
                 return _mapper.Map<IEnumerable<tbl_masterDto>>(filtered);
             }
@@ -274,6 +345,13 @@ namespace BTAS.API.Repository
                         .Include(m => m.houses)
                         //Added by HS on 17/05/2023
                         .Include(m => m.containers)
+                        .Include(m => m.carrierAgent)
+                        .Include(m => m.creditorAgent)
+                        .Include(m => m.destinationAgent)
+                        .Include(m => m.originAgent)
+                        .Include(m => m.documents)
+                        .Include(m => m.notes)
+                        .Include(m => m.milestoneLinks)
                         //.AsNoTracking()
                         .FirstOrDefaultAsync(m => m.tbl_master_code == referenceNumber);
                 }
@@ -328,11 +406,12 @@ namespace BTAS.API.Repository
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public async Task<ResponseDto> CreateAsync(tbl_masterDto entity, string shipperId)
+        public async Task<ResponseDto> CreateAsync(tbl_masterDto entity)
         {
             try
             {
-                string referenceNumber = await GetNextId(shipperId);
+                entity.tbl_master_createdDate = DateTime.Now;
+                string referenceNumber = await GetNextId();
                 entity.tbl_master_code = referenceNumber;
                 entity.tbl_master_status = "OPEN";
 
@@ -349,25 +428,128 @@ namespace BTAS.API.Repository
                 }
                 else
                 {
+                    _mapper.Map(entity, result);
+                    //link the master to its created voyage when VoyageCode is provided
                     if (result.VoyageCode != null && result.VoyageCode != "")
                     {
-                        var parent = await _context.tbl_voyages.FirstOrDefaultAsync(x => x.tbl_voyage_code == result.VoyageCode);
+                        var parent = await _context.tbl_voyages.AsNoTracking()
+                            .SingleOrDefaultAsync(x => x.tbl_voyage_code == result.VoyageCode);
                         if (parent != null)
                         {
                             result.tbl_voyage_id = parent.idtbl_voyage;
-                            result.VoyageCode = parent.tbl_voyage_code;
+                            //result.VoyageCode = parent.tbl_voyage_code;
                         }
                         else
                         {
                             return new ResponseDto
                             {
                                 Result = entity,
-                                DisplayMessage = "Unable to link Master. Provided Voyage reference was not found.",
+                                DisplayMessage = "Unable to link to Master. Provided Voyage reference was not found.",
+                                IsSuccess = false
+                            };
+                        }
+                    }
+                    if (!String.IsNullOrEmpty(result.originAgentCode))
+                    {
+                        var parent = await _context.tbl_client_headers.AsNoTracking()
+                            .SingleOrDefaultAsync(x => x.tbl_client_header_code == result.originAgentCode);
+                        if (parent != null)
+                        {
+                            result.tbl_client_header_origin_id = parent.idtbl_client_header;
+                          
+                        }
+                        else
+                        {
+                            return new ResponseDto
+                            {
+                                Result = entity,
+                                DisplayMessage = "Unable to link to Master. Provided Client Header reference was not found.",
                                 IsSuccess = false
                             };
                         }
                     }
 
+                    if (!String.IsNullOrEmpty(result.destinationAgentCode))
+                    {
+                        var parent = await _context.tbl_client_headers.AsNoTracking()
+                            .SingleOrDefaultAsync(x => x.tbl_client_header_code == result.destinationAgentCode);
+                        if (parent != null)
+                        {
+                            result.tbl_client_header_destination_id = parent.idtbl_client_header;
+        
+                        }
+                        else
+                        {
+                            return new ResponseDto
+                            {
+                                Result = entity,
+                                DisplayMessage = "Unable to link to Master. Provided Client Header reference was not found.",
+                                IsSuccess = false
+                            };
+                        }
+                    }
+
+                    if (!String.IsNullOrEmpty(result.creditorAgentCode))
+                    {
+                        var parent = await _context.tbl_client_headers.AsNoTracking()
+                            .SingleOrDefaultAsync(x => x.tbl_client_header_code == result.creditorAgentCode);
+                        if (parent != null)
+                        {
+                            result.tbl_client_header_creditor_id = parent.idtbl_client_header;
+                        }
+                        else
+                        {
+                            return new ResponseDto
+                            {
+                                Result = entity,
+                                DisplayMessage = "Unable to link to Master. Provided Client Header reference was not found.",
+                                IsSuccess = false
+                            };
+                        }
+                    }
+
+                    if (!String.IsNullOrEmpty(result.carrierAgentCode))
+                    {
+                        var parent = await _context.tbl_client_headers.AsNoTracking()
+                            .SingleOrDefaultAsync(x => x.tbl_client_header_code == result.carrierAgentCode);
+                        if (parent != null)
+                        {
+                            result.tbl_client_header_carrier_id = parent.idtbl_client_header;
+                        }
+                        else
+                        {
+                            return new ResponseDto
+                            {
+                                Result = entity,
+                                DisplayMessage = "Unable to link to Master. Provided Client Header reference was not found.",
+                                IsSuccess = false
+                            };
+                        }
+                    }
+                    #region creating linked children
+                    /*
+                    //for creating linked children
+                    if (result.containers != null)
+                    {
+                        foreach (var container in result.containers)
+                        {
+                            container.tbl_container_code = await _containerRepository.GetNextId();
+                            //link containers to this created master
+                            container.tbl_master_id = result.idtbl_master;
+                            container.MasterCode = result.tbl_master_code;
+                        }
+                    }
+                    if (result.houses != null) 
+                    {
+                        foreach (var house in result.houses)
+                        {
+                            house.tbl_house_code = await _houseRepository.GetNextId();
+                            house.tbl_master_id = result.idtbl_master;
+                            house.MasterCode = result.tbl_master_code;
+                        }
+                    }
+                    */
+                    #endregion
                     await _context.tbl_masters.AddAsync(result);
                     await _context.SaveChangesAsync();
                     return new ResponseDto
@@ -378,7 +560,6 @@ namespace BTAS.API.Repository
                         ReferenceNumber = result.tbl_master_code
                     };
                 }
-
             }
             catch (Exception ex)
             {
@@ -404,31 +585,109 @@ namespace BTAS.API.Repository
                     .AsNoTracking()
                     .SingleOrDefaultAsync(x => x.tbl_master_code == entity.tbl_master_code);
 
-                _mapper.Map<tbl_masterDto, tbl_master>(entity, result);
                 if (result != null)
                 {
+                    _mapper.Map(entity, result);
+
                     if (entity.VoyageCode != "" && entity.VoyageCode != null)
                     {
                         var parent = await _context.tbl_voyages
                         .AsNoTracking()
-                        .FirstOrDefaultAsync(x => x.tbl_voyage_code == entity.VoyageCode);
+                        .SingleOrDefaultAsync(x => x.tbl_voyage_code == entity.VoyageCode);
 
                         if (parent != null)
                         {
                             result.tbl_voyage_id = parent.idtbl_voyage;
-                            result.VoyageCode = parent.tbl_voyage_code;
                         }
                         else
                         {
                             return new ResponseDto
                             {
                                 Result = entity,
-                                DisplayMessage = "Invalid voyage id or number.",
+                                DisplayMessage = "Unable to link to Voyage. Provided Voyage reference was not found.",
                                 IsSuccess = false
                             };
                         }
                     }
 
+                    if (!String.IsNullOrEmpty(entity.originAgentCode))
+                    {
+                        var parent = await _context.tbl_client_headers
+                            .AsNoTracking()
+                            .SingleOrDefaultAsync(x => x.tbl_client_header_code == entity.originAgentCode);
+                        if (parent != null)
+                        {
+                            result.tbl_client_header_origin_id = parent.idtbl_client_header;
+
+                        }
+                        else
+                        {
+                            return new ResponseDto
+                            {
+                                Result = entity,
+                                DisplayMessage = "Unable to link to Master. Provided Client Header reference was not found.",
+                                IsSuccess = false
+                            };
+                        }
+                    }
+
+                    if (!String.IsNullOrEmpty(entity.destinationAgentCode))
+                    {
+                        var parent = await _context.tbl_client_headers.AsNoTracking()
+                            .SingleOrDefaultAsync(x => x.tbl_client_header_code == entity.destinationAgentCode);
+                        if (parent != null)
+                        {
+                            result.tbl_client_header_destination_id = parent.idtbl_client_header;
+
+                        }
+                        else
+                        {
+                            return new ResponseDto
+                            {
+                                Result = entity,
+                                DisplayMessage = "Unable to link to Master. Provided Client Header reference was not found.",
+                                IsSuccess = false
+                            };
+                        }
+                    }
+
+                    if (!String.IsNullOrEmpty(entity.creditorAgentCode))
+                    {
+                        var parent = await _context.tbl_client_headers.AsNoTracking()
+                            .SingleOrDefaultAsync(x => x.tbl_client_header_code == entity.creditorAgentCode);
+                        if (parent != null)
+                        {
+                            result.tbl_client_header_creditor_id = parent.idtbl_client_header;
+                        }
+                        else
+                        {
+                            return new ResponseDto
+                            {
+                                Result = entity,
+                                DisplayMessage = "Unable to link to Master. Provided Client Header reference was not found.",
+                                IsSuccess = false
+                            };
+                        }
+                    }
+
+                    if (!String.IsNullOrEmpty(entity.carrierAgentCode))
+                    {
+                        var parent = await _context.tbl_client_headers.AsNoTracking()
+                            .SingleOrDefaultAsync(x => x.tbl_client_header_code == entity.carrierAgentCode);
+                        if (parent != null)
+                        {
+                            result.tbl_client_header_carrier_id = parent.idtbl_client_header;
+                        }
+                        else
+                        {
+                            return new ResponseDto
+                            {
+                                Result = entity,
+                                DisplayMessage = "Unable to link to Master. Provided Client Header reference was not found.",
+                                IsSuccess = false
+                            };
+                        }
+                    }
                     _context.ChangeTracker.Clear();
                     _context.tbl_masters.Update(result);
                     await _context.SaveChangesAsync();
@@ -445,7 +704,7 @@ namespace BTAS.API.Repository
 
                 return new ResponseDto
                 {
-                    Result = entity,
+                    //Result = entity,
                     DisplayMessage = "MASTER successfully updated.",
                     IsSuccess = true,
                     ReferenceNumber = result.tbl_master_code
@@ -560,11 +819,11 @@ namespace BTAS.API.Repository
             }
         }
 
-        public async Task<string> GetNextId(string shipperId)
+        public async Task<string> GetNextId()
         {
             tbl_master result = await _context.tbl_masters.OrderByDescending(x => x.idtbl_master).FirstOrDefaultAsync();
 
-            string referenceCode = "MS" + shipperId + String.Format("{0:0000000000}", (result != null ? result.idtbl_master + count : 1));
+            string referenceCode = "MS"  + String.Format("{0:0000000}", (result != null ? result.idtbl_master + count : 1));
             count++;
             return referenceCode;
         }

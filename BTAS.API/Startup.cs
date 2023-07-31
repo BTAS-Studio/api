@@ -15,9 +15,12 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using Swashbuckle.AspNetCore.SwaggerUI;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Wkhtmltopdf.NetCore;
+using static System.Collections.Specialized.BitVector32;
 
 namespace BTAS.API
 {
@@ -48,7 +51,9 @@ namespace BTAS.API
 
             services.AddDbContext<MainDbContext>(options =>
             {
+                //Edited by HS on 28/06/2023
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+                //options.UseLazyLoadingProxies().UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
             });
 
             services.AddSwaggerGenNewtonsoftSupport();
@@ -75,6 +80,14 @@ namespace BTAS.API
             services.AddScoped<IRepository<tbl_containerDto>, ContainerRepository>();
             services.AddScoped<IRepository<tbl_barcodeDto>, BarcodeRepository>();
             services.AddScoped<IRepository<tbl_default_settingDto>, SettingsRepository>();
+            //Added by HS on 12/07/2023
+            services.AddScoped<IRepository<tbl_incotermDto>, IncotermRepository>();
+            //Added by HS on 14/06/2023
+            services.AddScoped<IRepository<tbl_note_categoryDto>, NoteCategoryRepository>();
+            services.AddScoped<IRepository<tbl_noteDto>, NoteRepository>();
+            services.AddScoped<IRepository<tbl_milestone_headerDto>, MilestoneHeaderRepository>();
+            services.AddScoped<IRepository<tbl_milestone_linkDto>, MilestoneLinkRepository>();
+            services.AddScoped<IRepository<tbl_documentDto>, DocumentRepository>();
 
             services.AddScoped<IAustwayLabelRepository, AustwayLabelRepository>();
 
@@ -83,6 +96,7 @@ namespace BTAS.API
             services.AddTransient<ApiResponseRepository>();
             services.AddTransient<ManifestRepository>();
             services.AddTransient<ShipmentRepository>();
+
             services.AddTransient<ApgRepository>();
             services.AddTransient<FastwayRepository>();
             services.AddTransient<BorderRepository>();
@@ -108,7 +122,14 @@ namespace BTAS.API
             services.AddTransient<SettingsRepository>();
             services.AddTransient<AddressRepository>();
             services.AddTransient<TTWSClient>();
-
+            //Added by HS on 12/07/2023
+            services.AddTransient<IncotermRepository>();
+            //Added by HS on 14/06/2023
+            services.AddTransient<NoteCategoryRepository>();
+            services.AddTransient<NoteRepository>();
+            services.AddTransient<MilestoneHeaderRepository>();
+            services.AddTransient<MilestoneLinkRepository>();
+            services.AddTransient<DocumentRepository>();
             //services.AddSingleton<TTWS>();
             services.AddSingleton(Configuration);
             //services.AddCors(options =>
@@ -129,7 +150,7 @@ namespace BTAS.API
             services.AddApiVersioning(config =>
             {
                 config.RegisterMiddleware = true;
-                config.DefaultApiVersion = new ApiVersion(1, 2);
+                config.DefaultApiVersion = new ApiVersion(2, 0);
                 config.AssumeDefaultVersionWhenUnspecified = true;
                 config.ReportApiVersions = true;
                 config.ApiVersionReader = new HeaderApiVersionReader("api-version");
@@ -157,7 +178,7 @@ namespace BTAS.API
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "BTAS.API", Version = "v1" });
+                c.SwaggerDoc("v2", new OpenApiInfo { Title = "BTAS.API", Version = "v2" });
                 //c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
                 //{
                 //    Description = "Austway API with OAuth2.0 Auth Code and PKCE",
@@ -235,7 +256,8 @@ namespace BTAS.API
                 //app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BTAS.API v1"));
                 app.UseSwaggerUI(c =>
                 {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "BTAS.API v1");
+
+                    c.SwaggerEndpoint("/swagger/v2/swagger.json", "BTAS.API v2");
                     c.OAuthClientId(Configuration["OpenIdClientId"]);
                     c.OAuthClientSecret(Configuration["ClientSecret"]);
                     c.OAuthUsePkce();
@@ -254,10 +276,18 @@ namespace BTAS.API
             app.UseSwaggerUI(c =>
             {
                 c.RoutePrefix = "swagger";
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
+                c.SwaggerEndpoint("/swagger/v2/swagger.json", "API v2");
 
                 // custom CSS
                 c.InjectStylesheet("/swagger-ui/custom.css");
+                //Added by HS on 25/07/2023
+                //Show more of the model by default
+                //The default expansion depth for the model on the model - example section.
+                c.DefaultModelExpandDepth(0);
+                //The default expansion depth for models (set to -1 completely hide the models).
+                c.DefaultModelsExpandDepth(-1);
+                //Close all of the major nodes
+                c.DocExpansion(DocExpansion.None);
             });
 
             app.Use(async (ctx, next) =>
@@ -271,7 +301,15 @@ namespace BTAS.API
 
             //app.UseMiddleware<AuthenticationMiddleware>();
 
+            //Edited by HS on 16/06/2023
             app.UseExceptionHandler("/exception");
+            //app.UseExceptionHandler(
+            //    new ExceptionHandlerOptions()
+            //    {
+            //        AllowStatusCode404Response = true,
+            //        ExceptionHandlingPath = "/exception"
+            //    });
+            
             //app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseRouting();

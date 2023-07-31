@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using BTAS.API.Dto;
 using BTAS.API.Models;
 using BTAS.API.Repository.Interface;
@@ -30,10 +31,18 @@ namespace BTAS.API.Repository
         /// <returns></returns>
         public async Task<IEnumerable<tbl_client_contact_detailDto>> GetAllAsync()
         {
-            var _list = await _context.tbl_client_contact_details.ToListAsync();
+            var _list = await _context.tbl_client_contact_details.OrderByDescending(p => p.idtbl_client_contact_detail)
+                .AsNoTracking().ToListAsync();
             return _mapper.Map<List<tbl_client_contact_detailDto>>(_list);
         }
 
+        public async Task<IEnumerable<tbl_client_contact_detailDto>> GetAllAsyncWithChildren()
+        {
+            var _list = await _context.tbl_client_contact_details
+                .OrderByDescending(p => p.idtbl_client_contact_detail)
+                .AsNoTracking().ToListAsync();
+            return _mapper.Map<List<tbl_client_contact_detailDto>>(_list);
+        }
         /// <summary>
         /// Retrieves a single Contact Details based on id
         /// </summary>
@@ -78,7 +87,11 @@ namespace BTAS.API.Repository
         {
             try
             {
+                entity.tbl_client_contact_detail_isActive = true;
+                //Edited by HS on 01/02/2023
                 var result = _mapper.Map<tbl_client_contact_detailDto, tbl_client_contact_detail>(entity);
+                result.tbl_client_contact_detail_code = await GetNextId();
+     
                 if (result.idtbl_client_contact_detail > 0)
                 {
                     return new ResponseDto
@@ -91,13 +104,13 @@ namespace BTAS.API.Repository
                 else
                 // Edited by HS on 25/01/2023 to auto connect client_header to client_contact details
                 {
-                    if (result.ClientHeaderCode != null && result.ClientHeaderCode != "")
+                    if (!String.IsNullOrEmpty(result.ClientHeaderCode))
                     {
-                        var cheader = await _context.tbl_client_headers
+                        var parent = await _context.tbl_client_headers
                             .FirstOrDefaultAsync(x => x.tbl_client_header_code == result.ClientHeaderCode);
-                        if (cheader != null)
+                        if (parent != null)
                         {
-                            result.tbl_client_header_id = cheader.idtbl_client_header;
+                            result.tbl_client_header_id = parent.idtbl_client_header;
                             //result.tbl_client_header_code = cheader.tbl_client_header_code;
                         }
                         else
@@ -105,11 +118,12 @@ namespace BTAS.API.Repository
                             return new ResponseDto
                             {
                                 Result = entity,
-                                DisplayMessage = "Unable to link Client Header. Provided Client Header reference was not found.",
+                                DisplayMessage = "Unable to link to Client Header. Provided Contact Detail reference was not found.",
                                 IsSuccess = false
                             };
                         }
-                    }                
+                    }
+
                     await _context.tbl_client_contact_details.AddAsync(result);
                     await _context.SaveChangesAsync();
                 }
@@ -118,10 +132,9 @@ namespace BTAS.API.Repository
                 {
                     //Edited by HS on 01/02/2023
                     //Result = _mapper.Map<tbl_client_contact_detailDto>(result),
-                    Result = entity,
-                    Id = entity.idtbl_client_contact_detail,
-                    ReferenceNumber = entity.tbl_client_contact_detail_code,
-                    DisplayMessage = "Contact Details successfully added.",
+                    Result = result,
+                    ReferenceNumber = result.tbl_client_contact_detail_code,
+                    DisplayMessage = "Contact Detail successfully added.",
                     IsSuccess = true
                 };
             }
@@ -146,53 +159,61 @@ namespace BTAS.API.Repository
         {
             try
             {
-                if (entity.idtbl_client_contact_detail > 0)
-                {
-                    var result = await _context.tbl_client_contact_details
-                        .SingleOrDefaultAsync(x => x.idtbl_client_contact_detail == entity.idtbl_client_contact_detail && x.tbl_client_header_id==entity.tbl_client_header_id);
-                    if (result != null)
-                    {
+                var result = await _context.tbl_client_contact_details.AsNoTracking()
+                    .SingleOrDefaultAsync(x => x.idtbl_client_contact_detail == entity.idtbl_client_contact_detail 
+                    || x.tbl_client_header_id == entity.tbl_client_header_id);
 
-                        _context.tbl_client_contact_details.Update(_mapper.Map(entity, result));
-                        await _context.SaveChangesAsync();
-                    }
-                    else
+                if (result != null)
+                {
+                    _mapper.Map(entity, result);
+
+                    if (!String.IsNullOrEmpty(entity.ClientHeaderCode))
                     {
-                        return new ResponseDto
+                        var parent = await _context.tbl_client_headers.AsNoTracking()
+                            .SingleOrDefaultAsync(x => x.tbl_client_header_code == entity.ClientHeaderCode);
+                        if (parent != null)
                         {
-                            Result = entity,
-                            DisplayMessage = "Contact Details does not exists.",
-                            IsSuccess = false
-                        };
+                            result.tbl_client_header_id = parent.idtbl_client_header;
+                            //result.tbl_client_header_code = cheader.tbl_client_header_code;
+                        }
+                        else
+                        {
+                            return new ResponseDto
+                            {
+                                DisplayMessage = "Unable to link to Client Header. Provided Contact Detail reference was not found.",
+                                IsSuccess = false
+                            };
+                        }
                     }
+
+                    _context.ChangeTracker.Clear();
+                    _context.tbl_client_contact_details.Update(result);
+                    await _context.SaveChangesAsync();
                 }
                 else
                 {
                     return new ResponseDto
                     {
-                        Result = entity,
                         DisplayMessage = "Contact Details does not exists.",
                         IsSuccess = false
                     };
-                }
+                };
 
                 return new ResponseDto
                 {
-                    Result = entity,
                     DisplayMessage = "Contact Details successfully updated.",
                     IsSuccess = true
                 };
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return new ResponseDto
                 {
-                    Result = entity,
                     DisplayMessage = ex.StackTrace.ToString(),
                     IsSuccess = false
                 };
             }
-            
+
         }
 
         public async Task<List<tbl_client_contact_detailDto>> CreateRangeAsync(List<tbl_client_contact_detailDto> entities)
@@ -231,29 +252,14 @@ namespace BTAS.API.Repository
             }
         }
 
-        public async Task<string> GetNextId(string shipperId)
+        public async Task<string> GetNextId()
         {
             
             var result = await _context.tbl_client_contact_details.OrderByDescending(x => x.idtbl_client_contact_detail).FirstOrDefaultAsync();
 
-            string referenceCode = "CD" + shipperId + String.Format("{0:0000000000}", (result != null ? result.idtbl_client_contact_detail + count : 1));
+            string referenceCode = "CD" + String.Format("{0:0000000}", (result != null ? result.idtbl_client_contact_detail + count : 1));
             count++;
             return referenceCode;
-        }
-
-        public Task<IEnumerable<tbl_client_contact_detailDto>> GetAllAsyncWithChildren()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<tbl_client_contact_detailDto>> GetAllAsyncWithChildren(searchFilter filter = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<tbl_client_contact_detailDto>> GetAllAsyncWithChildren(searchFilter<tbl_client_contact_detailDto> filter = null)
-        {
-            throw new NotImplementedException();
         }
     }
 }

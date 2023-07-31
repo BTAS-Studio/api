@@ -24,8 +24,8 @@ namespace BTAS.API.Repository
         {
             _converter = converter;
         }
-
-        public async Task<CreateLabelResponse> GenerateLabelAsync(string carrier, List<LabelItem> obj, tbl_client_headerDto recipient, tbl_client_headerDto shipper = null)
+        
+        public async Task<CreateLabelResponse> GenerateLabelAsync(string carrier, List<LabelItem> obj, tbl_addressDto recipient, tbl_client_headerDto shipper = null)
         {
             
             var sb = new StringBuilder();
@@ -131,17 +131,17 @@ or incendiary devices. A false declaration is a criminal offence.
 </table>
 <div style='page-break-after: always;'> </div>
                                     ",
-                    recipient.tbl_client_header_companyName,
-                    recipient.tbl_client_header_phone,
-                    recipient.deliveryAddress.tbl_address_address1,
-                    recipient.deliveryAddress.tbl_address_address2,
-                    recipient.deliveryAddress.tbl_address_suburb,
-                    recipient.deliveryAddress.tbl_address_postcode,
-                    recipient.deliveryAddress.tbl_address_state,
+                    recipient.tbl_address_companyName,
+                    recipient.tbl_address_phone,
+                    recipient.tbl_address_address1,
+                    recipient.tbl_address_address2,
+                    recipient.tbl_address_suburb,
+                    recipient.tbl_address_postcode,
+                    recipient.tbl_address_state,
                     item.RoutingCode,
                     item.ParcelPallet,
                     item.Instructions,
-                    recipient.tbl_client_header_code,
+                    recipient.tbl_address_code,
                     Barcode39(item.Tracking),
                     Barcode39(item.Consignment),
                     itemno,
@@ -197,6 +197,7 @@ or incendiary devices. A false declaration is a criminal offence.
             }
         }
 
+        
         private string Barcode39(string barcode)
         {
             string result;

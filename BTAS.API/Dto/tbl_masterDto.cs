@@ -16,7 +16,7 @@ namespace BTAS.API.Dto
     {
         //Added by HS on 09/02/2023
         [JsonProperty("Id")]
-        [DoNotInclude]
+        [JsonIgnore]
         public int idtbl_master { get; set; }
         [StringLength(30)]
         [JsonProperty("Code")]
@@ -26,9 +26,11 @@ namespace BTAS.API.Dto
         public string tbl_master_bookingNumber { get; set; }
         [StringLength(50)]
         [JsonProperty("BillNumber")]
+        [Required]
         public string tbl_master_billNumber { get; set; }
         [StringLength(50)]
         [JsonProperty("Status")]
+        //[RegularExpression("")]
         public string tbl_master_status { get; set; }
         [StringLength(30)]
         [JsonProperty("Type")]
@@ -43,6 +45,7 @@ namespace BTAS.API.Dto
         public DateTime? tbl_master_createdDate { get; set; }
         
         [JsonProperty("VoyageId")]
+        [JsonIgnore]
         public int? tbl_voyage_id { get; set; }
         [StringLength(30)]
         [JsonProperty("VoyageCode")]
@@ -51,6 +54,7 @@ namespace BTAS.API.Dto
         public virtual tbl_voyageDto voyage { get; set; }
 
         [JsonProperty("CarrierAgentId")]
+        [JsonIgnore]
         public int? tbl_client_header_carrier_id { get; set; }
         [StringLength(30)]
         [JsonProperty("CarrierAgentCode")]
@@ -58,6 +62,7 @@ namespace BTAS.API.Dto
         public virtual tbl_client_headerDto carrierAgent { get; set; }
 
         [JsonProperty("CreditorAgentId")]
+        [JsonIgnore]
         public int? tbl_client_header_creditor_id { get; set; }
         [StringLength(30)]
         [JsonProperty("CreditorAgentCode")]
@@ -65,6 +70,7 @@ namespace BTAS.API.Dto
         public virtual tbl_client_headerDto creditorAgent { get; set; }
 
         [JsonProperty("DestinationAgentId")]
+        [JsonIgnore]
         public int? tbl_client_header_destination_id { get; set; }
         [StringLength(30)]
         [JsonProperty("DestinationAgentCode")]
@@ -72,6 +78,7 @@ namespace BTAS.API.Dto
         public virtual tbl_client_headerDto destinationAgent { get; set; }
 
         [JsonProperty("OriginAgentId")]
+        [JsonIgnore]
         public int? tbl_client_header_origin_id { get; set; }
         [StringLength(30)]
         [JsonProperty("OriginAgentCode")]
@@ -81,5 +88,8 @@ namespace BTAS.API.Dto
         public virtual ICollection<tbl_containerDto> containers { get; set; } = new Collection<tbl_containerDto>();
         public virtual ICollection<tbl_documentDto> documents { get; set; } = new Collection<tbl_documentDto>();
         public virtual ICollection<tbl_houseDto> houses { get; set; } = new Collection<tbl_houseDto>();
+        public virtual ICollection<tbl_noteDto> notes { get; set; } = new Collection<tbl_noteDto>();
+        public virtual ICollection<tbl_milestone_linkDto> milestoneLinks { get; set; } = new Collection<tbl_milestone_linkDto>();
+
     }
 }

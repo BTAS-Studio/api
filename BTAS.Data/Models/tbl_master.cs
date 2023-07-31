@@ -12,6 +12,8 @@ namespace BTAS.Data.Models
             containers = new HashSet<tbl_container>();
             documents = new HashSet<tbl_document>();
             houses = new HashSet<tbl_house>();
+            notes = new HashSet<tbl_note>();
+            milestoneLinks = new HashSet<tbl_milestone_link>();
         }
 
         public int idtbl_master { get; set; }
@@ -47,5 +49,7 @@ namespace BTAS.Data.Models
         public virtual ICollection<tbl_container> containers { get; set; }
         public virtual ICollection<tbl_document> documents { get; set; }
         public virtual ICollection<tbl_house> houses { get; set; }
+        public virtual ICollection<tbl_note> notes { get; set; }
+        public virtual ICollection<tbl_milestone_link> milestoneLinks { get; set;}
     }
 }

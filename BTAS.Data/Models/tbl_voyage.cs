@@ -11,6 +11,7 @@ namespace BTAS.Data.Models
         {
             masters = new HashSet<tbl_master>();
             routings = new HashSet<tbl_routing>();
+            houses = new HashSet<tbl_house>();
         }
 
         public int idtbl_voyage { get; set; }
@@ -23,13 +24,14 @@ namespace BTAS.Data.Models
         public string tbl_voyage_loadPort { get; set; }
         public string tbl_voyage_dischargePort { get; set; }
         public string tbl_voyage_destinationPort { get; set; }
-        public DateTime tbl_voyage_etd { get; set; }
-        public DateTime tbl_voyage_eta { get; set; }
+        public DateTime? tbl_voyage_etd { get; set; }
+        public DateTime? tbl_voyage_eta { get; set; }
         public DateTime? tbl_voyage_etaDischarge { get; set; }
-        public DateTime tbl_voyage_atd { get; set; }
-        public DateTime tbl_voyage_ata { get; set; }
+        public DateTime? tbl_voyage_atd { get; set; }
+        public DateTime? tbl_voyage_ata { get; set; }
 
         public virtual ICollection<tbl_master> masters { get; set; }
         public virtual ICollection<tbl_routing> routings { get; set; }
+        public virtual ICollection<tbl_house> houses { get; set; }
     }
 }

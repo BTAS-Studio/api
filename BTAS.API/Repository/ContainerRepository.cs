@@ -59,7 +59,7 @@ namespace BTAS.API.Repository
             try
             {
                 var qList = _context.tbl_containers.Include(h => h.master)
-                    //.AsNoTracking()
+                    .AsNoTracking()
                     .OrderByDescending(h => h.idtbl_container).AsQueryable();
                 // excute each filter one by one 
                 if (customFilters.Filters != null)
@@ -218,14 +218,14 @@ namespace BTAS.API.Repository
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public async Task<ResponseDto> CreateAsync(tbl_containerDto entity, string shipperId)
+        public async Task<ResponseDto> CreateAsync(tbl_containerDto entity)
         {
             try
-            {
-                string referenceNumber = await GetNextId(shipperId);
+            {   
+                string referenceNumber = await GetNextId();
                 entity.tbl_container_code = referenceNumber;
                 entity.tbl_container_status = "OPEN";
-
+                entity.tbl_container_createdDate = DateTime.Now;
                 tbl_container result = _mapper.Map<tbl_containerDto, tbl_container>(entity);
 
                 if (result.idtbl_container > 0)
@@ -245,14 +245,14 @@ namespace BTAS.API.Repository
                         if (parent != null)
                         {
                             result.tbl_master_id = parent.idtbl_master;
-                            result.MasterCode = parent.tbl_master_code;
+                            //result.MasterCode = parent.tbl_master_code;
                         }
                         else
                         {
                             return new ResponseDto
                             {
                                 Result = entity,
-                                DisplayMessage = "Unable to link item. Provided MASTER reference was not found.",
+                                DisplayMessage = "Unable to link to item. Provided MASTER reference was not found.",
                                 IsSuccess = false
                             };
                         }
@@ -294,31 +294,29 @@ namespace BTAS.API.Repository
                     .AsNoTracking()
                     .SingleOrDefaultAsync(x => x.tbl_container_code == entity.tbl_container_code);
 
-                _mapper.Map<tbl_containerDto, tbl_container>(entity, result);
                 if (result != null)
                 {
-                    if (result.MasterCode != "" && entity.MasterCode != null)
+                    _mapper.Map(entity, result);
+                    if (!String.IsNullOrEmpty(entity.MasterCode))
                     {
-                        var master = await _context.tbl_masters
-                        .FirstOrDefaultAsync(x => x.tbl_master_code == entity.MasterCode);
+                        var master = await _context.tbl_masters.AsNoTracking()
+                        .SingleOrDefaultAsync(x => x.tbl_master_code == entity.MasterCode);
 
                         if (master != null)
                         {
                             result.tbl_master_id = master.idtbl_master;
-                            result.MasterCode = master.tbl_master_code;
+                            //result.MasterCode = master.tbl_master_code;
                         }
                         else
                         {
                             return new ResponseDto
                             {
-                                Result = entity,
                                 DisplayMessage = "Invalid MASTER id or code.",
                                 IsSuccess = false
                             };
                         }
                     }
-
-
+                    _context.ChangeTracker.Clear();
                     _context.tbl_containers.Update(result);
                     await _context.SaveChangesAsync();
                 }
@@ -326,7 +324,6 @@ namespace BTAS.API.Repository
                 {
                     return new ResponseDto
                     {
-                        Result = entity,
                         DisplayMessage = "Container does not exists.",
                         IsSuccess = false
                     };
@@ -334,7 +331,6 @@ namespace BTAS.API.Repository
 
                 return new ResponseDto
                 {
-                    Result = entity,
                     DisplayMessage = "Container successfully updated.",
                     IsSuccess = true,
                     ReferenceNumber = result.tbl_container_code
@@ -460,11 +456,11 @@ namespace BTAS.API.Repository
             }
         }
 
-        public async Task<string> GetNextId(string shipperId)
+        public async Task<string> GetNextId()
         {
             tbl_container result = await _context.tbl_containers.OrderByDescending(x => x.idtbl_container).FirstOrDefaultAsync();
 
-            string referenceCode = "CN" + shipperId + String.Format("{0:0000000000}", (result != null ? result.idtbl_container + count : 1));
+            string referenceCode = "CT" + String.Format("{0:0000000}", (result != null ? result.idtbl_container + count : 1));
             return referenceCode;
         }
     }

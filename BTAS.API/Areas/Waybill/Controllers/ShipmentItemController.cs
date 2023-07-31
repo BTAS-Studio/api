@@ -20,12 +20,12 @@ namespace BTAS.API.Areas.Waybill.Controllers
     public class ShipmentItemController : GenericController<tbl_shipment_itemDto>
     {
         private ShipmentItemRepository _repository;
-        private readonly IAuthenticationRepository _authRepo;
+        //private readonly IAuthenticationRepository _authRepo;
 
-        public ShipmentItemController(ShipmentItemRepository repository, IAuthenticationRepository authRepo) : base(repository)
+        public ShipmentItemController(ShipmentItemRepository repository/*, IAuthenticationRepository authRepo*/) : base(repository)
         {
             _repository = repository;
-            _authRepo = authRepo;
+            //_authRepo = authRepo;
         }
 
         [HttpGet("getfiltered")]
@@ -61,13 +61,21 @@ namespace BTAS.API.Areas.Waybill.Controllers
 
         [HttpGet]
         [Route("GetByReference")]
-        public async Task<IActionResult> GetByReferenceAsync(string referenceNumber, bool includeChild = false, int isWeb = 0)
+        public async Task<IActionResult> GetByReferenceAsync(string referenceNumber, bool includeChild = false)
         {
             try
             {
                 ResponseDto result = new();
                 var response = await _repository.GetByReference(referenceNumber, includeChild);
 
+                if (response.IsSuccess == false)
+                {
+                    return new JsonResult(new GeneralResponse
+                    {
+                        success = false,
+                        responseDescription = response.DisplayMessage
+                    });
+                }
                 return Ok(new GeneralResponse
                 {
                     success = response.IsSuccess,
@@ -117,21 +125,8 @@ namespace BTAS.API.Areas.Waybill.Controllers
                 {
                     result = await _repository.CreateAsync(request);
 
-                    //if (isWeb == 1)
-                    //{
-                    //    var response = JsonConvert.SerializeObject(result, Formatting.Indented, new JsonSerializerSettings
-                    //    {
-                    //        ReferenceLoopHandling = ReferenceLoopHandling.Serialize
-                    //    });
-                    //    return Ok(response);
-                    //}
-                    //else
-                    //{
                     if (result.IsSuccess)
                     {
-                        //Edited by HS on 06/03/2023
-                        //var jsonString = JsonConvert.SerializeObject(result.Result, new JsonSerializerSettings { ContractResolver = CustomDataContractResolver.Instance });
-                        //var model = JsonConvert.DeserializeObject<tbl_shipment_itemDto>(jsonString);
                         return Ok(new GeneralResponse
                         {
                             success = true,
@@ -141,7 +136,7 @@ namespace BTAS.API.Areas.Waybill.Controllers
                         });
                     }
 
-                    return Ok(new GeneralResponse
+                    return new JsonResult(new GeneralResponse
                     {
                         success = false,
                         response = 500,
