@@ -24,6 +24,7 @@ namespace BTAS.API.Dto
         public bool? tbl_address_isBilling { get; set; }
         [StringLength(150)]
         [JsonProperty("CompanyName")]
+        [Required]
         public string tbl_address_companyName { get; set; }
         [StringLength(50)]
         [JsonProperty("ContactName")]
@@ -39,6 +40,7 @@ namespace BTAS.API.Dto
         public string tbl_address_abn { get; set; }
         [StringLength(150)]
         [JsonProperty("Address1")]
+        [Required]
         public string tbl_address_address1 { get; set; }
         [StringLength(150)]
         [JsonProperty("Address2")]
@@ -54,6 +56,7 @@ namespace BTAS.API.Dto
         public string tbl_address_state { get; set; }
         [StringLength(50)]
         [JsonProperty("Postcode")]
+        [Required]
         public string tbl_address_postcode { get; set; }
         [StringLength(50)]
         [JsonProperty("Country")]

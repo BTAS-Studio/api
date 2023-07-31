@@ -79,6 +79,45 @@ namespace BTAS.API.Areas.Maintenance.Controllers
             }
         }
 
+
+        [HttpPost]
+        [Route("AddAddress")]
+        public async Task<IActionResult> AddAddressAsync(string clientHeaderCode, string addressCode)
+        {
+            ResponseDto result = new();
+            try
+            {
+                result = await _repository.AddAddressAsync(clientHeaderCode, addressCode);
+
+                if (result.IsSuccess)
+                {
+                    return Ok(new GeneralResponse
+                    {
+                        success = true,
+                        response = 200,
+                        responseDescription = result.DisplayMessage,
+                    });
+                }
+
+                return Ok(new GeneralResponse
+                {
+                    success = false,
+                    response = 500,
+                    responseDescription = result.DisplayMessage
+                });
+
+            }
+            catch
+            {
+                return new JsonResult(new GeneralResponse
+                {
+                    response = 500,
+                    responseDescription = result.DisplayMessage,
+                    success = false
+                });
+            }
+        }
+
         [HttpPut]
         [Route("update")]
         public async Task<IActionResult> UpdateAsync([FromBody] tbl_client_headerDto request)
@@ -190,6 +229,29 @@ namespace BTAS.API.Areas.Maintenance.Controllers
                         success = false
                     });
                 }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        [HttpGet]
+        [Route("duplicationcheck")]
+        internal async Task<IActionResult> DuplicationCheckAsync([FromBody] tbl_client_headerDto entity)
+        {
+            try
+            {
+
+                var response = await _repository.DuplicationCheck(entity);
+
+                return Ok(new GeneralResponse
+                {
+                    success = response.IsSuccess,
+                    responseDescription = response.DisplayMessage,
+                    referenceNumber = response.ReferenceNumber
+                });
+
             }
             catch (Exception)
             {

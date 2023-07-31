@@ -4,7 +4,6 @@ using BTAS.API.Models;
 using BTAS.API.Models.Links;
 using BTAS.API.Repository.Interface;
 using BTAS.API.Repository.SearchRepository;
-using BTAS.Data;
 using BTAS.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -14,7 +13,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace BTAS.API.Repository
@@ -285,14 +283,14 @@ namespace BTAS.API.Repository
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public async Task<ResponseDto> CreateAsync(tbl_receptacleDto entity, string shipperId)
+        public async Task<ResponseDto> CreateAsync(tbl_receptacleDto entity)
         {
             try
             {
 
-                string referenceNumber = await GetNextId(shipperId);
+                string referenceNumber = await GetNextId();
                 entity.tbl_receptacle_code = referenceNumber;
-                entity.tbl_receptacle_status = "OPEN";
+                entity.tbl_receptacle_status = "ACTIVE";
                 entity.tbl_receptacle_createdDate = DateTime.Now;
 
                 tbl_receptacle result = _mapper.Map<tbl_receptacleDto, tbl_receptacle>(entity);
@@ -506,12 +504,12 @@ namespace BTAS.API.Repository
         }
 
   
-        public async Task<string> GetNextId(string shipperId)
+        public async Task<string> GetNextId()
         {
 
             tbl_receptacle result = await _context.tbl_receptacles.OrderByDescending(x => x.idtbl_receptacle).FirstOrDefaultAsync();
 
-            string referenceCode = "RC" + shipperId + String.Format("{0:0000000000}", (result != null ? result.idtbl_receptacle + count : 1));
+            string referenceCode = "RC" + String.Format("{0:000000000}", (result != null ? result.idtbl_receptacle + count : 1));
             count++;
             return referenceCode;
         }

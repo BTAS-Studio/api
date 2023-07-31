@@ -45,7 +45,7 @@ namespace BTAS.API.Dto
         public string ShipmentCode { get; set; }
         [DoNotInclude]
         public virtual tbl_shipmentDto shipment { get; set; }
-        [JsonProperty("Items_Skus")]
+        //[JsonProperty("Items_Skus")]
         public virtual ICollection<tbl_item_skuDto> items_skus { get; set; } = new Collection<tbl_item_skuDto>();
     }
 }

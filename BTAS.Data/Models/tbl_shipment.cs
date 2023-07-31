@@ -10,9 +10,10 @@ namespace BTAS.Data.Models
         public tbl_shipment()
         {
             shipmentItems = new HashSet<tbl_shipment_item>();
-            billings = new HashSet<tbl_shipping_billing>();
+            documents = new HashSet<tbl_document>();
             notes = new HashSet<tbl_note>();
             milestoneLinks = new HashSet<tbl_milestone_link>();
+            billings = new HashSet<tbl_shipping_billing>();
         }
 
         public int idtbl_shipment { get; set; }

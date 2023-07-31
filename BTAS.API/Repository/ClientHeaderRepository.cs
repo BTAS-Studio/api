@@ -15,11 +15,10 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 
 namespace BTAS.API.Repository
 {
-    public class ClientHeaderRepository : SRepository, IRepository<tbl_client_headerDto>
+    public class ClientHeaderRepository : SRepository , IRepository<tbl_client_headerDto>
     {
         private readonly MainDbContext _context;
         private IMapper _mapper;
@@ -184,18 +183,67 @@ namespace BTAS.API.Repository
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public async Task<tbl_client_headerDto> CreateUpdateAsync(tbl_client_headerDto entity)
+        public async Task<ResponseDto> CreateUpdateAsync(tbl_client_headerDto entity)
         {
             try
             {
-                tbl_client_header mapped = _mapper.Map<tbl_client_headerDto, tbl_client_header>(entity);
-                _context.tbl_client_headers.Add(mapped);
-                await _context.SaveChangesAsync();
-                return _mapper.Map<tbl_client_header, tbl_client_headerDto>(mapped);
+                var checkResult = await DuplicationCheck(entity);
+                //if new
+                if (checkResult.IsSuccess == false && checkResult.DisplayMessage == "1")
+                {
+                    //create this new client header
+                    var createResult = await CreateAsync(entity);
+                    if (createResult.IsSuccess)
+                    {
+                        return new ResponseDto
+                        {
+                            IsSuccess = true,
+                            ReferenceNumber = createResult.ReferenceNumber
+                        };
+                    }
+                    else
+                    {
+                        return new ResponseDto
+                        {
+                            IsSuccess = false,
+                            DisplayMessage = createResult.DisplayMessage
+                        };
+                    }
+                }
+                //if existed
+                else if (checkResult.IsSuccess == true)
+                {
+                    entity.tbl_client_header_code = checkResult.ReferenceNumber;
+                    var updateResult = await UpdateAsync(entity);
+                    if (updateResult.IsSuccess)
+                    {
+                        return new ResponseDto
+                        {
+                            IsSuccess = true,
+                            ReferenceNumber = entity.tbl_client_header_code
+                        };
+                    }
+                    else
+                    {
+                        return new ResponseDto
+                        {
+                            IsSuccess = false,
+                            DisplayMessage = updateResult.DisplayMessage
+                        };
+                    }
+                }
+                else
+                {
+                    return new ResponseDto
+                    {
+                        IsSuccess = false,
+                        DisplayMessage = "Unhandled exception: Failed to get client header code."
+                    };
+                }
             }
             catch (Exception ex)
             {
-                throw new Exception();
+                throw new Exception(ex.Message.ToString());
             }
         }
 
@@ -227,7 +275,7 @@ namespace BTAS.API.Repository
                 else
                 {
                     //Added by HS on 01/02/2023
-                    if (result.contactDetails.Count != 0)
+                    if (result.contactDetails.Count > 0)
                     {
                         foreach (var ctd in result.contactDetails)
                         {
@@ -242,9 +290,6 @@ namespace BTAS.API.Repository
                 }
                 return new ResponseDto
                 {
-                    //Edited by HS on 07/02/2023
-                    //Result = entity,
-                    //Id = entity.idtbl_client_header,
                     ReferenceNumber = result.tbl_client_header_code,
                     DisplayMessage = "client header successfully added.",
                     IsSuccess = true
@@ -334,6 +379,49 @@ namespace BTAS.API.Repository
             }
         }
 
+        public async Task <ResponseDto> AddAddressAsync(string clientHeaderCode, string addressCode)
+        {
+            try
+            {
+                var clientHeader = await _context.tbl_client_headers.OrderBy(p => p.tbl_client_header_code)
+                    .SingleOrDefaultAsync(p => p.tbl_client_header_code == clientHeaderCode);
+                if (clientHeader == null)
+                {
+                    return new ResponseDto
+                    {
+                        IsSuccess = false,
+                        DisplayMessage = "Invalid Client Header Code."
+                    };
+                }
+                var address = await _context.tbl_addresses.OrderBy(p => p.tbl_address_code)
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync(p => p.tbl_address_code == addressCode);
+                if (address == null)
+                {
+                    return new ResponseDto
+                    {
+                        IsSuccess = false,
+                        DisplayMessage = "Invalid Address Code."
+                    };
+                }
+
+                clientHeader.addresses.Add(address);
+                await _context.SaveChangesAsync();
+                return new ResponseDto
+                {
+                    IsSuccess = true,
+                    DisplayMessage = "Address successfully added."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto
+                {
+                    DisplayMessage = ex.Message.ToString(),
+                    IsSuccess = false
+                };
+            }
+        }
         public async Task<List<tbl_client_headerDto>> CreateRangeAsync(List<tbl_client_headerDto> entities)
         {
             List<tbl_client_header> result = _mapper.Map<List<tbl_client_headerDto>, List<tbl_client_header>>(entities);
@@ -550,17 +638,62 @@ namespace BTAS.API.Repository
             return true;
         }
 
-        //private async Task<bool> DuplicationCheck(tbl_client_header result, ResponseDto addressResult)
-        //{
-        //    //duplicate if a same company name with the same address(use address code to represent)
-        //    var duplicate = await _context.tbl_client_headers
-        //        .OrderBy(p => p.tbl_client_header_companyName)
-        //        .FirstOrDefaultAsync(
-        //          p => (p.tbl_client_header_companyName == result.tbl_client_header_companyName 
-        //         ));
-        //    if (duplicate == null) return false;
+        internal async Task<ResponseDto> DuplicationCheck(tbl_client_headerDto entity)
+        {
+            try
+            {
+                //unique constrain check
+                if (String.IsNullOrEmpty(entity.tbl_client_header_companyName) 
+                    || String.IsNullOrEmpty(entity.tbl_client_header_postcode)
+                    || String.IsNullOrEmpty(entity.tbl_client_header_address1))
+                {
+                    return new ResponseDto
+                    {
+                        IsSuccess = false,
+                        DisplayMessage = "Missing mandatory fields."
+                    };
+                }
+                //var result = _mapper.Map<tbl_client_headerDto>(entity);
+                //duplicate if a same company name with the same postcode and address1
+                var duplicate = await _context.tbl_client_headers.AsNoTracking()
+                    .OrderBy(p => p.tbl_client_header_companyName)
+                    .SingleOrDefaultAsync(
+                      p => (p.tbl_client_header_companyName == entity.tbl_client_header_companyName
+                      && p.tbl_client_header_postcode == entity.tbl_client_header_postcode
+                      && p.tbl_client_header_address1 == entity.tbl_client_header_address1
+                     ));
+                if (duplicate == null)
+                {
+                    return new ResponseDto
+                    {
+                        IsSuccess = false,
+                        DisplayMessage = "New Client Header",
+                        ReferenceNumber = "1"
+                    };
+                }
+                else
+                {
+                    return new ResponseDto
+                    {
+                        IsSuccess = true,
+                        DisplayMessage = "Duplicate Client Header",
+                        ReferenceNumber = duplicate.tbl_client_header_code
+                    };
+                }
+            }
+            catch(Exception ex)
+            {
+                return new ResponseDto
+                {
+                    IsSuccess = false,
+                    DisplayMessage = ex.Message.ToString()
+                };
+            }
+        }
 
-        //}
-
+        Task<tbl_client_headerDto> IRepository<tbl_client_headerDto>.CreateUpdateAsync(tbl_client_headerDto entity)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

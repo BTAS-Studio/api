@@ -12,7 +12,7 @@ namespace BTAS.API.Dto
 		public int idtbl_house_item { get; set; }
 		[JsonProperty("Code")]
 		[StringLength(50)]
-		public string house_item_code { get; set; }
+		public string tbl_house_item_code { get; set; }
 		[StringLength(50)]
 		[JsonProperty("Type")]
 		public string tbl_house_item_type { get; set; }

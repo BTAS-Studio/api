@@ -26,6 +26,7 @@ namespace BTAS.API.Dto
         public string tbl_master_bookingNumber { get; set; }
         [StringLength(50)]
         [JsonProperty("BillNumber")]
+        [Required]
         public string tbl_master_billNumber { get; set; }
         [StringLength(50)]
         [JsonProperty("Status")]

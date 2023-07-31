@@ -11,9 +11,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BTAS.API.Dto
 {
-    //Edited by HS on 24/01/2023
-
-    //Edited by HS on 27/01/2023 comment out all [Optional] and [Required]
     public class tbl_shipmentDto
     {
         [JsonProperty("Id")]
@@ -54,11 +51,13 @@ namespace BTAS.API.Dto
         //[Conditional]
         [Description("Can be provided if shipperCode is not provided")]
         [JsonProperty("TrackingNumber")]
+        [Required]
         public string tbl_shipment_trackingNo { get; set; }
 
         [StringLength(50)]
         [Description("")]
         [JsonProperty("ReferenceNumber")]
+        [Required]
         public string tbl_shipment_referenceNo { get; set; }
 
         [StringLength(150)]
@@ -432,5 +431,7 @@ namespace BTAS.API.Dto
         public virtual ICollection<tbl_shipment_itemDto> shipmentItems { get; set; } = new Collection<tbl_shipment_itemDto>();
         public virtual ICollection<tbl_noteDto> notes { get; set; } = new Collection<tbl_noteDto>();
         public virtual ICollection<tbl_milestone_linkDto> milestoneLinks { get; set; } = new Collection<tbl_milestone_linkDto>();
+
+        public virtual ICollection<tbl_shipping_billingDto> billings { get; set; } = new Collection<tbl_shipping_billingDto>();
     }
 }

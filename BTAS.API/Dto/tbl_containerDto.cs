@@ -28,6 +28,7 @@ namespace BTAS.API.Dto
         [StringLength(50)]
         [JsonProperty("Number")]
         [Description("Container number")]
+        [Required]
         public string tbl_container_number { get; set; }
 
         [StringLength(50)]
@@ -43,6 +44,7 @@ namespace BTAS.API.Dto
         [StringLength(50)]
         [JsonProperty("SealNumber")]
         [Description("Container seal number")]
+        [Required]
         public string tbl_container_sealNumber { get; set; }
 
         [JsonProperty("Quantity")]

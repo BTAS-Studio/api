@@ -74,8 +74,8 @@ namespace BTAS.Data.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                //optionsBuilder.UseMySql("server=api.austwayexpress.com;port=3306;database=db3kelolqhhvrr;user=uu7gangnepira;password=lygqjpgaf5zw", Microsoft.EntityFrameworkCore.ServerVersion.Parse("5.7.39-mysql"));//dev
-                optionsBuilder.UseMySql("server=api.austwayexpress.com;port=3306;database=dbas5njhyhtcvu;user=uu7gangnepira;password=lygqjpgaf5zw", ServerVersion.Parse("5.7.39-mysql"));//poststaging
+                optionsBuilder.UseMySql("server=api.austwayexpress.com;port=3306;database=dbhgoii1p9ib6o;user=ubudn3eka99jf;password=fvfj44gng55m", Microsoft.EntityFrameworkCore.ServerVersion.Parse("5.7.39-mysql"));//dev
+                //optionsBuilder.UseMySql("server=api.austwayexpress.com;port=3306;database=dbas5njhyhtcvu;user=uu7gangnepira;password=lygqjpgaf5zw", ServerVersion.Parse("5.7.39-mysql"));//poststaging
                 //ServerVersion.AutoDetect("server=api.austwayexpress.com;port=3306;database=dbmubv5jluex76;user=ucbm95jl7gxdr;password=%$-1#~%7113p;");
             }
         }
@@ -1088,7 +1088,7 @@ namespace BTAS.Data.Models
                 entity.HasKey(e => e.idtbl_note_category)
                     .HasName("PRIMARY");
 
-                entity.ToTable("tbl_tbl_note_category");
+                entity.ToTable("tbl_note_category");
 
                 entity.HasIndex(e => e.tbl_note_category_name).IsUnique();
 

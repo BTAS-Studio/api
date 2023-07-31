@@ -21,11 +21,12 @@ namespace BTAS.API.Repository
     {
         private readonly MainDbContext _context;
         private IMapper _mapper;
-
+        private int count;
         public ShipmentRepository(MainDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
+            count = 1;
         }
 
         /// <summary>
@@ -252,8 +253,10 @@ namespace BTAS.API.Repository
         {
             try
             {
+                string referenceNumber = await GetNextId();
+                entity.tbl_shipment_code = referenceNumber;
                 entity.tbl_shipment_createdDate = DateTime.Now;
-                entity.tbl_shipment_status = "OPEN";
+                entity.tbl_shipment_status = "ACTIVE";
                 var result = _mapper.Map<tbl_shipmentDto, tbl_shipment>(entity);
 
                 if (result.idtbl_shipment > 0)
@@ -308,7 +311,7 @@ namespace BTAS.API.Repository
                     await _context.SaveChangesAsync();
                     return new ResponseDto
                     {
-                        DisplayMessage = "Shipment Item successfully added.",
+                        DisplayMessage = "Shipment successfully added.",
                         IsSuccess = true,
                         ReferenceNumber = result.tbl_shipment_code
                     };
@@ -354,7 +357,7 @@ namespace BTAS.API.Repository
                         {
                             return new ResponseDto
                             {
-                                DisplayMessage = "Unable to link to Shipment. Invalid shipment id or code.",
+                                DisplayMessage = "Unable to link to Shipment. Invalid Receptacle id or code.",
                                 IsSuccess = false
                             };
                         }
@@ -639,5 +642,13 @@ namespace BTAS.API.Repository
             }
         }
 
+        public async Task<string> GetNextId()
+        {
+            tbl_shipment result = await _context.tbl_shipments.OrderByDescending(x => x.idtbl_shipment).FirstOrDefaultAsync();
+
+            string referenceCode = "SM" + String.Format("{0:0000000}", (result != null ? result.idtbl_shipment + count : 1));
+            count++;
+            return referenceCode;
+        }
     }
 }

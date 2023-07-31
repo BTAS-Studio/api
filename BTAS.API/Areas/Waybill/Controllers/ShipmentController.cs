@@ -112,7 +112,7 @@ namespace BTAS.API.Areas.Waybill.Controllers
                 {
                     var jsonString = JsonConvert.SerializeObject(result);
                     var model = JsonConvert.DeserializeObject<tbl_shipmentDto>(jsonString);
-
+                    /*
                     #region APG
                     if (model.tbl_shipment_serviceCode.ToUpper().IndexOf("UBI") > -1)
                     {
@@ -286,7 +286,7 @@ namespace BTAS.API.Areas.Waybill.Controllers
                         });
 
                     }
-
+                    */
                     return Ok(new GeneralResponse
                     {
                         success = true,
@@ -294,7 +294,7 @@ namespace BTAS.API.Areas.Waybill.Controllers
                         referenceNumber = result.ReferenceNumber,
                         responseDescription = "Shipment successfully created/updated."
                     });
-                    #endregion
+                    //#endregion
                 }
 
                 return new JsonResult(new GeneralResponse

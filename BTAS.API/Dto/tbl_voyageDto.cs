@@ -29,11 +29,13 @@ namespace BTAS.API.Dto
         [StringLength(50)]
         [JsonProperty("Number")]
         [Description("Flight No./ Voyage No.")]
+        [Required]
         public string tbl_voyage_number { get; set; }
 
         [StringLength(50)]
         [JsonProperty("CarrierCode")]
         [Description("Airline Code/ Principal Agent Id(Vessel Company Code)")]
+        [Required]
         public string tbl_voyage_carrierCode { get; set; }
 
         [StringLength(50)]
@@ -54,6 +56,7 @@ namespace BTAS.API.Dto
         public string tbl_voyage_destinationPort { get; set; }
 
         [JsonProperty("ETD")]
+        [Required]
         public DateTime? tbl_voyage_etd { get; set; }
 
         [JsonProperty("ETA")]

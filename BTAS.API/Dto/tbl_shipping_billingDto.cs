@@ -9,6 +9,7 @@ namespace BTAS.API.Dto
 {
     public class tbl_shipping_billingDto
     {
+        [JsonIgnore]
         public int idtbl_shipping_billing { get; set; }
         [JsonProperty("OrderId")]
         [StringLength(30)]

@@ -111,74 +111,33 @@ namespace BTAS.API.Areas.Waybill.Controllers
 
         [HttpPost]
         [Route("create")]
-        public async Task<IActionResult> CreateAsync([FromBody] tbl_receptacleDto request, int isWeb = 0)
+        public async Task<IActionResult> CreateAsync([FromBody] tbl_receptacleDto request)
         {
+            ResponseDto result = new();
             try
             {
-                ResponseDto result = new();
-
-                //Dictionary<string, string> requestHeaders = new Dictionary<string, string>();
-                //foreach (var header in Request.Headers)
-                //{
-                //    requestHeaders.Add(header.Key, header.Value);
-                //}
-
-                //if (isWeb == 0)
-                //{
-                //    GeneralResponse apiResponse = JsonConvert.DeserializeObject<GeneralResponse>(await _authRepo.ValidateTokenAsync(requestHeaders["apikey"], requestHeaders["apiToken"], requestHeaders["shipperId"]));
-                //    if (apiResponse.success == false)
-                //    {
-                //        return NotFound(apiResponse);
-                //    }
-                //}
-
-                try
+                result = await _repository.CreateAsync(request);
+                if (result.IsSuccess)
                 {
+                    // Edited by HS on 06/03/2023
+                    //var jsonString = JsonConvert.SerializeObject(result.Result);
+                    //var model = JsonConvert.DeserializeObject<tbl_receptacleDto>(jsonString);
 
-                    result = await _repository.CreateAsync(request, Request.Headers["shipperId"]);
-
-                    if (isWeb == 1)
+                    return Ok(new GeneralResponse
                     {
-                        var response = JsonConvert.SerializeObject(result, Formatting.Indented, new JsonSerializerSettings
-                        {
-                            ReferenceLoopHandling = ReferenceLoopHandling.Serialize
-                        });
-                        return Ok(response);
-                    }
-                    else
-                    {
-                        if (result.IsSuccess)
-                        {
-                            // Edited by HS on 06/03/2023
-                            //var jsonString = JsonConvert.SerializeObject(result.Result);
-                            //var model = JsonConvert.DeserializeObject<tbl_receptacleDto>(jsonString);
-
-                            return Ok(new GeneralResponse
-                            {
-                                success = true,
-                                response = 200,
-                                responseDescription = result.DisplayMessage,
-                                referenceNumber = result.ReferenceNumber
-                            });
-                        }
-
-                        return Ok(new GeneralResponse
-                        {
-                            success = false,
-                            response = 500,
-                            responseDescription = result.DisplayMessage
-                        });
-                    }
-                }
-                catch (Exception ex)
-                {
-                    return new JsonResult(new GeneralResponse
-                    {
-                        response = 500,
-                        responseDescription = ex.Message.ToString(),
-                        success = false
+                        success = true,
+                        response = 200,
+                        responseDescription = result.DisplayMessage,
+                        referenceNumber = result.ReferenceNumber
                     });
                 }
+
+                return Ok(new GeneralResponse
+                {
+                    success = false,
+                    response = 500,
+                    responseDescription = result.DisplayMessage
+                });
             }
             catch (Exception ex)
             {
@@ -191,55 +150,29 @@ namespace BTAS.API.Areas.Waybill.Controllers
             }
         }
 
+
         [HttpPut]
         [Route("Update")]
-        public async Task<IActionResult> UpdateAsync([FromBody] tbl_receptacleDto request, int isWeb = 0)
+        public async Task<IActionResult> UpdateAsync([FromBody] tbl_receptacleDto request)
         {
+            ResponseDto result = new();
             try
             {
-                ResponseDto result = new();
-
-                //Dictionary<string, string> requestHeaders = new Dictionary<string, string>();
-                //foreach (var header in Request.Headers)
-                //{
-                //    requestHeaders.Add(header.Key, header.Value);
-                //}
-
-                //if (isWeb == 0)
-                //{
-                //    GeneralResponse apiResponse = JsonConvert.DeserializeObject<GeneralResponse>(await _authRepo.ValidateTokenAsync(requestHeaders["apikey"], requestHeaders["apiToken"], requestHeaders["shipperId"]));
-                //    if (apiResponse.success == false)
-                //    {
-                //        return NotFound(apiResponse);
-                //    }
-                //}
-
-                try
+                if (request.tbl_receptacle_code != "" && request.tbl_receptacle_code != null)
                 {
-                    if (request.tbl_receptacle_code != "" && request.tbl_receptacle_code != null)
+                    result = await _repository.UpdateAsync(request);
+
+                    if (result.IsSuccess)
                     {
-                        result = await _repository.UpdateAsync(request);
-
-                        if (result.IsSuccess)
+                        //var response = JsonConvert.SerializeObject(result, Formatting.Indented, new JsonSerializerSettings
+                        //{
+                        //    ReferenceLoopHandling = ReferenceLoopHandling.Serialize
+                        //});
+                        return Ok(new GeneralResponse
                         {
-                            //var response = JsonConvert.SerializeObject(result, Formatting.Indented, new JsonSerializerSettings
-                            //{
-                            //    ReferenceLoopHandling = ReferenceLoopHandling.Serialize
-                            //});
-                            return Ok(new GeneralResponse
-                            {
-                                success = true,
-                                response = 200,
-                                responseDescription = "Receptacle # " + request.tbl_receptacle_code + " successfully updated.",
-                                referenceNumber = request.tbl_receptacle_code
-                            });
-                        }
-
-                        return new JsonResult(new GeneralResponse
-                        {
-                            success = false,
-                            response = 500,
-                            responseDescription = result.DisplayMessage,
+                            success = true,
+                            response = 200,
+                            responseDescription = "Receptacle # " + request.tbl_receptacle_code + " successfully updated.",
                             referenceNumber = request.tbl_receptacle_code
                         });
                     }
@@ -248,26 +181,24 @@ namespace BTAS.API.Areas.Waybill.Controllers
                     {
                         success = false,
                         response = 500,
-                        responseDescription = "Missing/Invalid receptacle id or number.",
+                        responseDescription = result.DisplayMessage,
                         referenceNumber = request.tbl_receptacle_code
                     });
                 }
-                catch (Exception ex)
+
+                return new JsonResult(new GeneralResponse
                 {
-                    return new JsonResult(new GeneralResponse
-                    {
-                        response = 500,
-                        responseDescription = ex.Message.ToString(),
-                        success = false,
-                        referenceNumber = request.tbl_receptacle_code
-                    });
-                }
+                    success = false,
+                    response = 500,
+                    responseDescription = "Missing/Invalid receptacle id or number.",
+                    referenceNumber = request.tbl_receptacle_code
+                });
             }
             catch (Exception ex)
             {
                 return new JsonResult(new GeneralResponse
                 {
-                    response = 300,
+                    response = 500,
                     responseDescription = ex.Message.ToString(),
                     success = false,
                     referenceNumber = request.tbl_receptacle_code

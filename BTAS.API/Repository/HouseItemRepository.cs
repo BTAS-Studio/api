@@ -202,7 +202,7 @@ namespace BTAS.API.Repository
         {
             try
             {
-                entity.house_item_code = await GetNextId();
+                entity.tbl_house_item_code = await GetNextId();
                 var result = _mapper.Map<tbl_house_itemDto, tbl_house_item>(entity);
                 if (result.idtbl_house_item > 0)
                 {
@@ -267,7 +267,7 @@ namespace BTAS.API.Repository
             try
             {
                 var result = await _context.tbl_house_items
-                    .SingleOrDefaultAsync(x => x.tbl_house_item_code == entity.house_item_code);
+                    .SingleOrDefaultAsync(x => x.tbl_house_item_code == entity.tbl_house_item_code);
                 if (result != null)
                 {
                     _mapper.Map(entity, result);

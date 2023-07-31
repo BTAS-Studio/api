@@ -21,6 +21,7 @@ namespace BTAS.API.Dto
         [JsonProperty("BillNumber")]
         [StringLength(50)]
         [Description("HOUSE Bill Number")]
+        [Required]
         public string tbl_house_billNumber { get; set; }
 
         [StringLength(50)]
@@ -89,6 +90,7 @@ namespace BTAS.API.Dto
 
         [JsonProperty("Value")]
         [Description("Total value")]
+        [Required]
         public decimal? tbl_house_value { get; set; }
 
         [StringLength(150)]

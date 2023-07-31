@@ -215,7 +215,7 @@ namespace BTAS.API.Repository
 
         public async Task<IEnumerable<tbl_noteDto>> GetAllAsync()
         {
-            IEnumerable<tbl_note> _list = await _context.tbl_notes.OrderByDescending(p => p.idtbl_note).ToListAsync();
+            IEnumerable<tbl_note> _list = await _context.tbl_notes.OrderByDescending(p => p.idtbl_note).AsNoTracking().ToListAsync();
             return _mapper.Map<List<tbl_noteDto>>(_list);
         }
 
@@ -223,7 +223,7 @@ namespace BTAS.API.Repository
         {
             IEnumerable<tbl_note> _list = await _context.tbl_notes
                 .OrderByDescending(p => p.idtbl_note)
-                .Include(p => p.documents)
+                .Include(p => p.documents).AsNoTracking()
                 .ToListAsync();
             return _mapper.Map<List<tbl_noteDto>>(_list);
         }

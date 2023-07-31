@@ -13,7 +13,7 @@ namespace BTAS.API.Controllers
     [ApiController]
     [Route("api/bulkupload")]
     [ApiVersion("2.0")]
-    //[Authorize]
+    [Authorize]
     public class BulkUploadController : ControllerBase
     {
         private BulkUploadRepository _repository;
@@ -28,7 +28,16 @@ namespace BTAS.API.Controllers
         {
             try
             {
-                var result = await _repository.UploadAsync(request);
+                var result = await _repository.BulkUploadAsync(request);
+                if (result.IsSuccess == false) 
+                {
+                    return new JsonResult(new GeneralResponse
+                    {
+                        success = false,
+                        response = 400,
+                        responseDescription = result.DisplayMessage
+                    });
+                }
                 return Ok(new GeneralResponse
                 {
                     success = true,

@@ -58,6 +58,7 @@ namespace BTAS.API.Dto
         [StringLength(150)]
         [JsonProperty("CompanyName")]
         [Description("Client's company name")]
+        [Required]
         public string tbl_client_header_companyName { get; set; }
         [StringLength(50)]
         [JsonProperty("ContactName")]
@@ -83,6 +84,7 @@ namespace BTAS.API.Dto
         //Added by HS on 10/07/2023 for legal entity address fields
         [StringLength(150)]
         [JsonProperty("Address1")]
+        [Required]
         public string tbl_client_header_address1 { get; set; }
         [StringLength(150)]
         [JsonProperty("Address2")]
@@ -98,6 +100,7 @@ namespace BTAS.API.Dto
         public string tbl_client_header_state { get; set; }
         [StringLength(50)]
         [JsonProperty("Postcode")]
+        [Required]
         public string tbl_client_header_postcode { get; set; }
         [StringLength(50)]
         [JsonProperty("Country")]

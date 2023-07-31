@@ -9,7 +9,7 @@ namespace BTAS.API.Dto
     public class tbl_item_skuDto
     {
 		[JsonProperty("Id")]
-        [DoNotInclude]
+        [JsonIgnore]
         public int idtbl_item_sku { get; set; }
 		[JsonProperty("Code")]
 		[StringLength(50)]

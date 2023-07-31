@@ -32,6 +32,7 @@ namespace BTAS.API.Repository
         {
             try
             {
+                entity.tbl_note_category_status = true;
                 var result = _mapper.Map<tbl_note_categoryDto, tbl_note_category>(entity);
                 result.tbl_note_category_code = await GetNextId();
 

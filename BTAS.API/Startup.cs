@@ -15,10 +15,12 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using Swashbuckle.AspNetCore.SwaggerUI;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Wkhtmltopdf.NetCore;
+using static System.Collections.Specialized.BitVector32;
 
 namespace BTAS.API
 {
@@ -128,7 +130,6 @@ namespace BTAS.API
             services.AddTransient<MilestoneHeaderRepository>();
             services.AddTransient<MilestoneLinkRepository>();
             services.AddTransient<DocumentRepository>();
-
             //services.AddSingleton<TTWS>();
             services.AddSingleton(Configuration);
             //services.AddCors(options =>
@@ -279,6 +280,14 @@ namespace BTAS.API
 
                 // custom CSS
                 c.InjectStylesheet("/swagger-ui/custom.css");
+                //Added by HS on 25/07/2023
+                //Show more of the model by default
+                //The default expansion depth for the model on the model - example section.
+                c.DefaultModelExpandDepth(0);
+                //The default expansion depth for models (set to -1 completely hide the models).
+                c.DefaultModelsExpandDepth(-1);
+                //Close all of the major nodes
+                c.DocExpansion(DocExpansion.None);
             });
 
             app.Use(async (ctx, next) =>

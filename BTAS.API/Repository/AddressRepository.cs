@@ -4,9 +4,14 @@ using BTAS.API.Models;
 using BTAS.API.Repository.Interface;
 using BTAS.Data.Models;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace BTAS.API.Repository
@@ -54,8 +59,7 @@ namespace BTAS.API.Repository
         {
             try
             {
-                var result = await _context.tbl_addresses
-                    .AsNoTracking()
+                var result = await _context.tbl_addresses.OrderBy(p => p.tbl_address_code)
                     .SingleOrDefaultAsync(x => x.tbl_address_code == entity.tbl_address_code);
 
                 if (result != null)
@@ -93,23 +97,20 @@ namespace BTAS.API.Repository
 
         public async Task<IEnumerable<tbl_addressDto>> GetAllAsync()
         {
-            IEnumerable<tbl_address> _list = await _context.tbl_addresses.OrderByDescending(p => p.idtbl_address).ToListAsync();
+            IEnumerable<tbl_address> _list = await _context.tbl_addresses.OrderByDescending(p => p.idtbl_address).AsNoTracking().ToListAsync();
             return _mapper.Map<List<tbl_addressDto>>(_list);
         }
 
         public async Task<IEnumerable<tbl_addressDto>> GetAllAsyncWithChildren()
         {
-            IEnumerable<tbl_address> _list = await _context.tbl_addresses
-                .OrderByDescending(p => p.idtbl_address)
-                .Include(p => p.clientHeaders)
-                .AsNoTracking()
-                .ToListAsync();
+            IEnumerable<tbl_address> _list = await _context.tbl_addresses.OrderByDescending(p => p.idtbl_address)
+                .AsNoTracking().Include(p => p.clientHeaders).ToListAsync();
             return _mapper.Map<List<tbl_addressDto>>(_list);
         }
 
         public async Task<tbl_addressDto> GetByIdAsync(int id)
         {
-            var result = await _context.tbl_addresses.FirstOrDefaultAsync(x => x.idtbl_address == id);
+            var result = await _context.tbl_addresses.AsNoTracking().FirstOrDefaultAsync(x => x.idtbl_address == id);
             return _mapper.Map<tbl_addressDto>(result);
         }
 
@@ -120,13 +121,14 @@ namespace BTAS.API.Repository
                 tbl_address result = new();
                 if (includeChild)
                 {
-                    result = await _context.tbl_addresses
-                        //.Include(p => p.contactDetails)
+                    result = await _context.tbl_addresses.AsNoTracking()
+                        .Include(p => p.clientHeaders)
                         .FirstOrDefaultAsync(v => v.tbl_address_code == referenceNumber);
                 }
                 else
                 {
-                    result = await _context.tbl_addresses.FirstOrDefaultAsync(v => v.tbl_address_code == referenceNumber);
+                    result = await _context.tbl_addresses.AsNoTracking()
+                        .FirstOrDefaultAsync(v => v.tbl_address_code == referenceNumber);
                 }
                 
 
@@ -156,13 +158,6 @@ namespace BTAS.API.Repository
         {
             throw new System.NotImplementedException();
         }
-        public async Task<string> GetNextId()
-        {
-            tbl_address result = await _context.tbl_addresses.OrderByDescending(x => x.idtbl_address).FirstOrDefaultAsync();
-            string referenceCode = "AD" + string.Format("{0:0000000}", (result != null ? result.idtbl_address + count : 1));
-            return referenceCode;
-        }
-
 
         //Added by HS on 22/03/2023
         //This function is used for generating address code when address data is imported in bunch
@@ -179,6 +174,82 @@ namespace BTAS.API.Repository
             }
             await _context.SaveChangesAsync();
             return new GeneralResponse { success = true };
+        }
+
+        internal async Task<ResponseDto> DuplicationCheck(tbl_addressDto entity)
+        {
+            try
+            {
+                //unique constrain check
+                if (String.IsNullOrEmpty(entity.tbl_address_companyName)
+                    || String.IsNullOrEmpty(entity.tbl_address_postcode)
+                    || String.IsNullOrEmpty(entity.tbl_address_address1))
+                {
+                    return new ResponseDto
+                    {
+                        IsSuccess = false,
+                        DisplayMessage = "Missing mandatory fields."
+                    };
+                }
+                var result = _mapper.Map<tbl_addressDto>(entity);
+                //duplicate if a same company name with the same postcode and address1
+                var duplicate = await _context.tbl_addresses.OrderBy(p => p.tbl_address_companyName)
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync(
+                      p => (p.tbl_address_companyName == result.tbl_address_companyName
+                      && p.tbl_address_postcode == result.tbl_address_postcode
+                      && p.tbl_address_address1 == result.tbl_address_address1
+                     ));
+                if (duplicate == null)
+                {
+                    return new ResponseDto
+                    {
+                        IsSuccess = false,
+                        DisplayMessage = "New Address",
+                        ReferenceNumber = "1"
+                    };
+                }
+                else
+                {
+                    return new ResponseDto
+                    {
+                        IsSuccess = true,
+                        DisplayMessage = "Duplicate Address",
+                        ReferenceNumber = duplicate.tbl_address_code
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto
+                {
+                    IsSuccess = false,
+                    DisplayMessage = ex.Message.ToString()
+                };
+            }
+        }
+        internal async Task<string> GetCodeAsync(tbl_addressDto address)
+        {
+            try
+            {
+                var result = await _context.tbl_addresses.OrderBy(p => p.tbl_address_companyName)
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync(p => p.tbl_address_companyName == address.tbl_address_companyName
+                    && p.tbl_address_postcode == address.tbl_address_postcode
+                    && p.tbl_address_address1 == address.tbl_address_address1);
+                return result.tbl_address_code;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public async Task<string> GetNextId()
+        {
+            tbl_address result = await _context.tbl_addresses.OrderByDescending(x => x.idtbl_address).FirstOrDefaultAsync();
+            string referenceCode = "AD" + string.Format("{0:0000000}", (result != null ? result.idtbl_address + count : 1));
+            return referenceCode;
         }
     }
 
