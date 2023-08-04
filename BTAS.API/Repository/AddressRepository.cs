@@ -42,6 +42,7 @@ namespace BTAS.API.Repository
                 return new ResponseDto
                 {
                     IsSuccess = true,
+                    Id = result.idtbl_address,
                     ReferenceNumber = result.tbl_address_code,
                     DisplayMessage = "Address successfully added."
                 };
@@ -80,9 +81,10 @@ namespace BTAS.API.Repository
 
                 return new ResponseDto
                 {
-                    DisplayMessage = "Address successfully updated.",
                     IsSuccess = true,
-                    ReferenceNumber = result.tbl_address_code
+                    Id = result.idtbl_address,
+                    ReferenceNumber = result.tbl_address_code,
+                    DisplayMessage = "Address successfully updated."
                 };
             }
             catch (Exception ex)

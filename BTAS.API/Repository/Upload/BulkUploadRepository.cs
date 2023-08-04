@@ -57,20 +57,18 @@ namespace BTAS.API.Repository.Upload
         {
             try
             {
-                //if ef core 6 can automatically populate FKs???
-
-                //var result = _mapper.Map<tbl_voyage>(entity);
+                var result = _mapper.Map<tbl_voyage>(entity);
 
                 string referenceNumber = await _voyageRepository.GetNextId();
-                entity.tbl_voyage_code = referenceNumber;
-                entity.tbl_voyage_status = "Active";
+                result.tbl_voyage_code = referenceNumber;
+                result.tbl_voyage_status = "Active";
                 //voyage link to master
-                if (entity.masters.Count > 0 && entity.houses.Count == 0)
+                if (result.masters.Count > 0 && result.houses.Count == 0)
                 {
-                    await ProcessMastersAsync(entity.masters, referenceNumber);
+                    await ProcessMastersAsync(result.masters, referenceNumber);
                 }
                 //voyage directly link to house case, not implemented
-                else if (entity.houses.Count > 0 && entity.masters.Count == 0)
+                else if (result.houses.Count > 0 && result.masters.Count == 0)
                 {
                     return new ResponseDto
                     {
@@ -79,7 +77,7 @@ namespace BTAS.API.Repository.Upload
                     };
                 }
                 //both master and house count > 0
-                else
+                else if (result.houses.Count > 0 && result.masters.Count > 0)
                 {
                     return new ResponseDto
                     {
@@ -87,7 +85,7 @@ namespace BTAS.API.Repository.Upload
                         DisplayMessage = "Invalid Voyage Children."
                     };
                 }
-                var result = _mapper.Map<tbl_voyage>(entity);
+
                 await _context.tbl_voyages.AddAsync(result);
                 await _context.SaveChangesAsync();
                 return new ResponseDto
@@ -102,13 +100,13 @@ namespace BTAS.API.Repository.Upload
                 return new ResponseDto
                 {
                     IsSuccess = false,
-                    DisplayMessage = ex.Message.ToString()
+                    DisplayMessage = ex.Message + " " + ex.InnerException.Message
                 };
             }
         }
 
    
-        private async Task ProcessMastersAsync(ICollection<tbl_masterDto> masters, string referenceNumber)
+        private async Task ProcessMastersAsync(ICollection<tbl_master> masters, string referenceNumber)
         {
             foreach (var master in masters)
             {
@@ -119,14 +117,22 @@ namespace BTAS.API.Repository.Upload
 
                 #region Master.clientHeaders
                 // Process FK client header codes
-                var agents = new List<(tbl_client_headerDto agent, Action<string> setAgentCode)>
+                var agents = new List<(tbl_client_header agent, Action<int> setAgentId, Action<string> setAgentCode)>
                 {
-                    (master.originAgent, code => master.originAgentCode = code),
-                    (master.destinationAgent, code => master.destinationAgentCode = code),
-                    (master.carrierAgent, code => master.carrierAgentCode = code),
-                    (master.creditorAgent, code => master.creditorAgentCode = code)
+                    (master.originAgent, (id) => master.tbl_client_header_origin_id = id, (code) => master.originAgentCode = code),
+                    (master.destinationAgent, (id) => master.tbl_client_header_destination_id = id, (code) => master.destinationAgentCode = code),
+                    (master.carrierAgent, (id) => master.tbl_client_header_carrier_id = id, (code) => master.carrierAgentCode = code),
+                    (master.creditorAgent, (id) => master.tbl_client_header_creditor_id = id, (code) => master.creditorAgentCode = code)
                 };
-                await SetClientHeaderCode(agents);
+
+                await SetClientHeaderIdNCode(agents);
+             
+                // empty master.clentheader while keep master's FK client header
+                master.carrierAgent = null;
+                master.creditorAgent = null;
+                master.originAgent = null;
+                master.destinationAgent = null;
+
                 #endregion
 
                 #region Master Sea
@@ -146,7 +152,7 @@ namespace BTAS.API.Repository.Upload
             }
         }
 
-        private async Task ProcessContainersAsync(ICollection<tbl_containerDto> containers, string referenceNumber)
+        private async Task ProcessContainersAsync(ICollection<tbl_container> containers, string referenceNumber)
         {
             foreach (var container in containers)
             {
@@ -159,37 +165,38 @@ namespace BTAS.API.Repository.Upload
             }
         }
 
-        private async Task ProcessHouseseAsync(ICollection<tbl_houseDto> houses, string referenceNumber)
+        private async Task ProcessHouseseAsync(ICollection<tbl_house> houses, string referenceNumber)
         {
             foreach (var house in houses)
             {
                 house.tbl_house_code = await _houseRepository.GetNextId();
                 house.ContainerCode = referenceNumber;
                 #region house.clientHeaders
-                var agents = new List<(tbl_client_headerDto agent, Action<string> setAgentCode)>
+                var agents = new List<(tbl_client_header agent,Action<int> setAgentId, Action<string> setAgentCode)>
                 {
-                    (house.consignor, code => house.ConsigneeCode = code),
-                    (house.consignee, code => house.ConsigneeCode = code),
-                    (house.pickupClientDetail, code => house.PickupClientCode = code)
+                    (house.consignor, id => house.tbl_consignor_id = id, code => house.ConsignorCode = code),
+                    (house.consignee, id => house.tbl_consignee_id = id, code => house.ConsigneeCode = code),
+                    (house.pickupClientDetail, id => house.tbl_pickupClient_id = id, code => house.PickupClientCode = code)
                     //(house.deliveryClientDetail, code => house.DeliveryClientCode = code)
                 };
-                await SetClientHeaderCode(agents);
+                await SetClientHeaderIdNCode(agents);
                 #region house.deliveryClientDetail & linked address
-                house.pickupClientDetail.tbl_client_header_code = await GetClientHeaderCode(house.pickupClientDetail);
-                #endregion
 
+                (house.tbl_deliveryClient_id, house.DeliveryClientCode) 
+                    = await GetClientHeaderCode(house.deliveryClientDetail);
+
+                #endregion
+                house.consignee = null;
+                house.consignor = null;
+                house.pickupClientDetail = null;
+                house.deliveryClientDetail = null;
                 #endregion house.clientHeaders
 
                 #region house.items 
                 // STD(high value)
                 if (house.houseItems.Count > 0 && house.receptacles.Count == 0)
                 {
-                    foreach (var houseItem in house.houseItems)
-                    {
-                        houseItem.tbl_house_item_code = await _houseItemRepository.GetNextId();
-                        houseItem.HouseCode = house.tbl_house_code;
-                        //item_skus
-                    }
+                    await ProcessHouseItemAsync(house.houseItems, house.tbl_house_code);
                 }
                 #endregion
 
@@ -203,7 +210,16 @@ namespace BTAS.API.Repository.Upload
             }
         }
 
-        private async Task ProcessReceptacleAsync(ICollection<tbl_receptacleDto> receptacles, string referenceNumber)
+        private async Task ProcessHouseItemAsync(ICollection<tbl_house_item> houseItems, string referenceNumber)
+        {
+            foreach (var houseItem in houseItems)
+            {
+                houseItem.tbl_house_item_code = await _houseItemRepository.GetNextId();
+                houseItem.HouseCode = referenceNumber;
+                //process itemSKU
+            }
+        }
+        private async Task ProcessReceptacleAsync(ICollection<tbl_receptacle> receptacles, string referenceNumber)
         {
             foreach (var receptacle in receptacles)
             {
@@ -215,7 +231,7 @@ namespace BTAS.API.Repository.Upload
                 }
             }
         }
-        private async Task ProcessShipmentAsync(ICollection<tbl_shipmentDto> shipments, string referenceNumber)
+        private async Task ProcessShipmentAsync(ICollection<tbl_shipment> shipments, string referenceNumber)
         {
             foreach (var shipment in shipments)
             {
@@ -233,30 +249,30 @@ namespace BTAS.API.Repository.Upload
             }
         }
 
-        private async Task ProcessItemSkuAsync(ICollection<tbl_item_skuDto> itemSkus)
+        private async Task ProcessItemSkuAsync(ICollection<tbl_item_sku> itemSkus)
         {
             throw new NotImplementedException();
         }
 
-        private async Task SetClientHeaderCode(List<(tbl_client_headerDto agent, Action<string> setAgentCode)> agents)
+        private async Task SetClientHeaderIdNCode(List<(tbl_client_header agent, Action<int> setAgentId, Action<string> setAgentCode)> agents)
         {
             try
             {
                 // Use async parallel processing for improved performance
                 var tasks = agents.Select(async agentTuple =>
                 {
-                    var (agent, setAgentCode) = agentTuple;
+                    var (agent, setAgentId, setAgentCode) = agentTuple;
                     if (agent != null)
                     {
-                        var getResult = await _clientHeaderRepository.CreateUpdateAsync(agent);
-                        if (getResult.IsSuccess)
-                        {
-                            setAgentCode(getResult.ReferenceNumber);
-                        }
-                        else
+                        var agentDto = _mapper.Map<tbl_client_headerDto>(agent);
+                        var getResult = await _clientHeaderRepository.CreateUpdateAsync(agentDto);
+
+                        if (!getResult.IsSuccess)
                         {
                             throw new Exception(getResult.DisplayMessage); // Or handle error as required
                         }
+                        setAgentId(getResult.Id);
+                        setAgentCode(getResult.ReferenceNumber);
                     }
                 });
                 await Task.WhenAll(tasks);
@@ -267,7 +283,7 @@ namespace BTAS.API.Repository.Upload
             }
         }
 
-        private async Task<string> GetClientHeaderCode(tbl_client_headerDto clientHeader)
+        private async Task<(int, string)> GetClientHeaderCode(tbl_client_header clientHeader)
         {
             try
             {
@@ -286,12 +302,13 @@ namespace BTAS.API.Repository.Upload
                 address.tbl_address_postcode = clientHeader.tbl_client_header_postcode;
                 address.tbl_address_country = clientHeader.tbl_client_header_country;
 
-                var checkResult = await _clientHeaderRepository.DuplicationCheck(clientHeader);
+                var clientHeaderDto = _mapper.Map<tbl_client_headerDto>(clientHeader);
+                var checkResult = await _clientHeaderRepository.DuplicationCheck(clientHeaderDto);
                 //if new
-                if (checkResult.IsSuccess == false && checkResult.DisplayMessage == "1")
+                if (checkResult.IsSuccess == false && checkResult.ReferenceNumber == "1")
                 {
                     //create this new client header
-                    var createResult = await _clientHeaderRepository.CreateAsync(clientHeader);
+                    var createResult = await _clientHeaderRepository.CreateAsync(clientHeaderDto);
                     if (!createResult.IsSuccess)
                     {
                         throw new Exception(createResult.DisplayMessage);
@@ -311,14 +328,15 @@ namespace BTAS.API.Repository.Upload
                             + " Address:" + addrResult.ReferenceNumber);
                     }
 
-                    return createResult.ReferenceNumber;
+                    return (createResult.Id, createResult.ReferenceNumber);
                 }
                 //if existed
                 else if (checkResult.IsSuccess == true)
                 {
-                    clientHeader.tbl_client_header_code = checkResult.ReferenceNumber;
+                    clientHeaderDto.idtbl_client_header = checkResult.Id;
+                    clientHeaderDto.tbl_client_header_code = checkResult.ReferenceNumber;
                     //update client header
-                    var updateResult = await _clientHeaderRepository.UpdateAsync(clientHeader);
+                    var updateResult = await _clientHeaderRepository.UpdateAsync(clientHeaderDto);
                     if (!updateResult.IsSuccess)
                     {
                         throw new Exception(updateResult.DisplayMessage);
@@ -337,7 +355,7 @@ namespace BTAS.API.Repository.Upload
                         throw new Exception(addrResult.DisplayMessage);
                     }
 
-                    return clientHeader.tbl_client_header_code;
+                    return (clientHeader.idtbl_client_header, clientHeader.tbl_client_header_code);
                 }
                 else
                 {
@@ -350,52 +368,5 @@ namespace BTAS.API.Repository.Upload
             }
         }
 
-        //private async Task<tbl_addressDto> GetAddressCode(tbl_client_headerDto clientHeader)
-        //{
-        //    var address = new tbl_addressDto();
-        //    address.tbl_address_isDelivery = true;
-        //    address.tbl_address_companyName = clientHeader.tbl_client_header_companyName;
-        //    address.tbl_address_contactName = clientHeader.tbl_client_header_contactName;
-        //    address.tbl_address_email = clientHeader.tbl_client_header_email;
-        //    address.tbl_address_phone = clientHeader.tbl_client_header_phone;
-        //    address.tbl_address_abn = clientHeader.tbl_client_header_abn;
-        //    address.tbl_address_address1 = clientHeader.tbl_client_header_address1;
-        //    address.tbl_address_address2 = clientHeader.tbl_client_header_address2;
-        //    address.tbl_address_suburb = clientHeader.tbl_client_header_suburb;
-        //    address.tbl_address_state = clientHeader.tbl_client_header_state;
-        //    address.tbl_address_postcode = clientHeader.tbl_client_header_postcode;
-        //    address.tbl_address_country = clientHeader.tbl_client_header_country;
-
-        //    var checkResult = await _addressRepository.DuplicationCheck(address);
-        //    //if new
-        //    if (checkResult.IsSuccess == false && checkResult.DisplayMessage == "1")
-        //    {
-        //        //create this new client header
-        //        var createResult = await _addressRepository.CreateAsync(address);
-        //        if (createResult.IsSuccess)
-        //        {
-        //            address.tbl_address_code = createResult.ReferenceNumber;
-        //        }
-        //        else
-        //        {
-        //            throw new Exception(createResult.DisplayMessage);
-        //        }
-        //    }
-        //    //if existed
-        //    else if (checkResult.IsSuccess == true)
-        //    {
-        //        address.tbl_address_code = checkResult.ReferenceNumber;
-        //        var updateResult = await _addressRepository.UpdateAsync(address);
-        //        if (!updateResult.IsSuccess)
-        //        {
-        //            throw new Exception(updateResult.DisplayMessage);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        throw new Exception("Unhandled exception: Failed to get client header code.");
-        //    }
-        //    return address;
-        //}
     }
 }
