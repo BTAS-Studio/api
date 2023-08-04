@@ -1,6 +1,7 @@
 using BTAS.API.Dto;
 using BTAS.API.Repository;
 using BTAS.API.Repository.Interface;
+using BTAS.API.Repository.Upload;
 using BTAS.Data.Models;
 using DinkToPdf;
 using DinkToPdf.Contracts;
@@ -89,6 +90,7 @@ namespace BTAS.API
             services.AddScoped<IRepository<tbl_milestone_linkDto>, MilestoneLinkRepository>();
             services.AddScoped<IRepository<tbl_documentDto>, DocumentRepository>();
 
+
             services.AddScoped<IAustwayLabelRepository, AustwayLabelRepository>();
 
             services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
@@ -131,6 +133,8 @@ namespace BTAS.API
             services.AddTransient<MilestoneLinkRepository>();
             services.AddTransient<DocumentRepository>();
             //services.AddSingleton<TTWS>();
+            //Added by HS on 08/01/2023
+            services.AddTransient<BulkUploadRepository>();
             services.AddSingleton(Configuration);
             //services.AddCors(options =>
             //{

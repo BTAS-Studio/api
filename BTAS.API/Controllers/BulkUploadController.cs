@@ -35,14 +35,16 @@ namespace BTAS.API.Controllers
                     {
                         success = false,
                         response = 400,
-                        responseDescription = result.DisplayMessage
+                        responseDescription = result.DisplayMessage,
+                        errorMessages = result.ErrorMessages
                     });
                 }
                 return Ok(new GeneralResponse
                 {
                     success = true,
                     response = 200,
-                    responseDescription = "Data successfully uploaded."
+                    responseDescription = "Data successfully uploaded.",
+                    referenceNumber = result.ReferenceNumber
                 });
             }
             catch(Exception ex)
