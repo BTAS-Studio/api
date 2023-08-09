@@ -39,6 +39,17 @@ namespace BTAS.API.Controllers
                         errorMessages = result.ErrorMessages
                     });
                 }
+                var mileStoneResult = await _repository.ProcessMileStonesAsync(request);
+                if (mileStoneResult.IsSuccess == false)
+                {
+                    return new JsonResult(new GeneralResponse
+                    {
+                        success = false,
+                        response = 400,
+                        responseDescription = "Fail to create MileStone." + result.DisplayMessage,
+                        errorMessages = result.ErrorMessages
+                    });
+                }
                 return Ok(new GeneralResponse
                 {
                     success = true,

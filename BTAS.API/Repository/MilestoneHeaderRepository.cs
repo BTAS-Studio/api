@@ -177,11 +177,34 @@ namespace BTAS.API.Repository
             }
         }
 
+        internal async Task<ResponseDto> GetByNameAsync(string headerName)
+        {
+            var result = await _context.tbl_milestone_headers.OrderBy(p => p.tbl_milestone_header_name)
+                .AsNoTracking()
+                .SingleOrDefaultAsync(p => p.tbl_milestone_header_name == headerName);
+            if (result == null)
+            {
+                return new ResponseDto
+                {
+                    IsSuccess = false,
+                    DisplayMessage = "No match Milestone Header found."
+                };
+            }
+            return new ResponseDto
+            {
+                IsSuccess = true,
+                Id = result.idtbl_milestone_header,
+                ReferenceNumber = result.tbl_milestone_header_code,
+                Result = result
+            };
+        }
         public async Task<string> GetNextId()
         {
             var result = await _context.tbl_milestone_headers.OrderByDescending(p => p.idtbl_milestone_header).FirstOrDefaultAsync();
             string code = "MH" + String.Format("{0:0000000}", (result != null ? result.idtbl_milestone_header + 1 : 1));
             return code;
         }
+
+
     }
 }

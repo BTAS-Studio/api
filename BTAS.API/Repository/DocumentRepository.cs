@@ -266,6 +266,7 @@ namespace BTAS.API.Repository
         {
             var result = await _context.tbl_documents.OrderByDescending(p => p.idtbl_document).FirstOrDefaultAsync();
             string code = "DC" + String.Format("{0:0000000}", (result != null ? result.idtbl_document + count : 1));
+            count++;
             return code;
         }
     }

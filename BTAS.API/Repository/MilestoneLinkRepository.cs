@@ -309,6 +309,7 @@ namespace BTAS.API.Repository
         {
             var result = await _context.tbl_milestone_links.OrderByDescending(p => p.idtbl_milestone_link).FirstOrDefaultAsync();
             string code = "ML" + String.Format("{0:0000000}", (result != null ? result.idtbl_milestone_link + count : 1));
+            //count++;
             return code;
         }
     }
