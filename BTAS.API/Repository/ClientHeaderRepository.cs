@@ -374,7 +374,7 @@ namespace BTAS.API.Repository
             {
                 return new ResponseDto
                 {
-                    DisplayMessage = ex.StackTrace.ToString(),
+                    DisplayMessage = ex.Message + ex.InnerException.ToString(),
                     IsSuccess = false
                 };
             }
@@ -525,6 +525,7 @@ namespace BTAS.API.Repository
             //Edited by HS on 22/03/2023
             //string referenceCode = "A" + shipperId + String.Format("{0:0000000000}", (result != null ? result.idtbl_client_header + 1 : 1));
             string referenceCode = "CH" + String.Format("{0:0000000}", (result != null ? result.idtbl_client_header + count : 1));
+            count++;
             return referenceCode;
         }
 

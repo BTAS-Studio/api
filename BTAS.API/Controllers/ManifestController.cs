@@ -24,7 +24,7 @@ namespace BTAS.API.Controllers
     [ApiController]
     //[Route("[controller]")]
     [Route("api")]
-    [ApiVersion("1.0")]
+    //[ApiVersion("1.0")]
     public class ManifestController : ControllerBase //: GenericController<tbl_manifestDto>
     {
         protected ManifestResponse _manifestResponse;

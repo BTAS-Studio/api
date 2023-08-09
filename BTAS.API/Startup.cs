@@ -90,7 +90,6 @@ namespace BTAS.API
             services.AddScoped<IRepository<tbl_milestone_linkDto>, MilestoneLinkRepository>();
             services.AddScoped<IRepository<tbl_documentDto>, DocumentRepository>();
 
-
             services.AddScoped<IAustwayLabelRepository, AustwayLabelRepository>();
 
             services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();

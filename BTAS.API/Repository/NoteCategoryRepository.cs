@@ -5,6 +5,7 @@ using BTAS.API.Dto;
 using BTAS.API.Repository.Interface;
 using BTAS.Data.Models;
 using Microsoft.EntityFrameworkCore;
+using Stripe.Treasury;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,6 +63,7 @@ namespace BTAS.API.Repository
                 return new ResponseDto
                 {
                     IsSuccess = true,
+                    Id = result.idtbl_note_category,
                     ReferenceNumber = result.tbl_note_category_code,
                     DisplayMessage = "Note Category successfully added."
                 };
@@ -177,6 +179,28 @@ namespace BTAS.API.Repository
             return _mapper.Map<tbl_note_categoryDto>(result);
         }
 
+        public async Task<ResponseDto> GetByNameAsync(string name)
+        {
+            var result = await _context.tbl_note_categories.OrderBy(p => p.tbl_note_category_name)
+                .AsNoTracking()
+                .SingleOrDefaultAsync(p => p.tbl_note_category_name == name);
+            if (result == null)
+            {
+                return new ResponseDto
+                {
+                    IsSuccess = false,
+                    DisplayMessage = "No match Note Category found."
+                };
+            }
+            return new ResponseDto
+            {
+                IsSuccess = true,
+                Id = result.idtbl_note_category,
+                ReferenceNumber = result.tbl_note_category_code,
+                Result = result
+            };
+        }
+
         public Task<tbl_note_categoryDto> CreateUpdateAsync(tbl_note_categoryDto entity)
         {
             throw new NotImplementedException();
@@ -186,6 +210,7 @@ namespace BTAS.API.Repository
         {
             var result = await _context.tbl_note_categories.OrderByDescending(p => p.idtbl_note_category).FirstOrDefaultAsync();
             string code = "NC" + String.Format("{0:0000000}", (result != null ? result.idtbl_note_category + count : 1));
+            count++;
             return code;
         }
     }
