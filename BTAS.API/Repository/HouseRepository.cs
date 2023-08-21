@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
 using BTAS.API.Dto;
-using BTAS.API.Extensions;
 using BTAS.API.Models;
 using BTAS.API.Models.Links;
 using BTAS.API.Repository.Interface;
 using BTAS.API.Repository.SearchRepository;
-using BTAS.Data;
 using BTAS.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;

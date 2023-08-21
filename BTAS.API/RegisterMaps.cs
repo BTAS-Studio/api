@@ -128,8 +128,8 @@ namespace BTAS.API
                 config.CreateMap<tbl_item_sku, tbl_item_skuDto>();
 
 
-                config.CreateMap<tbl_addressDto, tbl_address>()
-                    .ForMember(dest => dest.idtbl_address, opt => opt.Ignore());
+                config.CreateMap<tbl_addressDto, tbl_address>();
+                   //.ForMember(dest => dest.idtbl_address, opt => opt.Ignore());
                 config.CreateMap<tbl_address, tbl_addressDto>();
 
                 config.CreateMap<tbl_client_headerDto, tbl_client_header>()

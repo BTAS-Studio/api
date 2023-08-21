@@ -13,10 +13,11 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using BTAS.API.Repository.SearchRepository;
 
 namespace BTAS.API.Repository
 {
-    public class AddressRepository : IRepository<tbl_addressDto>
+    public class AddressRepository : SRepository, IRepository<tbl_addressDto>
     {
         private readonly MainDbContext _context;
         private IMapper _mapper;
@@ -34,9 +35,12 @@ namespace BTAS.API.Repository
             try
             {
                 tbl_address result = _mapper.Map<tbl_addressDto, tbl_address>(entity);
-
-                string referenceNumber = await GetNextId();
-                result.tbl_address_code = referenceNumber;
+                if (result.tbl_address_code ==  null)
+                {
+                    string referenceNumber = await GetNextId();
+                    result.tbl_address_code = referenceNumber;
+                }
+                
                 await _context.tbl_addresses.AddAsync(result);
                 await _context.SaveChangesAsync();
                 return new ResponseDto
@@ -59,17 +63,10 @@ namespace BTAS.API.Repository
         {
             try
             {
-                var result = await _context.tbl_addresses.OrderBy(p => p.tbl_address_code)
-                    .SingleOrDefaultAsync(x => x.tbl_address_code == entity.tbl_address_code);
+                var result = await _context.tbl_addresses.OrderBy(p => p.idtbl_address)
+                    .SingleOrDefaultAsync(x => x.idtbl_address == entity.idtbl_address);
 
-                if (result != null)
-                {
-                    _mapper.Map(entity, result);
-                    _context.ChangeTracker.Clear();
-                    _context.tbl_addresses.Update(result);
-                    await _context.SaveChangesAsync();
-                }
-                else
+                if (result == null)
                 {
                     return new ResponseDto
                     {
@@ -78,6 +75,10 @@ namespace BTAS.API.Repository
                     };
                 }
 
+                _mapper.Map(entity, result);
+                _context.ChangeTracker.Clear();
+                _context.tbl_addresses.Update(result);
+                await _context.SaveChangesAsync();
                 return new ResponseDto
                 {
                     DisplayMessage = "Address successfully updated.",
@@ -147,6 +148,77 @@ namespace BTAS.API.Repository
                     IsSuccess = false,
                     DisplayMessage = "Error retrieving record."
                 };
+            }
+        }
+
+        //Added by HS on 11/08/2023
+        /// <summary>
+        /// Retrieves a specified number of addresses according to input conditions(>, >=, <, <=, ==, !=, and contains)
+        /// </summary>
+        /// <returns> A list of address objects</returns>
+        public async Task<IEnumerable<tbl_addressDto>> GetFilteredAsync(CustomFilters<tbl_addressDto> customFilters)
+        {
+            try
+            {
+                var qList = _context.tbl_addresses
+                    //.AsNoTracking()
+                    .OrderByDescending(h => h.tbl_address_postcode).AsQueryable();
+                // excute each filter one by one 
+                if (customFilters.Filters != null)
+                {
+                    foreach (var filter in customFilters.Filters)
+                    {
+                        PropertyInfo propertyInfo = null;
+                        bool parent = false;
+                        var jsonString = JsonConvert.SerializeObject(filter.searchField);
+                        var jsonObj = JObject.Parse(jsonString);
+                        JToken originalValue = null;
+
+                        if (filter.tableName.ToUpper() == "ADDRESS")
+                        {
+                            //filter.tableName = "address";
+                            bool containsDateTime = false;
+                            //used for searching Contains DateTime type's columns
+                            if (filter.condition.ToUpper() == "CONTAINS")
+                            {
+                                originalValue = jsonObj[filter.fieldName];
+                                (containsDateTime, jsonString) = MakeAddressJsonString(filter, containsDateTime, jsonString);
+                            }
+
+                            (propertyInfo, filter.fieldValue, containsDateTime) = GetPropertyInfo<tbl_addressDto, tbl_address>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
+                        }
+                        else
+                        {
+                            throw new ArgumentException($"Invalid table name: {filter.tableName}");
+                        }
+
+                        Type elementType = qList.ElementType;
+
+                        if (propertyInfo == null)
+                        {
+                            throw new ArgumentException($"Invalid property name: {propertyInfo.Name}");
+                        }
+
+                        Expression<Func<tbl_address, bool>> propertyLambda = null;
+                        propertyLambda = GetPropertyLambda<tbl_address>(propertyInfo, filter, parent);
+
+                        if (propertyLambda != null)
+                        {
+                            qList = qList.Where(propertyLambda);
+                        }
+                    }
+                }
+
+                if (qList.Count() == 0)
+                {
+                    return null;
+                }
+                var filtered = await qList.Skip(customFilters.Page * customFilters.PageSize).Take(customFilters.PageSize).ToListAsync();
+                return _mapper.Map<IEnumerable<tbl_addressDto>>(filtered);
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
         }
 
@@ -228,7 +300,7 @@ namespace BTAS.API.Repository
                 };
             }
         }
-        internal async Task<string> GetCodeAsync(tbl_addressDto address)
+        internal async Task<int> GetIdAsync(tbl_addressDto address)
         {
             try
             {
@@ -237,11 +309,11 @@ namespace BTAS.API.Repository
                     .SingleOrDefaultAsync(p => p.tbl_address_companyName == address.tbl_address_companyName
                     && p.tbl_address_postcode == address.tbl_address_postcode
                     && p.tbl_address_address1 == address.tbl_address_address1);
-                return result.tbl_address_code;
+                return result.idtbl_address;
             }
             catch (Exception ex)
             {
-                return null;
+                return 0;
             }
         }
 

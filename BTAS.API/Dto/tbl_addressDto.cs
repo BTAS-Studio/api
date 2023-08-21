@@ -10,7 +10,7 @@ namespace BTAS.API.Dto
     public class tbl_addressDto
     {
         [JsonProperty("Id")]
-        [JsonIgnore]
+        //[JsonIgnore]
         public int idtbl_address { get; set; }
         [StringLength(50)]
         [JsonProperty("Code")]

@@ -100,7 +100,7 @@ namespace BTAS.API.Repository
             try
             {
                 var qList = _context.tbl_client_headers
-                    .Include(p => p.addresses)
+                    //.Include(p => p.addresses)
                     .AsNoTracking()
                     .OrderByDescending(p => p.idtbl_client_header)
                     .AsQueryable();
@@ -130,18 +130,18 @@ namespace BTAS.API.Repository
                                 GetPropertyInfo<tbl_client_headerDto, tbl_client_header>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
                         }
 
-                        else if (filter.tableName.ToUpper() == "LEGALENTITYADDRESS")
-                        {
-                            filter.tableName = "legalEntityAddress";
-                            parent = true;
-                            bool containsDateTime = false;
-                            if (filter.condition.ToUpper() == "CONTAINS")
-                            {
-                                originalValue = jsonObj[filter.fieldName];
-                            }
+                        //else if (filter.tableName.ToUpper() == "LEGALENTITYADDRESS")
+                        //{
+                        //    filter.tableName = "legalEntityAddress";
+                        //    parent = true;
+                        //    bool containsDateTime = false;
+                        //    if (filter.condition.ToUpper() == "CONTAINS")
+                        //    {
+                        //        originalValue = jsonObj[filter.fieldName];
+                        //    }
 
-                            (propertyInfo, filter.fieldValue, containsDateTime) = GetParentPropertyInfo<tbl_client_header, tbl_address, tbl_addressDto>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
-                        }
+                        //    (propertyInfo, filter.fieldValue, containsDateTime) = GetParentPropertyInfo<tbl_client_header, tbl_address, tbl_addressDto>(jsonString, propertyInfo, filter, containsDateTime, originalValue);
+                        //}
 
                         else
                         {

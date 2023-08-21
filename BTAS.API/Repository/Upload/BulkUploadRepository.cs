@@ -324,10 +324,10 @@ namespace BTAS.API.Repository.Upload
                         throw new Exception(updateResult.DisplayMessage);
                     }
                     //update its linked address
-                    //1. get the address code
-                    address.tbl_address_code = await _addressRepository.GetCodeAsync(address);
+                    //1. get the address id
+                    address.idtbl_address = await _addressRepository.GetIdAsync(address);
                     //2. update with the new address
-                    if (address.tbl_address_code == null)
+                    if (address.idtbl_address == 0)
                     {
                         throw new Exception("Failed to update address");
                     }

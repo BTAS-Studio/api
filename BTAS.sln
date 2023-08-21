@@ -14,6 +14,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenAPIDoc.Main", "OpenAPID
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BTAS.BlazorApp", "BTAS.BlazorApp\BTAS.BlazorApp.csproj", "{EEC79601-3E27-4102-84D8-12D0B4A54BE0}"
 EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{CD16B24E-5541-4C53-9354-E178F322FBC8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,6 +56,14 @@ Global
 		{EEC79601-3E27-4102-84D8-12D0B4A54BE0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EEC79601-3E27-4102-84D8-12D0B4A54BE0}.Release|x86.ActiveCfg = Release|x86
 		{EEC79601-3E27-4102-84D8-12D0B4A54BE0}.Release|x86.Build.0 = Release|x86
+		{CD16B24E-5541-4C53-9354-E178F322FBC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD16B24E-5541-4C53-9354-E178F322FBC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD16B24E-5541-4C53-9354-E178F322FBC8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CD16B24E-5541-4C53-9354-E178F322FBC8}.Debug|x86.Build.0 = Debug|Any CPU
+		{CD16B24E-5541-4C53-9354-E178F322FBC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD16B24E-5541-4C53-9354-E178F322FBC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD16B24E-5541-4C53-9354-E178F322FBC8}.Release|x86.ActiveCfg = Release|Any CPU
+		{CD16B24E-5541-4C53-9354-E178F322FBC8}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -244,7 +244,25 @@ namespace BTAS.API.Repository.SearchRepository
             }
             return (containsDateTime, jsonString);
         }
-    
+        
+        public static (bool, string) MakeAddressJsonString(CustomFilter<dynamic> filter, bool containsDateTime, string jsonString)
+        {
+            tbl_addressDto address = new tbl_addressDto();
+            if (filter.fieldName == "StartTime")
+            {
+                containsDateTime = true;
+                address.tbl_address_startTime = new TimeOnly(12, 01);
+                jsonString = JsonConvert.SerializeObject(address);
+            }
+            else if (filter.fieldName == "EndTime")
+            {
+                containsDateTime = true;
+                address.tbl_address_endTime = new TimeOnly(12, 01);
+                jsonString = JsonConvert.SerializeObject(address);
+            }
+            return (containsDateTime, jsonString);
+        }
+
         public static (PropertyInfo, object, bool) GetPropertyInfo<TDto, T> (string jsonString, PropertyInfo propertyInfo, CustomFilter<dynamic> filter, bool containsDateTime, JToken originalValue)
         {
             var objFields = JsonConvert.DeserializeObject<TDto>(jsonString);

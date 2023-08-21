@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  btas.api:
+    image: ${DOCKER_REGISTRY-}btasapi
+    build:
+      context: .
+      dockerfile: BTAS.API/Dockerfile
