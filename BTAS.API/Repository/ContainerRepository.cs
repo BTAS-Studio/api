@@ -461,6 +461,7 @@ namespace BTAS.API.Repository
             tbl_container result = await _context.tbl_containers.OrderByDescending(x => x.idtbl_container).FirstOrDefaultAsync();
 
             string referenceCode = "CT" + String.Format("{0:0000000}", (result != null ? result.idtbl_container + count : 1));
+            count++;
             return referenceCode;
         }
     }

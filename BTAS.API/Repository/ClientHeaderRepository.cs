@@ -189,48 +189,46 @@ namespace BTAS.API.Repository
             {
                 var checkResult = await DuplicationCheck(entity);
                 //if new
-                if (checkResult.IsSuccess == false && checkResult.DisplayMessage == "1")
+                if (checkResult.IsSuccess == false && checkResult.ReferenceNumber == "1")
                 {
                     //create this new client header
                     var createResult = await CreateAsync(entity);
-                    if (createResult.IsSuccess)
-                    {
-                        return new ResponseDto
-                        {
-                            IsSuccess = true,
-                            ReferenceNumber = createResult.ReferenceNumber
-                        };
-                    }
-                    else
+                    if (!createResult.IsSuccess)
                     {
                         return new ResponseDto
                         {
                             IsSuccess = false,
                             DisplayMessage = createResult.DisplayMessage
                         };
+
                     }
+                    return new ResponseDto
+                    {
+                        IsSuccess = true,
+                        Id = createResult.Id,
+                        ReferenceNumber = createResult.ReferenceNumber
+                    };
                 }
                 //if existed
                 else if (checkResult.IsSuccess == true)
                 {
                     entity.tbl_client_header_code = checkResult.ReferenceNumber;
                     var updateResult = await UpdateAsync(entity);
-                    if (updateResult.IsSuccess)
-                    {
-                        return new ResponseDto
-                        {
-                            IsSuccess = true,
-                            ReferenceNumber = entity.tbl_client_header_code
-                        };
-                    }
-                    else
+                    if (!updateResult.IsSuccess)
                     {
                         return new ResponseDto
                         {
                             IsSuccess = false,
                             DisplayMessage = updateResult.DisplayMessage
                         };
+
                     }
+                    return new ResponseDto
+                    {
+                        IsSuccess = true,
+                        Id = updateResult.Id,
+                        ReferenceNumber = updateResult.ReferenceNumber
+                    };
                 }
                 else
                 {
@@ -290,9 +288,10 @@ namespace BTAS.API.Repository
                 }
                 return new ResponseDto
                 {
+                    IsSuccess = true,
+                    Id = result.idtbl_client_header,
                     ReferenceNumber = result.tbl_client_header_code,
-                    DisplayMessage = "client header successfully added.",
-                    IsSuccess = true
+                    DisplayMessage = "client header successfully added."
                 };
             }
             catch (Exception ex)
@@ -357,8 +356,10 @@ namespace BTAS.API.Repository
 
                     return new ResponseDto
                     {
-                        DisplayMessage = "Client Header successfully updated.",
-                        IsSuccess = true
+                        IsSuccess = true,
+                        Id = result.idtbl_client_header,
+                        ReferenceNumber = result.tbl_client_header_code,
+                        DisplayMessage = "Client Header successfully updated."
                     };
                 }
 
@@ -373,7 +374,7 @@ namespace BTAS.API.Repository
             {
                 return new ResponseDto
                 {
-                    DisplayMessage = ex.StackTrace.ToString(),
+                    DisplayMessage = ex.Message + ex.InnerException.ToString(),
                     IsSuccess = false
                 };
             }
@@ -394,7 +395,7 @@ namespace BTAS.API.Repository
                     };
                 }
                 var address = await _context.tbl_addresses.OrderBy(p => p.tbl_address_code)
-                    .AsNoTracking()
+                    //.AsNoTracking()
                     .SingleOrDefaultAsync(p => p.tbl_address_code == addressCode);
                 if (address == null)
                 {
@@ -524,6 +525,7 @@ namespace BTAS.API.Repository
             //Edited by HS on 22/03/2023
             //string referenceCode = "A" + shipperId + String.Format("{0:0000000000}", (result != null ? result.idtbl_client_header + 1 : 1));
             string referenceCode = "CH" + String.Format("{0:0000000}", (result != null ? result.idtbl_client_header + count : 1));
+            count++;
             return referenceCode;
         }
 
@@ -677,6 +679,7 @@ namespace BTAS.API.Repository
                     {
                         IsSuccess = true,
                         DisplayMessage = "Duplicate Client Header",
+                        Id = duplicate.idtbl_client_header,
                         ReferenceNumber = duplicate.tbl_client_header_code
                     };
                 }

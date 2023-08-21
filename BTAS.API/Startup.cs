@@ -1,6 +1,7 @@
 using BTAS.API.Dto;
 using BTAS.API.Repository;
 using BTAS.API.Repository.Interface;
+using BTAS.API.Repository.Upload;
 using BTAS.Data.Models;
 using DinkToPdf;
 using DinkToPdf.Contracts;
@@ -131,6 +132,8 @@ namespace BTAS.API
             services.AddTransient<MilestoneLinkRepository>();
             services.AddTransient<DocumentRepository>();
             //services.AddSingleton<TTWS>();
+            //Added by HS on 08/01/2023
+            services.AddTransient<BulkUploadRepository>();
             services.AddSingleton(Configuration);
             //services.AddCors(options =>
             //{

@@ -46,6 +46,7 @@ namespace BTAS.API.Repository
                 return new ResponseDto
                 {
                     IsSuccess = true,
+                    Id = result.idtbl_address,
                     ReferenceNumber = result.tbl_address_code,
                     DisplayMessage = "Address successfully added."
                 };
@@ -81,9 +82,10 @@ namespace BTAS.API.Repository
                 await _context.SaveChangesAsync();
                 return new ResponseDto
                 {
-                    DisplayMessage = "Address successfully updated.",
                     IsSuccess = true,
-                    ReferenceNumber = result.tbl_address_code
+                    Id = result.idtbl_address,
+                    ReferenceNumber = result.tbl_address_code,
+                    DisplayMessage = "Address successfully updated."
                 };
             }
             catch (Exception ex)
@@ -321,6 +323,7 @@ namespace BTAS.API.Repository
         {
             tbl_address result = await _context.tbl_addresses.OrderByDescending(x => x.idtbl_address).FirstOrDefaultAsync();
             string referenceCode = "AD" + string.Format("{0:0000000}", (result != null ? result.idtbl_address + count : 1));
+            count++;
             return referenceCode;
         }
     }

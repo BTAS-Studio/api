@@ -53,7 +53,7 @@ namespace BTAS.API.Repository
                         }
                         else
                         {
-                            return new ResponseDto { Result = entity, DisplayMessage = "Unable to link to Note Category. Provided Note reference was not found.", IsSuccess = false };
+                            return new ResponseDto { Result = entity, DisplayMessage = "Unable to link to Note Category. Provided Note Category reference was not found.", IsSuccess = false };
                         }
                     }
                     if (!String.IsNullOrEmpty(result.MasterCode))
@@ -66,7 +66,7 @@ namespace BTAS.API.Repository
                         }
                         else
                         {
-                            return new ResponseDto { Result = entity, DisplayMessage = "Unable to link to Master. Provided Note reference was not found.", IsSuccess = false };
+                            return new ResponseDto { Result = entity, DisplayMessage = "Unable to link to Master. Provided Master reference was not found.", IsSuccess = false };
                         }
                     }
                     if (!String.IsNullOrEmpty(result.HouseCode))
@@ -79,7 +79,7 @@ namespace BTAS.API.Repository
                         }
                         else
                         {
-                            return new ResponseDto { Result = entity, DisplayMessage = "Unable to link to House. Provided Note reference was not found.", IsSuccess = false };
+                            return new ResponseDto { Result = entity, DisplayMessage = "Unable to link to House. Provided House reference was not found.", IsSuccess = false };
                         }
                     }
                     if (!String.IsNullOrEmpty(result.ShipmentCode))
@@ -92,7 +92,20 @@ namespace BTAS.API.Repository
                         }
                         else
                         {
-                            return new ResponseDto { Result = entity, DisplayMessage = "Unable to link to Shipment. Provided Note reference was not found.", IsSuccess = false };
+                            return new ResponseDto { Result = entity, DisplayMessage = "Unable to link to Shipment. Provided Shipment reference was not found.", IsSuccess = false };
+                        }
+                    }
+                    if (!String.IsNullOrEmpty(result.ClientHeaderCode))
+                    {
+                        var parent = await _context.tbl_client_headers.AsNoTracking()
+                            .FirstOrDefaultAsync(p => p.tbl_client_header_code == result.ClientHeaderCode);
+                        if (parent != null)
+                        {
+                            result.tbl_client_header_id = parent.idtbl_client_header;
+                        }
+                        else
+                        {
+                            return new ResponseDto { Result = entity, DisplayMessage = "Unable to link to Client Header. Provided Client Header reference was not found.", IsSuccess = false };
                         }
                     }
                     result.tbl_note_createdDate = DateTime.Now;
@@ -102,6 +115,7 @@ namespace BTAS.API.Repository
                 return new ResponseDto
                 {
                     IsSuccess = true,
+                    Id = result.idtbl_note,
                     ReferenceNumber = result.tbl_note_code,
                     DisplayMessage = "Note successfully added."
                 };
@@ -181,7 +195,19 @@ namespace BTAS.API.Repository
                             return new ResponseDto { Result = entity, DisplayMessage = "Unable to link to Shipment. Provided Shipment reference was not found.", IsSuccess = false };
                         }
                     }
-
+                    if (!String.IsNullOrEmpty(entity.ClientHeaderCode))
+                    {
+                        var parent = await _context.tbl_client_headers.AsNoTracking()
+                            .FirstOrDefaultAsync(p => p.tbl_client_header_code == entity.ClientHeaderCode);
+                        if (parent != null)
+                        {
+                            result.tbl_client_header_id = parent.idtbl_client_header;
+                        }
+                        else
+                        {
+                            return new ResponseDto { Result = entity, DisplayMessage = "Unable to link to Client Header. Provided Client Header reference was not found.", IsSuccess = false };
+                        }
+                    }
                     _context.ChangeTracker.Clear();
                     _context.tbl_notes.Update(result);
                     await _context.SaveChangesAsync();
@@ -267,16 +293,45 @@ namespace BTAS.API.Repository
             }
         }
 
-        public async Task<tbl_noteDto> CreateUpdateAsync(tbl_noteDto entity)
+        public async Task<ResponseDto> CreateUpdateAsync(tbl_noteDto entity)
         {
-            throw new NotImplementedException();
+            try
+            {
+                ResponseDto creatUpdateResult = new ResponseDto();
+                var result = await _context.tbl_notes.OrderBy(p => p.tbl_note_title)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(p => p.tbl_note_title == entity.tbl_note_title
+                    && p.tbl_note_description == entity.tbl_note_description);
+                //if new => create
+                if (result == null)
+                {
+                    creatUpdateResult = await CreateAsync(entity);
+                }
+                //else existed => update
+                else
+                {
+                    creatUpdateResult = await UpdateAsync(entity);
+                }
+            return creatUpdateResult;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message + ex.InnerException.ToString());
+            }
+
         }
 
         public async Task<string> GetNextId()
         {
             var result = await _context.tbl_notes.OrderByDescending(p => p.idtbl_note).FirstOrDefaultAsync();
             string code = "NT" + String.Format("{0:0000000}", (result != null ? result.idtbl_note + count : 1));
+            count++;
             return code;
+        }
+
+        Task<tbl_noteDto> IRepository<tbl_noteDto>.CreateUpdateAsync(tbl_noteDto entity)
+        {
+            throw new NotImplementedException();
         }
     }
 }

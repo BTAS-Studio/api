@@ -104,6 +104,7 @@ namespace BTAS.API.Dto
         public string tbl_house_native_description { get; set; }
 
         [JsonProperty("FTA")]
+        [Description("Free Trade Agreement")]
         public bool? tbl_house_FTA { get; set; }
 
         [StringLength(50)]
